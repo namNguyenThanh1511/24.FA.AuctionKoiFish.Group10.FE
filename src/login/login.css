@@ -66,8 +66,7 @@ body {
   .login-form button {
     width: 100%;
     padding: 10px;
-    background-color: #489BBF; /* Màu nút */
-    color: white;
+   color: 489BBF;
     border: none;
     border-radius: 20px;
     cursor: pointer;
