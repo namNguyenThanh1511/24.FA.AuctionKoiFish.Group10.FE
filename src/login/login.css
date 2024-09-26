@@ -112,8 +112,9 @@ body {
 }
 
 .google-button img {
-  margin-right: 10px; /* Tạo khoảng cách giữa logo và chữ */
-  width: 50px; /* Điều chỉnh kích thước logo cho vừa vặn */
+  margin-right: 10px;
+  width: 45px;
+  border-radius: 15px;
 }
 
 .google-button span {
