@@ -1,7 +1,12 @@
 import React from "react";
+import Homepage from "./pages/HomePage"; // Import Homepage component
 
-function App() {
-  return <div>App koi koi</div>;
-}
+const App = () => {
+  return (
+    <div>
+      <Homepage />
+    </div>
+  );
+};
 
 export default App;
