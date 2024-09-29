@@ -3,17 +3,20 @@ import { Form, Input, Button } from "antd";
 import "./login.css";
 import { auth, googleprovider } from "../config/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import api from "../config/aixos";
+import api from "../config/axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate = useNavigate();
+
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };
   const handleLogin = async (values) => {
     try {
       const response = await api.post("login", values);
-      toast.success("abc");
+      toast.success("Login success");
       console.log(response);
     } catch (err) {
       toast.error(err.response.data);
@@ -23,8 +26,7 @@ const Login = () => {
     signInWithPopup(auth, googleprovider)
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential =
-          GoogleAuthProviderrovider.credentialFromResult(result);
+        const credential = GoogleAuthProvider.credentialFromResult(result);
         console.log(credential);
       })
       .catch((error) => {
@@ -47,7 +49,7 @@ const Login = () => {
             name="phone"
             rules={[{ required: true, message: "Please enter your email!" }]}
           >
-            <Input type="phone" placeholder="Enter Email" />
+            <Input type="username" placeholder="Enter Email" />
           </Form.Item>
 
           <Form.Item
