@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input, Button, Row, Col } from "antd";
 import "./register.css"; // Import CSS riêng cho Register
-import api from "../config/aixos";
+import api from "../config/axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
@@ -10,7 +10,7 @@ const Register = () => {
   const handleRegister = async (values) => {
     //submit xuong backend
     try {
-    //  values.role = "MEMBER";
+      //  values.role = "MEMBER";
       const response = await api.post("register", values);
       toast.success("Register Successfully");
       navigate("/login");
