@@ -1,8 +1,24 @@
 import React from "react";
 import { Form, Input, Button, Row, Col } from "antd";
 import "./register.css"; // Import CSS riêng cho Register
+import api from "../config/aixos";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
+  const handleRegister = async (values) => {
+    //submit xuong backend
+    try {
+    //  values.role = "MEMBER";
+      const response = await api.post("register", values);
+      toast.success("Register Successfully");
+      navigate("/login");
+    } catch (error) {
+      toast.error("Register fail");
+    }
+  };
+
   // Xử lý khi form được submit
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
@@ -42,7 +58,7 @@ const Register = () => {
         <h2>REGISTER</h2>
         <Form
           name="register"
-          onFinish={onFinish}
+          onFinish={handleRegister}
           layout="vertical" // Đặt layout dạng dọc
         >
           {/* Chia thành 2 ô cho First Name và Last Name */}

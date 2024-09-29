@@ -3,12 +3,21 @@ import { Form, Input, Button } from "antd";
 import "./login.css";
 import { auth, googleprovider } from "../config/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import api from "../config/aixos";
+import { toast } from "react-toastify";
 
 const Login = () => {
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };
-
+  const handleLogin = async (values) => {
+    try {
+      const response = await api.post("login", values);
+      console.log(response);
+    } catch (err) {
+      toast.error(err.response.data);
+    }
+  };
   const handleLoginGoogle = () => {
     signInWithPopup(auth, googleprovider)
       .then((result) => {
@@ -29,7 +38,7 @@ const Login = () => {
         <Form
           name="login"
           initialValues={{ remember: true }}
-          onFinish={onFinish}
+          onFinish={handleLogin}
           layout="vertical"
         >
           <Form.Item
