@@ -3,11 +3,7 @@ import Homepage from "./HomePages/HomePage"; // Import Homepage component
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import Login from "./login/login.jsx";
 import Register from "./register/register";
-<<<<<<< Updated upstream
-import Detail from "./Details/detail.jsx";
-=======
 import Profile from "./profile/profile.jsx";
->>>>>>> Stashed changes
 function App() {
   const router = createBrowserRouter([
     {
