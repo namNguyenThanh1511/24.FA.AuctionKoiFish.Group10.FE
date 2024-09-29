@@ -1,6 +1,6 @@
 import React from "react";
 import "./headerlogin.css"; // Import file CSS cho Header
-import avatar from "../images/logo.png"; // Thêm đường dẫn avatar
+import avatar from "../images/avata.jpg"; // Thêm đường dẫn avatar
 
 const Header = () => {
   return (

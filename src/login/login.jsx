@@ -13,6 +13,7 @@ const Login = () => {
   const handleLogin = async (values) => {
     try {
       const response = await api.post("login", values);
+      toast.success("abc");
       console.log(response);
     } catch (err) {
       toast.error(err.response.data);
@@ -43,10 +44,10 @@ const Login = () => {
         >
           <Form.Item
             label="Username"
-            name="username"
+            name="phone"
             rules={[{ required: true, message: "Please enter your email!" }]}
           >
-            <Input type="email" placeholder="Enter Email" />
+            <Input type="phone" placeholder="Enter Email" />
           </Form.Item>
 
           <Form.Item
