@@ -1,0 +1,96 @@
+.footer {
+  background-color: #e4d4c0; /* Màu nền giống với ảnh */
+  color: #333; /* Màu chữ tối */
+  font-family: 'Fredoka', sans-serif; /* Đổi font chữ thành Fredoka */
+  margin: 0; /* Đảm bảo không có margin */
+  width: 100%; /* Đảm bảo chiều rộng đầy đủ cho footer */
+  position: relative; /* Đặt position để kiểm soát tốt hơn */
+  clear: both; /* Đảm bảo footer không bị ảnh hưởng bởi các phần tử khác */
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between; /* Phân chia khoảng cách giữa các phần tử */
+  align-items: flex-start; /* Căn chỉnh các phần tử ở phía trên */
+  flex-wrap: wrap; /* Cho phép các phần tử xuống dòng */
+  max-width: 1200px; /* Giới hạn chiều rộng tối đa để footer không quá rộng */
+  margin: 0 auto; /* Căn giữa footer-content */
+  padding: 0 20px; /* Thêm padding để tạo khoảng cách giữa các phần tử */
+}
+
+.footer-logo {
+  flex: 3; Logo chiếm 1 phần
+  display: flex;
+  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: flex-start; /* Căn logo về bên trái */
+  margin-right: 20px; /* Thêm khoảng cách bên phải logo */
+}
+
+.footer-info {
+  flex: 6; /* Info chiếm 2 phần */
+  display: flex;
+  flex-direction: column; /* Chia theo chiều dọc */
+  justify-content: space-between; /* Căn chỉnh khoảng cách đều */
+}
+
+.footer-hours,
+.footer-links {
+  flex: 5; /* Các mục còn lại mỗi mục 1 phần */
+  text-align: center; /* Căn giữa nội dung */
+  margin: 15px; /* Thêm khoảng cách giữa các cột */
+
+}
+
+
+
+.footer-payment {
+  flex: 4; /* Các mục còn lại mỗi mục 1 phần */
+  text-align: center; /* Căn giữa nội dung */
+  margin: 15px; /* Thêm khoảng cách giữa các cột */
+}
+
+.footer-logo img {
+  width: auto; /* Để logo tự động điều chỉnh kích thước */
+  max-width: 100%; /* Đảm bảo logo không vượt quá chiều rộng của phần tử */
+  height: auto; /* Đảm bảo chiều cao tự động điều chỉnh */
+  
+}
+
+.footer-links ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin: 5px 0;
+}
+
+.footer-links a,
+.footer-link {
+  text-decoration: none;
+  color: #b85b0e; /* Màu chữ giống với ảnh */
+}
+
+.footer-links a:hover,
+.footer-link:hover {
+  text-decoration: underline;
+}
+
+.footer-payment img {
+  height: 40px; /* Đặt chiều cao cố định cho tất cả các hình ảnh */
+  margin: 0 5px; /* Thêm khoảng cách giữa các hình ảnh */
+}
+
+.footer-bottom {
+  display: flex; /* Sử dụng flex để căn giữa nội dung */
+  justify-content: center; /* Căn giữa nội dung trong footer */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  margin: 0; /* Đảm bảo không có margin */
+  padding: 10px 0; /* Tăng padding để tạo không gian nhiều hơn */
+  font-size: 14px;
+  background-color: #000000; /* Màu nền */
+  width: 100%; /* Chiều rộng đầy đủ */
+  position: relative; /* Đặt position để kiểm soát tốt hơn */
+  color: rgb(255, 255, 255);
+  clear: both; /* Đảm bảo không bị ảnh hưởng bởi các phần tử khác */
+}

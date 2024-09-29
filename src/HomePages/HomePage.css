@@ -1,0 +1,45 @@
+.homepage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f8f9fa; /* Màu nền */
+  }
+  
+  .banner {
+    position: relative;
+    text-align: center;
+  }
+  
+  .banner img {
+    width: 100%; /* Đặt chiều rộng hình ảnh chiếm toàn bộ chiều rộng của container */
+    height: auto; /* Chiều cao tự động */
+  }
+  
+  .banner h1 {
+    position: absolute; /* Đặt tiêu đề lên hình ảnh */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Giữa theo cả hai trục */
+    color: white; /* Màu chữ */
+    font-size: 2rem; /* Kích thước chữ */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* Đổ bóng cho chữ */
+  }
+  
+  .banner-buttons {
+    margin-top: 20px;
+  }
+  
+  .btn-register, .btn-auctions {
+    padding: 10px 20px;
+    margin: 0 10px;
+    text-decoration: none;
+    color: white;
+    background-color: #007bff; /* Màu nền nút */
+    border-radius: 5px; /* Bo tròn góc */
+    transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu */
+  }
+  
+  .btn-register:hover, .btn-auctions:hover {
+    background-color: #0056b3; /* Màu nền khi hover */
+  }
+  

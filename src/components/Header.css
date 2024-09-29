@@ -1,0 +1,58 @@
+.header {
+  position: fixed; /* Cố định Header */
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #000; /* Màu nền của Header */
+  color: #fff; /* Màu chữ trong Header */
+  padding: 10px 20px; /* Tăng padding cho Header */
+  z-index: 1000; /* Đảm bảo Header nằm trên các thành phần khác */
+  display: flex; /* Sử dụng Flexbox */
+  justify-content: space-between; /* Căn giữa nội dung */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  font-family: 'Fredoka', sans-serif; /* Sử dụng font Fredoka */
+  border-bottom: #d4b8b8 solid 2px;
+}
+
+.logo {
+  flex: 1; /* Tạo không gian cho logo */
+}
+
+.nav {
+  flex: 1; /* Tạo không gian cho navigation */
+  text-align: right; /* Căn các mục nav sang bên phải */
+}
+
+.nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav ul li {
+  display: inline;
+  margin-left: 20px; /* Khoảng cách giữa các mục menu */
+}
+
+.nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  padding: 10px; /* Thêm padding cho các nút để chúng có không gian */
+}
+
+.nav ul li a:hover {
+  text-decoration: underline; /* Hiệu ứng khi hover */
+}
+
+/* Thêm kiểu cho các nút Login và Register */
+.btn-login, .btn-register {
+  background-color: #28a745; /* Màu nền cho nút */
+  color: #fff; /* Màu chữ cho nút */
+  padding: 10px 15px; /* Padding cho nút */
+  border-radius: 5px; /* Bo tròn góc */
+  transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+}
+
+.btn-login:hover, .btn-register:hover {
+  background-color: #218838; /* Màu nền khi hover */
+}
