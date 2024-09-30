@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Row, Col } from "antd";
-import api from "../config/axios"; // Sử dụng api đã cấu hình
+import api from "../../config/axios"; // Sử dụng api đã cấu hình
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import './profile.css';
+import "./profile.css";
 
 const Profile = () => {
   const [form] = Form.useForm();
@@ -13,23 +13,23 @@ const Profile = () => {
   // Fetch dữ liệu người dùng từ API và đổ vào form
   const fetchUserProfile = async () => {
     try {
-      const response = await api.get("/profile"); // Giả sử API này trả về thông tin user
+      const response = await api.get(`account/profile`); // Giả sử API này trả về thông tin user
       const userData = response.data;
-
       // Đặt dữ liệu user vào form
       form.setFieldsValue({
+        username: userData.username,
         firstName: userData.firstName,
         lastName: userData.lastName,
         address: userData.address,
-        phone: userData.phone,
+        phoneNumber: userData.phoneNumber,
         email: userData.email,
       });
     } catch (error) {
-      toast.error("Failed to fetch profile data.");
+      toast.error(error.response.data);
     }
   };
 
-  // Gọi API để lấy dữ liệu khi trang được load
+  // Gọi API để lấy dữ liệu khi trang đượ c load
   useEffect(() => {
     fetchUserProfile();
   }, []);
@@ -38,10 +38,10 @@ const Profile = () => {
   const handleSaveProfile = async (values) => {
     setLoading(true);
     try {
-      await api.put("/profile", values); // Giả sử API này cập nhật thông tin user
+      // await api.put(`/account/update-profile/${id}`, values); // Giả sử API này cập nhật thông tin user
       toast.success("Profile updated successfully");
     } catch (error) {
-      toast.error("Failed to update profile");
+      toast.error(error.response.data);
     } finally {
       setLoading(false);
     }
@@ -64,12 +64,7 @@ const Profile = () => {
     <div className="profile-container">
       <div className="profile-form">
         <h2>Profile</h2>
-        <Form
-          form={form}
-          name="profile"
-          onFinish={handleSaveProfile}
-          layout="vertical"
-        >
+        <Form form={form} name="profile" onFinish={handleSaveProfile} layout="vertical">
           {/* Chia thành 2 ô cho First Name và Last Name */}
           <Form.Item label="Name" required>
             <Row gutter={16}>
@@ -85,13 +80,12 @@ const Profile = () => {
                 >
                   <Input placeholder="First Name" />
                 </Form.Item>
+                <Form.Item></Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
                   name="lastName"
-                  rules={[
-                    { required: true, message: "Please enter your last name!" },
-                  ]}
+                  rules={[{ required: true, message: "Please enter your last name!" }]}
                 >
                   <Input placeholder="Last Name" />
                 </Form.Item>
@@ -109,7 +103,7 @@ const Profile = () => {
 
           <Form.Item
             label="Phone"
-            name="phone"
+            name="phoneNumber"
             rules={[
               { required: true, message: "Please enter your phone number!" },
               { validator: validatePhoneNumber }, // Sử dụng hàm xác thực cho số điện thoại
@@ -132,7 +126,9 @@ const Profile = () => {
             <Input type="email" placeholder="Enter Email" disabled />
             {/* Email không thể chỉnh sửa */}
           </Form.Item>
-
+          <Form.Item label="username" name="username">
+            <Input />
+          </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" block loading={loading}>
               Save

@@ -1,5 +1,5 @@
-import Header from "../components/header"; // Đảm bảo đường dẫn chính xác đến Header
-import Footer from "../components/footer"; // Import Footer
+import Header from "../../components/header"; // Đảm bảo đường dẫn chính xác đến Header
+import Footer from "../../components/footer"; // Import Footer
 import Koi from "../images/Koi.jpg"; // Import hình ảnh
 import "./detail.css";
 const Detail = () => {

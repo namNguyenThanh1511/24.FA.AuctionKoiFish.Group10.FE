@@ -1,11 +1,11 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
 import "./login.css";
-import { auth, googleprovider } from "../config/firebase";
+import { auth, googleprovider } from "../../config/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
-import api from "../config/axios";
+import api from "../../config/axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -16,7 +16,10 @@ const Login = () => {
   const handleLogin = async (values) => {
     try {
       const response = await api.post("login", values);
+      const { token, roleEnum } = response.data;
+      localStorage.setItem("token", token);
       toast.success("Login success");
+      navigate("/");
       console.log(response);
     } catch (err) {
       toast.error(err.response.data);
@@ -46,10 +49,10 @@ const Login = () => {
         >
           <Form.Item
             label="Username"
-            name="phone"
-            rules={[{ required: true, message: "Please enter your email!" }]}
+            name="username"
+            rules={[{ required: true, message: "Please enter your username!" }]}
           >
-            <Input type="username" placeholder="Enter Email" />
+            <Input type="username" placeholder="Enter username" />
           </Form.Item>
 
           <Form.Item
@@ -65,24 +68,14 @@ const Login = () => {
           </div>
 
           <Form.Item>
-            <Button
-              className="signin-button"
-              type="primary"
-              htmlType="submit"
-              block
-            >
+            <Button className="signin-button" type="primary" htmlType="submit" block>
               SIGN IN
             </Button>
           </Form.Item>
         </Form>
 
         <div className="login-google">
-          <Button
-            className="google-button"
-            type="default"
-            block
-            onClick={handleLoginGoogle}
-          >
+          <Button className="google-button" type="default" block onClick={handleLoginGoogle}>
             <img
               src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASsAAACoCAMAAACPKThEAAABklBMVEX////+/v40qFP///1FhPXqQjf4vA
               TtQTfsQjUzp1RFhPZFhfP8uwc+fvqYufFChfUzqFA3eu7e7v4zeefk8PzpQzP7///3vQH73d3oRDf+//r6uAAxq1PoPC/vQjbsOy7eOS3bOjR
@@ -138,7 +131,7 @@ const Login = () => {
         </div>
 
         <div className="register-link">
-          Not a member? <a href="/register">Register</a>
+          Not a member? <Link to={"/register"}>Register</Link>
         </div>
       </div>
     </div>

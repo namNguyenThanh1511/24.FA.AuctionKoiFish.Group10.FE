@@ -1,9 +1,9 @@
 import React from "react";
 import { Form, Input, Button, Row, Col } from "antd";
 import "./register.css"; // Import CSS riêng cho Register
-import api from "../config/axios";
+import api from "../../config/axios";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -40,8 +40,7 @@ const Register = () => {
   // Hàm xác thực mật khẩu
   const validatePassword = (_, value) => {
     // Biểu thức chính quy: ít nhất 8 ký tự, bao gồm chữ, số và ký tự đặc biệt
-    const passwordPattern =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!value || passwordPattern.test(value)) {
       return Promise.resolve();
     }
@@ -80,9 +79,7 @@ const Register = () => {
               <Col span={12}>
                 <Form.Item
                   name="lastName"
-                  rules={[
-                    { required: true, message: "Please enter your last name!" },
-                  ]}
+                  rules={[{ required: true, message: "Please enter your last name!" }]}
                 >
                   <Input placeholder="Last Name" />
                 </Form.Item>
@@ -146,9 +143,7 @@ const Register = () => {
                     return Promise.resolve();
                   }
                   return Promise.reject(
-                    new Error(
-                      "The two passwords that you entered do not match!"
-                    )
+                    new Error("The two passwords that you entered do not match!")
                   );
                 },
               }),
@@ -165,7 +160,7 @@ const Register = () => {
         </Form>
 
         <div className="signin-link">
-          Already a member? <a href="/login">Sign In</a>
+          Already a member? <Link to={"/login"}>Sign in</Link>
         </div>
       </div>
     </div>
