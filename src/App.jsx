@@ -4,6 +4,8 @@ import HomePage from "./pages/HomePages/HomePage";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
 import Profile from "./pages/profile/profile";
+import Dashboard from "./components/dashboard";
+import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
 
 function App() {
   const router = createBrowserRouter([
@@ -26,6 +28,16 @@ function App() {
     {
       path: "/profile",
       element: <Profile />,
+    },
+    {
+      path: "/dashboard",
+      element: <Dashboard />,
+      children: [
+        {
+          path: "koiFish",
+          element: <ManageKoiFish />,
+        },
+      ],
     },
   ]);
 

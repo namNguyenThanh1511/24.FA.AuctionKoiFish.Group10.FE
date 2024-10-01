@@ -19,7 +19,11 @@ const Login = () => {
       const { token, roleEnum } = response.data;
       localStorage.setItem("token", token);
       toast.success("Login success");
-      navigate("/");
+      if (roleEnum === "KOI_BREEDER") {
+        navigate("/dashboard");
+      } else {
+        navigate("/");
+      }
       console.log(response);
     } catch (err) {
       toast.error(err.response.data);
