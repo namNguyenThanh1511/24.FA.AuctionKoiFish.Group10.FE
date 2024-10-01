@@ -11,7 +11,7 @@ const Register = () => {
     //submit xuong backend
     try {
       //  values.role = "MEMBER";
-      const response = await api.post("register", values);
+      const response = await api.post("/register-member", values);
       toast.success("Register Successfully");
       navigate("/login");
     } catch (error) {
