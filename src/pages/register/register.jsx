@@ -8,9 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 const Register = () => {
   const navigate = useNavigate();
   const handleRegister = async (values) => {
-    //submit xuong backend
     try {
-      //  values.role = "MEMBER";
       const response = await api.post("/register-member", values);
       toast.success("Register Successfully");
       navigate("/login");
@@ -19,28 +17,24 @@ const Register = () => {
     }
   };
 
-  // Xử lý khi form được submit
-  const onFinish = (values) => {
+   // Xử lý khi form được submit
+   const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };
 
-  // Hàm xác thực số điện thoại
   const validatePhoneNumber = (_, value) => {
-    const phonePattern = /^0\d{9}$/; // Biểu thức chính quy: bắt đầu với 0, sau đó là 10 chữ số
+    const phonePattern = /^0\d{9}$/;
     if (!value || phonePattern.test(value)) {
       return Promise.resolve();
     }
     return Promise.reject(
-      new Error(
-        "Phone number must be 10 digits, start with 0, and not contain letters or special characters."
-      )
+      new Error("Phone number must be 10 digits, start with 0 and not contain letters or special characters..")
     );
   };
 
-  // Hàm xác thực mật khẩu
   const validatePassword = (_, value) => {
-    // Biểu thức chính quy: ít nhất 8 ký tự, bao gồm chữ, số và ký tự đặc biệt
-    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordPattern =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!value || passwordPattern.test(value)) {
       return Promise.resolve();
     }
@@ -60,8 +54,15 @@ const Register = () => {
           onFinish={handleRegister}
           layout="vertical" // Đặt layout dạng dọc
         >
-          {/* Chia thành 2 ô cho First Name và Last Name */}
-          <Form.Item label="Name" required>
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[{ required: true, message: "Please enter your username!" }]}
+          >
+            <Input placeholder="Enter Username" />
+          </Form.Item>
+
+          <Form.Item label="Full Name" required>
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
@@ -79,7 +80,9 @@ const Register = () => {
               <Col span={12}>
                 <Form.Item
                   name="lastName"
-                  rules={[{ required: true, message: "Please enter your last name!" }]}
+                  rules={[
+                    { required: true, message: "Please enter your last name!" },
+                  ]}
                 >
                   <Input placeholder="Last Name" />
                 </Form.Item>
@@ -108,11 +111,11 @@ const Register = () => {
           </Form.Item>
 
           <Form.Item
-            label="Phone"
+            label="Phone Number"
             name="phoneNumber"
             rules={[
               { required: true, message: "Please enter your phone number!" },
-              { validator: validatePhoneNumber }, // Sử dụng hàm xác thực cho số điện thoại
+              { validator: validatePhoneNumber }, 
             ]}
           >
             <Input placeholder="Enter Phone Number" />
@@ -137,7 +140,7 @@ const Register = () => {
             name="password"
             rules={[
               { required: true, message: "Please enter your password!" },
-              { validator: validatePassword }, // Sử dụng hàm xác thực cho mật khẩu
+              { validator: validatePassword },
             ]}
           >
             <Input.Password placeholder="Enter Password" />
@@ -145,7 +148,7 @@ const Register = () => {
 
           <Form.Item
             label="Re-type Password"
-            name="confirm"
+            name="confirmPassword"
             dependencies={["password"]}
             rules={[
               { required: true, message: "Please confirm your password!" },
@@ -154,9 +157,7 @@ const Register = () => {
                   if (!value || getFieldValue("password") === value) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(
-                    new Error("The two passwords that you entered do not match!")
-                  );
+                  return Promise.reject(new Error("Passwords do not match!"));
                 },
               }),
             ]}
@@ -172,7 +173,7 @@ const Register = () => {
         </Form>
 
         <div className="signin-link">
-          Already a member? <Link to={"/login"}>Sign in</Link>
+          Already a member? <a href="/login">Sign In</a>
         </div>
       </div>
     </div>
