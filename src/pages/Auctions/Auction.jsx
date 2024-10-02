@@ -154,11 +154,7 @@ const Auction = () => {
               </Form.Item>
             </Col>
 
-            <Col span={8}>
-              <Form.Item name="id" label="Id">
-                <Input placeholder="Enter id" />
-              </Form.Item>
-            </Col>
+
 
             <Col span={8}>
               <Form.Item name="breeder" label="Breeder">

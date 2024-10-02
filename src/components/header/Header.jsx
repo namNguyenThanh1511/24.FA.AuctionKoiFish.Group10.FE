@@ -1,29 +1,35 @@
 import React from "react";
 import "./header.css"; // Import file CSS cho Header
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Thêm useNavigate
 
 const Header = () => {
+  const navigate = useNavigate(); // Khai báo useNavigate
+
   return (
     <header className="header">
       <div className="logo">
-        <h1>Auction Legend Koi</h1> {/* Thay đổi tên thành "Auction Legend Koi" */}
+        <h1>Auction Legend Koi</h1>
       </div>
       <nav className="nav">
         <ul>
           <li>
-            <Link to={"/"}>Home</Link>
+            <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to={"/auctions"}>Auctions</Link>
+            <Link to="/auctions">Auctions</Link>
           </li>
           <li>
-            <Link to={"/about"}>About</Link>
+            <Link to="/about">About</Link>
           </li>
           <li>
-            <Link to={"/login"}>Login</Link>
+            <button className="btn-login" onClick={() => navigate("/login")}>
+              Login
+            </button>
           </li>
           <li>
-            <Link to={"/register"}>Register</Link>
+            <button className="btn-register" onClick={() => navigate("/register")}>
+              Register
+            </button>
           </li>
         </ul>
       </nav>

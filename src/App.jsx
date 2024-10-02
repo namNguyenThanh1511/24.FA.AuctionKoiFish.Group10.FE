@@ -32,6 +32,10 @@ function App() {
       element: <Profile />,
     },
     {
+      path: "/auctions",
+      element: <Auction />
+    },
+    {
       path: "/dashboard",
       element: <Dashboard title={"Koi Breeder"} />,
       children: [
