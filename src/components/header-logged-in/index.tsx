@@ -23,7 +23,15 @@ const HeaderLogin = () => {
         <Link to="/my-auction">My Auction</Link>
       </Menu.Item>
       <Menu.Item key="4" icon={<LogoutOutlined />} danger>
-        <Link to="/logout">Logout</Link>
+        <Link
+          onClick={() => {
+            localStorage.removeItem("token");
+            window.location.reload();
+          }}
+          to="/"
+        >
+          Logout
+        </Link>
       </Menu.Item>
     </Menu>
   );
