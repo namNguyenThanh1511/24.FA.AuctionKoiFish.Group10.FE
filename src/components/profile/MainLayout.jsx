@@ -6,6 +6,7 @@ import {
   NotificationOutlined,
   FileOutlined,
   LogoutOutlined,
+  WalletOutlined,
 } from "@ant-design/icons";
 import HeaderLogin from "../HeaderLogin";
 import Footer from "../footer/Footer";
@@ -21,7 +22,9 @@ const items = [
   getItem("Personal", "1", <PieChartOutlined />),
   getItem("Notification", "2", <NotificationOutlined />),
   getItem("My Auction", "3", <FileOutlined />),
-  getItem("Logout", "4", <LogoutOutlined />),
+  getItem("Wallet", "4", <WalletOutlined />),
+  getItem("Logout", "5", <LogoutOutlined />),
+ 
 ];
 
 const MainLayout = ({ children, collapsed, setCollapsed }) => {
