@@ -4,19 +4,16 @@ import HomePage from "./pages/HomePages/HomePage";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
 import Profile from "./pages/profile/profile";
-import Detail from "./pages/Details/detail";
+import Wallet from "./pages/wallet/wallet"; // Import trang Wallet
 import Auction from "./pages/Auctions/Auction";
 import Dashboard from "./components/dashboard";
 import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
+import MainLayout from "./components/profile/MainLayout";
 
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/", // Đường dẫn gốc trỏ tới trang HomePage
-      element: <HomePage />,
-    },
-    {
-      path: "/homepage", // Trang này có thể giữ lại nếu cần
+      path: "/",
       element: <HomePage />,
     },
     {
@@ -29,11 +26,23 @@ function App() {
     },
     {
       path: "/profile",
-      element: <Profile />,
+      element: <MainLayout />,
+      children: [
+        {
+          path: "personal",
+          element: <Profile />,
+        },
+        
+        {
+          path: "wallet", // Trang con Wallet
+          element: <Wallet />,
+        },
+        // Các trang con khác
+      ],
     },
     {
       path: "/auctions",
-      element: <Auction />
+      element: <Auction />,
     },
     {
       path: "/dashboard",

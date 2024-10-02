@@ -6,49 +6,52 @@ body {
 
 .register-container {
   display: flex;
-  justify-content: flex-start; /* Canh giữa nửa bên trái */
+  justify-content: flex-start;
   align-items: center;
   height: 100vh;
-  background-image: url("../../images/Logincode.jpg"); /* Đường dẫn ảnh nền */
+  background-image: url("../../images/Logincode.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center; /* Đặt ảnh nền ở giữa */
+  background-position: center; 
 }
 
-/* Form đăng ký */
+
 .register-form {
-  background-color: rgba(255, 255, 255, 0.9); /* Màu nền cho form */
-  padding: 20px; /* Giảm padding */
+  background-color: rgba(255, 255, 255, 0.9); 
+  padding: 10px; 
   border-radius: 20px;
   width: 350px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
-  margin-left: 10%; /* Đặt form cách mép trái 5% */
+  margin-left: 10%; 
 }
 
 .register-form h2 {
-  padding-bottom: 15px; /* Giảm khoảng cách */
+  padding-bottom: 8px; 
   text-align: center;
-  color: #489bbf; /* Màu chữ tiêu đề */
+  color: #489bbf; 
+  font-size: 18px; 
 }
 
 .register-form .ant-form-item {
-  margin-bottom: 10px; /* Giảm khoảng cách giữa các ô */
+  margin-bottom: 6px; 
 }
 
 .register-form .ant-input,
 .register-form .ant-input-password {
-  border-radius: 20px; /* Giữ lại bo góc cho ô nhập */
+  border-radius: 20px; 
+  height: 36px; 
+  font-size: 14px; 
 }
 
 .register-form button {
   width: 100%;
-  padding: 8px; /* Giảm padding cho nút */
-  background-color: #489bbf; /* Màu nút */
+  padding: 5px; 
+  background-color: #489bbf; 
   color: white;
   border: none;
   border-radius: 20px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px; 
 }
 
 .register-form button:hover {
@@ -57,7 +60,7 @@ body {
 
 .signin-link {
   text-align: center;
-  margin-top: 10px;
+  margin-top: 8px; 
 }
 
 .signin-link a {
