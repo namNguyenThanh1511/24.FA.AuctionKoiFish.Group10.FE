@@ -31,7 +31,7 @@ function App() {
     },
     {
       path: "/dashboard",
-      element: <Dashboard />,
+      element: <Dashboard title={"Koi Breeder"} />,
       children: [
         {
           path: "koiFish",

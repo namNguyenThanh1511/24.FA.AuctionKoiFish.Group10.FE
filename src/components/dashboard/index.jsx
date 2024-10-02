@@ -27,7 +27,7 @@ const items = [
   // getItem("Voucher", "voucher", <PieChartOutlined />),
 ]; // param 1 : name ; param 2 : key ; param 3 : icon
 
-const Dashboard = ({title}) => {
+const Dashboard = ({ title }) => {
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -50,7 +50,7 @@ const Dashboard = ({title}) => {
           }}
           className="demo-logo-vertical"
         >
-          Dashboard
+          Dashboard for {title}
         </div>
 
         <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" items={items} />
