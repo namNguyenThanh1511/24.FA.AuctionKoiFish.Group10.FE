@@ -1,0 +1,92 @@
+body {
+    background-color:#ededed; /* Đặt nền màu trắng */
+    margin: 0;
+    padding: 0;
+  }
+
+/* Style cho toàn bộ form */
+.auction-form-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    margin-top: 130px;
+  }
+  
+  /* Style các trường của form */
+  .auction-form .ant-form-item {
+    margin-bottom: 16px;
+  }
+  
+  /* Style cho nút filter */
+  .auction-form .ant-btn-primary {
+    width: 100%;
+    background-color: #1890ff;
+    border-color: #1890ff;
+  }
+  
+  .auction-form .ant-btn-primary:hover {
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+  }
+  
+  /* Style cho Slider */
+  .auction-form .ant-slider-track {
+    background-color: #1890ff;
+  }
+  
+  .auction-form .ant-slider-handle {
+    border-color: #1890ff;
+  }
+  
+
+/* Style cho grid chứa các thẻ Card */
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start; /* Đẩy thẻ về bên trái */
+    padding: 20px;
+    background-color: #ffffff; /* Màu nền để thấy rõ khoảng trống */
+    margin: 0 auto;
+    max-width: 1200px; /* Giới hạn chiều rộng của grid */
+    margin-bottom: 30px;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+/* Style cho từng thẻ Card */
+.card-grid > div {
+    flex: 0 0 calc(25% - 15px); /* Mỗi thẻ chiếm khoảng 25% chiều rộng */
+    max-width: calc(25% - 15px); /* Đảm bảo thẻ không lớn hơn 25% */
+    box-sizing: border-box;
+    margin-bottom: 20px; /* Thêm khoảng cách giữa các hàng */
+}
+
+/* Đảm bảo thẻ giữ kích thước cố định và không bị dãn */
+.card-grid > div:nth-child(4n + 1) {
+    margin-left: 0;
+}
+
+.card-grid > div:nth-child(4n) {
+    margin-right: 0;
+}
+
+/* Đặt giới hạn cho thẻ Card */
+.card-container {
+    max-width: 220px; /* Giới hạn chiều rộng tối đa */
+    margin: 10px; /* Thêm khoảng cách cho các thẻ */
+}
+
+/* Hiệu ứng hover cho thẻ Card */
+.card-container:hover {
+    transform: scale(1.05); /* Tăng kích thước khi hover */
+    transition: transform 0.3s ease; /* Hiệu ứng chuyển động mượt mà */
+}
+
+.card-image {
+    width: 100%; /* Chiều rộng 100% để lấp đầy Card */
+    height: 500px; /* Đặt chiều cao cố định cho bức ảnh, bạn có thể điều chỉnh chiều cao theo nhu cầu */
+    object-fit: cover; /* Đảm bảo bức ảnh fill hết khung ảnh */
+}

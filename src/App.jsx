@@ -4,15 +4,17 @@ import HomePage from "./pages/HomePages/HomePage";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
 import Profile from "./pages/profile/profile";
+import Detail from "./pages/Details/detail";
+import Auction from "./pages/Auctions/Auction";
 
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/",
-      element: <HomePage />, // Trang mặc định là Homepage
+      path: "/", // Đường dẫn gốc trỏ tới trang HomePage
+      element: <HomePage />,
     },
     {
-      path: "/homepage", // Bạn có thể giữ lại đường dẫn cho Homepage
+      path: "/homepage", // Trang này có thể giữ lại nếu cần
       element: <HomePage />,
     },
     {
@@ -26,6 +28,10 @@ function App() {
     {
       path: "/profile",
       element: <Profile />,
+    },
+    {
+      path: "/auctions", // Đường dẫn cho trang Auctions
+      element: <Auction />,
     },
   ]);
 

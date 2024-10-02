@@ -1,155 +1,83 @@
-/* Reset margin và padding cho body và html */
-html, body {
-    margin: 0;
-    padding: 0;
-}
-
-/* Container cho chi tiết sản phẩm */
-.container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-/* Layout cho chi tiết sản phẩm */
 .product-detail {
     display: flex;
-    align-items: flex-start; /* Căn đầu nội dung theo chiều dọc */
-    background-color: #fff;
+    align-items: flex-start;
+    background-color: #f9f9f9 !important; /* Đổi màu nền với !important */
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    max-width: 1200px; /* Giới hạn chiều rộng tối đa */
+    max-width: 1200px;
     width: 100%;
     padding: 20px;
-    margin: 20px auto; /* Căn giữa */
-    transition: transform 0.2s;
+    margin: 20px auto;
     margin-top: 150px;
-    height: auto; /* Thay đổi chiều cao để linh hoạt */
+    height: auto;
 }
 
-.product-detail:hover {
-    transform: translateY(-5px);
+/* Chia phần product-info thành 3 phần */
+.product-info-container {
+    display: flex;
+    flex-direction: column; /* Sắp xếp thành hàng dọc */
+    flex: 3; /* 3 phần thông tin */
+    margin-left: 20px; /* Khoảng cách với ảnh */
 }
 
-/* Kiểu cho phần chứa ảnh */
 .product-image {
-    max-width: 400px; /* Giới hạn chiều rộng của khối chứa ảnh */
-    flex: 0 0 auto; /* Không cho phép phần tử co lại */
-    margin-top: 25px;
-   
+    flex: 1; /* 1 phần cho ảnh */
 }
 
-/* Thay đổi kích thước ảnh */
 .product-image img {
-    width: 100%; /* Đặt chiều rộng tối đa là 100% của khối chứa */
-    height: auto; /* Giữ tỷ lệ khung hình */
-    border-radius: 8px; /* Bo góc cho ảnh */
-   
+    width: 300px; /* Giảm kích thước ảnh cá */
+    height: auto;
+    border-radius: 8px;
 }
 
-/* Kiểu cho phần thông tin sản phẩm */
-.product-info {
-    flex: 1; /* Để nội dung mô tả chiếm không gian còn lại */
-    display: flex;
-    flex-direction: column; /* Sắp xếp các phần tử theo chiều dọc */
-    justify-content: flex-start; /* Căn trái theo chiều dọc */
-    padding-left: 20px; /* Thêm khoảng cách giữa ảnh và thông tin sản phẩm */
-}
-
-/* Tiêu đề sản phẩm */
-.product-info h1 {
-    font-size: 1.8em;
-    color: #333;
-    margin-bottom: 10px;
-    text-align: left; /* Căn trái tiêu đề */
-}
-
-/* Mô tả sản phẩm */
-.product-info p {
-    color: #666;
-    margin-bottom: 20px;
-    text-align: left; /* Căn trái mô tả sản phẩm */
-}
-
-/* Giá sản phẩm */
-.product-price {
-    display: flex;
-    align-items: center;
-    margin-bottom: 20px; /* Thêm khoảng cách dưới giá */
-    margin-top: 10px; /* Khoảng cách trên giá */
-}
-
-.original-price {
-    font-size: 1.5em;
-    text-decoration: line-through;
-    color: #999;
-    margin-right: 10px;
-}
-
-.sale-price {
-    font-size: 1.8em;
-    color: #e63946;
-    margin-right: 10px;
-}
-
-.discount {
-    background-color: #f1faee;
-    color: #1d3557;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
-/* Nút Mua Ngay */
-.buy-now-btn {
-    background-color: #2a9d8f;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1em;
-    transition: background-color 0.3s;
-}
-
-.buy-now-btn:hover {
-    background-color: #21867a;
-}
-
-/* Thời gian giảm giá */
-.flash-sale {
-    font-weight: bold;
-    color: #e63946;
-}
-
-/* Thông tin bổ sung */
-.additional-info p {
-    margin: 5px 0;
-}
-
-
-/* Kiểu cho mục thông tin bổ sung (info) */
-.info {
-    margin-top: 15px; /* Thêm khoảng cách trên mục info */
-    padding: 10px 0;  /* Thêm khoảng cách trên và dưới cho mục */
-    border-top: 1px solid #e0e0e0; /* Thêm đường viền trên để phân tách */
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* Khoảng cách giữa các hàng thông tin */
-}
-
-.info h3 {
-    font-size: 1.2em;
-    color: #333; /* Đổi màu chữ cho dễ nhìn hơn */
-    margin: 0;
+/* Nền trắng phía dưới phần sản phẩm */
+.additional-info-container {
+    background-color: white; /* Nền trắng */
+    padding: 20px;
+    margin: 20px auto;
+    margin-top: -5px;
+    max-width: 1200px; /* Giữ nguyên chiều rộng tối đa */
+    width: 100%; /* Đặt chiều rộng 100% */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Đổ bóng nhẹ */
     text-align: left;
-    font-weight: normal; /* Giảm độ đậm của chữ để không quá nổi bật */
 }
 
-/* Giảm khoảng cách và căn chỉnh lại khoảng cách trong phần giá */
-.product-price {
+.container {
+    background-color: #ededed; /* Đặt màu nền giống với product-detail */
     display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Căn trái các giá trị */
-    gap: 5px; /* Khoảng cách nhỏ giữa các giá */
+    flex-direction: column; 
+    min-height: 100vh;
+}
+
+.product-info {
+    margin-left: 30px;
+}
+
+.bid-input {
+    width: 20%;
+    height: 27px;
+    border-radius: 5px;
+}
+
+.bid-btn {
+    margin-left: 3px;
+    width: 5%;
+    height: 34px;
+    background-color: rgb(134, 134, 134);
+    border-radius: 5px;   
+}
+
+.product-price {
+    margin-bottom: 10px;
+}
+
+.time {
+    font-size: 40px
+    
+}
+
+.Current-bid {
+    font-size: 20px;
 }
