@@ -1,21 +1,23 @@
+// src/pages/Profile.js
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, Row, Col } from "antd";
+import { Form, Input, Button, Row, Col, Breadcrumb } from "antd";
 import api from "../../config/axios"; // Sử dụng api đã cấu hình
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import MainLayout from "../../components/profile/MainLayout"; // Import MainLayout
 import "./profile.css";
 
 const Profile = () => {
   const [form] = Form.useForm();
-  const navigate = useNavigate();
+  const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   // Fetch dữ liệu người dùng từ API và đổ vào form
   const fetchUserProfile = async () => {
     try {
-      const response = await api.get(`account/profile`); // Giả sử API này trả về thông tin user
+      const response = await api.get(`account/profile`);
       const userData = response.data;
-      // Đặt dữ liệu user vào form
       form.setFieldsValue({
         username: userData.username,
         firstName: userData.firstName,
@@ -29,7 +31,6 @@ const Profile = () => {
     }
   };
 
-  // Gọi API để lấy dữ liệu khi trang đượ c load
   useEffect(() => {
     fetchUserProfile();
   }, []);
@@ -38,7 +39,7 @@ const Profile = () => {
   const handleSaveProfile = async (values) => {
     setLoading(true);
     try {
-      // await api.put(`/account/update-profile/${id}`, values); // Giả sử API này cập nhật thông tin user
+      // Giả sử bạn sẽ có API cập nhật thông tin user
       toast.success("Profile updated successfully");
     } catch (error) {
       toast.error(error.response.data);
@@ -49,7 +50,7 @@ const Profile = () => {
 
   // Hàm xác thực số điện thoại
   const validatePhoneNumber = (_, value) => {
-    const phonePattern = /^0\d{9}$/; // Biểu thức chính quy: bắt đầu với 0, sau đó là 10 chữ số
+    const phonePattern = /^0\d{9}$/;
     if (!value || phonePattern.test(value)) {
       return Promise.resolve();
     }
@@ -61,11 +62,16 @@ const Profile = () => {
   };
 
   return (
-    <div className="profile-container">
+    <MainLayout collapsed={collapsed} setCollapsed={setCollapsed}>
       <div className="profile-form">
-        <h2>Profile</h2>
-        <Form form={form} name="profile" onFinish={handleSaveProfile} layout="vertical">
-          {/* Chia thành 2 ô cho First Name và Last Name */}
+        <h2>My profile</h2>
+        <h4>Manage your profile information to keep your account secure</h4>
+        <Form
+          form={form}
+          name="profile"
+          onFinish={handleSaveProfile}
+          layout="vertical"
+        >
           <Form.Item label="Name" required>
             <Row gutter={16}>
               <Col span={12}>
@@ -80,12 +86,13 @@ const Profile = () => {
                 >
                   <Input placeholder="First Name" />
                 </Form.Item>
-                <Form.Item></Form.Item>
               </Col>
               <Col span={12}>
                 <Form.Item
                   name="lastName"
-                  rules={[{ required: true, message: "Please enter your last name!" }]}
+                  rules={[
+                    { required: true, message: "Please enter your last name!" },
+                  ]}
                 >
                   <Input placeholder="Last Name" />
                 </Form.Item>
@@ -106,7 +113,7 @@ const Profile = () => {
             name="phoneNumber"
             rules={[
               { required: true, message: "Please enter your phone number!" },
-              { validator: validatePhoneNumber }, // Sử dụng hàm xác thực cho số điện thoại
+              { validator: validatePhoneNumber },
             ]}
           >
             <Input placeholder="Enter Phone Number" />
@@ -124,19 +131,20 @@ const Profile = () => {
             ]}
           >
             <Input type="email" placeholder="Enter Email" disabled />
-            {/* Email không thể chỉnh sửa */}
           </Form.Item>
-          <Form.Item label="username" name="username">
+
+          <Form.Item label="Username" name="username">
             <Input />
           </Form.Item>
+
           <Form.Item>
             <Button type="primary" htmlType="submit" block loading={loading}>
-              Save
+              Save Change
             </Button>
           </Form.Item>
         </Form>
       </div>
-    </div>
+    </MainLayout>
   );
 };
 
