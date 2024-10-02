@@ -7,10 +7,10 @@ import {
   LogoutOutlined,
   AppstoreOutlined,
 } from "@ant-design/icons"; // Import các icon từ Ant Design
-import "./headerlogin.css"; // Import file CSS cho Header
-import avatar from "../images/avata.jpg"; // Thêm đường dẫn avatar
+import "./index.css"; // Import file CSS cho Header
+import avatar from "../../images/avata.jpg"; // Thêm đường dẫn avatar
 
-const Header = () => {
+const HeaderLogin = () => {
   const menu = (
     <Menu>
       <Menu.Item key="1" icon={<UserOutlined />}>
@@ -46,11 +46,7 @@ const Header = () => {
           </li>
           <li>
             {/* Thay thế Login và Register bằng avatar với menu dropdown */}
-            <Dropdown
-              overlay={menu}
-              trigger={["hover"]}
-              placement="bottomRight"
-            >
+            <Dropdown overlay={menu} trigger={["hover"]} placement="bottomRight">
               <div className="avatar-wrapper">
                 <img src={avatar} alt="User Avatar" className="avatar" />
               </div>
@@ -62,4 +58,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default HeaderLogin;

@@ -8,16 +8,27 @@ import Detail from "./pages/Details/detail";
 import Auction from "./pages/Auctions/Auction";
 import Dashboard from "./components/dashboard";
 import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
+import Layout from "./layout/general-layout";
 
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/", // Đường dẫn gốc trỏ tới trang HomePage
-      element: <HomePage />,
-    },
-    {
-      path: "/homepage", // Trang này có thể giữ lại nếu cần
-      element: <HomePage />,
+      path: "",
+      element: <Layout />,
+      children: [
+        {
+          path: "/",
+          element: <HomePage />,
+        },
+        {
+          path: "/auctions",
+          element: <Auction />,
+        },
+        {
+          path: "/auctions/details",
+          element: <Detail />,
+        },
+      ],
     },
     {
       path: "/login",
@@ -30,10 +41,6 @@ function App() {
     {
       path: "/profile",
       element: <Profile />,
-    },
-    {
-      path: "/auctions",
-      element: <Auction />
     },
     {
       path: "/dashboard",

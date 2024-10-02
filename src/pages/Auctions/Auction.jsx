@@ -1,18 +1,7 @@
 import React, { useState } from "react";
-import Header from "../../components/HeaderLogin";
-import Footer from "../../components/footer/Footer";
+
 import "./Auction.css";
-import {
-  Form,
-  Input,
-  Button,
-  Select,
-  InputNumber,
-  Radio,
-  Slider,
-  Row,
-  Col,
-} from "antd";
+import { Form, Input, Button, Select, InputNumber, Radio, Slider, Row, Col } from "antd";
 import Card from "../../components/Card/Card";
 import Koi from "../../images/Koi1.jpg";
 
@@ -120,12 +109,8 @@ const Auction = () => {
       const sizeMatch = length ? card.length >= length : true; // Kiểm tra kích thước >= length
       const varietyMatch = variety ? card.variety === variety : true; // Kiểm tra giống loài
       const sexMatch = sex ? card.sex === sex : true; // Kiểm tra giới tính
-      const nameMatch = name
-        ? card.name.toLowerCase().includes(name.toLowerCase())
-        : true; // Kiểm tra tên
-      const idMatch = id
-        ? card.id.toLowerCase().includes(id.toLowerCase())
-        : true; // Kiểm tra ID
+      const nameMatch = name ? card.name.toLowerCase().includes(name.toLowerCase()) : true; // Kiểm tra tên
+      const idMatch = id ? card.id.toLowerCase().includes(id.toLowerCase()) : true; // Kiểm tra ID
 
       return sizeMatch && varietyMatch && sexMatch && nameMatch && idMatch;
     });
@@ -135,17 +120,9 @@ const Auction = () => {
 
   return (
     <div>
-      {/* Header */}
-      <Header />
-
       {/* Auction Form */}
       <div className="auction-form-container">
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          className="auction-form"
-        >
+        <Form form={form} layout="vertical" onFinish={onFinish} className="auction-form">
           {/* Name, Id, Breeder Field cùng một hàng */}
           <Row gutter={16}>
             <Col span={8}>
@@ -153,8 +130,6 @@ const Auction = () => {
                 <Input placeholder="Enter name" />
               </Form.Item>
             </Col>
-
-
 
             <Col span={8}>
               <Form.Item name="breeder" label="Breeder">
@@ -167,11 +142,7 @@ const Auction = () => {
           <Row gutter={16}>
             <Col span={8}>
               <Form.Item name="startPrice" label="Start Price">
-                <InputNumber
-                  style={{ width: "100%" }}
-                  placeholder="Enter start price"
-                  min={0}
-                />
+                <InputNumber style={{ width: "100%" }} placeholder="Enter start price" min={0} />
               </Form.Item>
             </Col>
 
@@ -233,9 +204,6 @@ const Auction = () => {
           />
         ))}
       </div>
-
-      {/* Footer */}
-      <Footer />
     </div>
   );
 };
