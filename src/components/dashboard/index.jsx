@@ -38,19 +38,17 @@ const Dashboard = ({ title }) => {
       <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}>
         <div
           style={{
-            zIndex: 100,
-            color: "white",
-            textAlign: "center",
-            height: "100px",
             display: "flex",
-            justifyContent: "center",
             alignItems: "center",
-            fontSize: "27px",
-            fontWeight: "bold",
+            justifyContent: collapsed ? "center" : "flex-start",
+            padding: "16px",
           }}
-          className="demo-logo-vertical"
         >
-          Dashboard for {title}
+          {!collapsed && (
+            <span style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}>
+              Dashboard for {title}
+            </span>
+          )}
         </div>
 
         <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" items={items} />

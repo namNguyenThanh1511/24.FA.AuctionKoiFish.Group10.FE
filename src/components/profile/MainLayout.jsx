@@ -7,21 +7,23 @@ import {
   FileOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
-import HeaderLogin from "../HeaderLogin";
+
 import Footer from "../footer/Footer";
+import HeaderLogin from "../header-logged-in";
+import { Link } from "react-router-dom";
 const { Header, Sider, Content } = Layout;
 // Các item trong menu sidebar
 const getItem = (label, key, icon) => ({
   key,
   icon,
-  label,
+  label: <Link to={key}>{label}</Link>,
 });
 
 const items = [
   getItem("Personal", "1", <PieChartOutlined />),
-  getItem("Notification", "2", <NotificationOutlined />),
-  getItem("My Auction", "3", <FileOutlined />),
-  getItem("Logout", "4", <LogoutOutlined />),
+  getItem("Notification", "notification", <NotificationOutlined />),
+  getItem("My Auction", "my-auction", <FileOutlined />),
+  getItem("Logout", "log-out", <LogoutOutlined />),
 ];
 
 const MainLayout = ({ children, collapsed, setCollapsed }) => {
@@ -43,26 +45,17 @@ const MainLayout = ({ children, collapsed, setCollapsed }) => {
           }}
         >
           {!collapsed && (
-            <span
-              style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}
-            >
+            <span style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}>
               <UserOutlined /> My Account
             </span>
           )}
         </div>
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items}
-        />
+        <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" items={items} />
       </Sider>
 
       {/* Main Layout */}
       <Layout>
-        <Header>
-          <HeaderLogin />
-        </Header>
+        <HeaderLogin />
         <Content style={{ margin: "30px 16px 0" }}>{children}</Content>
         {/* Sử dụng Footer từ components */}
         <Footer />
