@@ -89,6 +89,18 @@ const Register = () => {
               </Col>
             </Row>
           </Form.Item>
+          <Form.Item
+            label="Username"
+            name="username"
+            rules={[
+              {
+                required: true,
+                message: "Please enter your username",
+              },
+            ]}
+          >
+            <Input placeholder="Username..." />
+          </Form.Item>
 
           <Form.Item
             label="Address"
