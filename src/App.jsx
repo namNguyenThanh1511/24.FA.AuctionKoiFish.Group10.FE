@@ -6,6 +6,8 @@ import Register from "./pages/register/register";
 import Profile from "./pages/profile/profile";
 import Detail from "./pages/Details/detail";
 import Auction from "./pages/Auctions/Auction";
+import Dashboard from "./components/dashboard";
+import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
 
 function App() {
   const router = createBrowserRouter([
@@ -30,8 +32,14 @@ function App() {
       element: <Profile />,
     },
     {
-      path: "/auctions", // Đường dẫn cho trang Auctions
-      element: <Auction />,
+      path: "/dashboard",
+      element: <Dashboard title={"Koi Breeder"} />,
+      children: [
+        {
+          path: "koiFish",
+          element: <ManageKoiFish />,
+        },
+      ],
     },
   ]);
 
