@@ -26,7 +26,6 @@ const items = [
   getItem("My Auction", "3", <FileOutlined />),
   getItem("Wallet", "4", <WalletOutlined />),
   getItem("Logout", "5", <LogoutOutlined />),
- 
 ];
 
 const MainLayout = ({ children, collapsed, setCollapsed }) => {
