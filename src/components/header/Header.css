@@ -46,7 +46,7 @@
 
 /* Thêm kiểu cho các nút Login và Register */
 .btn-login, .btn-register {
-  background-color: #28a745; /* Màu nền cho nút */
+  background-color: #3f87d3; /* Màu nền cho nút */
   color: #fff; /* Màu chữ cho nút */
   padding: 10px 15px; /* Padding cho nút */
   border-radius: 5px; /* Bo tròn góc */
