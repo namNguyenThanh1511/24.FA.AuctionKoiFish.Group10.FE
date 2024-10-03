@@ -9,7 +9,6 @@ import Auction from "./pages/Auctions/Auction";
 import Dashboard from "./components/dashboard";
 import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
 import Layout from "./layout/general-layout";
-import Layout from "./layout/general-layout";
 
 function App() {
   const router = createBrowserRouter([
@@ -47,7 +46,7 @@ function App() {
           path: "personal",
           element: <Profile />,
         },
-        
+
         {
           path: "wallet", // Trang con Wallet
           element: <Wallet />,
