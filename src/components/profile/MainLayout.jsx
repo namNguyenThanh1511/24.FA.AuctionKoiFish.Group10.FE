@@ -10,11 +10,9 @@ import {
   TransactionOutlined,
 } from "@ant-design/icons";
 
-
 import Footer from "../footer/Footer";
 import { Link, Outlet } from "react-router-dom";
 import HeaderLogin from "../header-logged-in";
-import { Link } from "react-router-dom";
 const { Header, Sider, Content } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -54,13 +52,25 @@ const MainLayout = ({ children, collapsed, setCollapsed }) => {
           }}
         >
           {!collapsed && (
-            <span style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}>
+            <span
+              style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}
+            >
               <UserOutlined /> My Account
             </span>
           )}
         </div>
-        <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" items={items} />
-        <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" items={items} />
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={["1"]}
+          mode="inline"
+          items={items}
+        />
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={["1"]}
+          mode="inline"
+          items={items}
+        />
       </Sider>
 
       {/* Main Layout */}
