@@ -2,100 +2,99 @@
 
 /* Container chính của Wallet */
 .wallet-container {
-    max-width: 600px;
-    margin: 50px auto;
-    padding: 30px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    border: 2px solid #1890ff; 
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .wallet-container h2 {
-    font-size: 28px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  /* Phần hiển thị số dư */
-  .balance-info {
-    margin-bottom: 40px;
-  }
-  
-  .balance-info h4 {
-    font-size: 18px;
-    color: #666;
-    margin-bottom: 10px;
-  }
-  
-  .balance-info p {
-    font-size: 24px;
-    font-weight: bold;
-    color: #1890ff; /* Sử dụng màu xanh để nhấn mạnh số dư */
-  }
-  
-  /* Form nạp tiền */
-  .deposit-form {
-    background-color: #fff;
+  max-width: 600px;
+  margin: 100px auto;
+  padding: 30px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  border: 2px solid #1890ff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.wallet-container h2 {
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Phần hiển thị số dư */
+.balance-info {
+  margin-bottom: 40px;
+}
+
+.balance-info h4 {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.balance-info p {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1890ff; /* Sử dụng màu xanh để nhấn mạnh số dư */
+}
+
+/* Form nạp tiền */
+.deposit-form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.deposit-form h4 {
+  font-size: 20px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Input trong form */
+.ant-form-item-label > label {
+  color: #666;
+  font-weight: 500;
+}
+
+.ant-input {
+  height: 40px;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Nút nạp tiền */
+.ant-btn {
+  height: 45px;
+  font-size: 16px;
+  border-radius: 5px;
+}
+
+.ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.ant-btn-primary:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+/* Đảm bảo độ phản hồi trên các thiết bị nhỏ */
+@media screen and (max-width: 768px) {
+  .wallet-container {
+    width: 90%;
     padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
-  
-  .deposit-form h4 {
+
+  .balance-info p {
     font-size: 20px;
-    margin-bottom: 20px;
-    color: #333;
   }
-  
-  /* Input trong form */
-  .ant-form-item-label > label {
-    color: #666;
-    font-weight: 500;
-  }
-  
+
   .ant-input {
-    height: 40px;
-    border-radius: 5px;
-    font-size: 16px;
+    font-size: 14px;
   }
-  
-  /* Nút nạp tiền */
+
   .ant-btn {
-    height: 45px;
-    font-size: 16px;
-    border-radius: 5px;
+    font-size: 14px;
   }
-  
-  .ant-btn-primary {
-    background-color: #1890ff;
-    border-color: #1890ff;
-  }
-  
-  .ant-btn-primary:hover {
-    background-color: #40a9ff;
-    border-color: #40a9ff;
-  }
-  
-  /* Đảm bảo độ phản hồi trên các thiết bị nhỏ */
-  @media screen and (max-width: 768px) {
-    .wallet-container {
-      width: 90%;
-      padding: 20px;
-    }
-  
-    .balance-info p {
-      font-size: 20px;
-    }
-  
-    .ant-input {
-      font-size: 14px;
-    }
-  
-    .ant-btn {
-      font-size: 14px;
-    }
-  }
-  
+}
