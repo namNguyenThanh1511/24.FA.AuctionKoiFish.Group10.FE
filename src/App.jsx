@@ -13,7 +13,7 @@ function App() {
   const router = createBrowserRouter([
     {
       path: "/", // Đường dẫn gốc trỏ tới trang HomePage
-      element: <HomePage />,
+      element: <Detail />,
     },
     {
       path: "/homepage", // Trang này có thể giữ lại nếu cần
@@ -33,7 +33,7 @@ function App() {
     },
     {
       path: "/auctions",
-      element: <Auction />
+      element: <Auction />,
     },
     {
       path: "/dashboard",
