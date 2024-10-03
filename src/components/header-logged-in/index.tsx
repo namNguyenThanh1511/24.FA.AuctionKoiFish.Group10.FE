@@ -6,6 +6,8 @@ import {
   NotificationOutlined,
   LogoutOutlined,
   AppstoreOutlined,
+  WalletOutlined,
+  TransactionOutlined,
 } from "@ant-design/icons"; // Import các icon từ Ant Design
 import "./index.css"; // Import file CSS cho Header
 import avatar from "../../images/avata.jpg"; // Thêm đường dẫn avatar
@@ -14,7 +16,7 @@ const HeaderLogin = () => {
   const menu = (
     <Menu>
       <Menu.Item key="1" icon={<UserOutlined />}>
-        <Link to="/profile">Personal</Link>
+        <Link to="/profile/personal">Personal</Link>
       </Menu.Item>
       <Menu.Item key="2" icon={<NotificationOutlined />}>
         <Link to="/notification">Notification</Link>
