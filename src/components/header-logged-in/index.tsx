@@ -24,7 +24,13 @@ const HeaderLogin = () => {
       <Menu.Item key="3" icon={<AppstoreOutlined />}>
         <Link to="/my-auction">My Auction</Link>
       </Menu.Item>
-      <Menu.Item key="4" icon={<LogoutOutlined />} danger>
+      <Menu.Item key="4" icon={<TransactionOutlined />}>
+        <Link to="/payment-request">Payment Request</Link>
+      </Menu.Item>
+      <Menu.Item key="5" icon={<WalletOutlined />}>
+        <Link to="/wallet">Wallet</Link>
+      </Menu.Item>
+      <Menu.Item key="6" icon={<LogoutOutlined />} danger>
         <Link
           onClick={() => {
             localStorage.removeItem("token");

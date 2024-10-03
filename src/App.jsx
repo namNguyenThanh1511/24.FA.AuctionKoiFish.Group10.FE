@@ -15,11 +15,11 @@ import MainLayout from "./components/profile/MainLayout";
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/",
+      path: "",
       element: <Layout />,
       children: [
         {
-          path: "", // Trỏ tới trang HomePage
+          path: "/",
           element: <HomePage />,
         },
         {
@@ -30,30 +30,6 @@ function App() {
           path: "/auctions/details",
           element: <Detail />,
         },
-        {
-          path: "/profile",
-          element: <MainLayout />,
-          children: [
-            {
-              path: "personal",
-              element: <Profile />,
-            },
-            {
-              path: "wallet", // Trang con Wallet
-              element: <Wallet />,
-            },
-          ],
-        },
-        {
-          path: "/dashboard",
-          element: <Dashboard title={"Koi Breeder"} />,
-          children: [
-            {
-              path: "koiFish",
-              element: <ManageKoiFish />,
-            },
-          ],
-        },
       ],
     },
     {
@@ -63,6 +39,32 @@ function App() {
     {
       path: "/register",
       element: <Register />,
+    },
+    {
+      path: "/profile",
+      element: <MainLayout />,
+      children: [
+        {
+          path: "personal",
+          element: <Profile />,
+        },
+
+        {
+          path: "wallet", // Trang con Wallet
+          element: <Wallet />,
+        },
+        // Các trang con khác
+      ],
+    },
+    {
+      path: "/dashboard",
+      element: <Dashboard title={"Koi Breeder"} />,
+      children: [
+        {
+          path: "koiFish",
+          element: <ManageKoiFish />,
+        },
+      ],
     },
   ]);
 
