@@ -52,26 +52,17 @@ const MainLayout = ({ children, collapsed, setCollapsed }) => {
           }}
         >
           {!collapsed && (
-            <span
-              style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}
-            >
+            <span style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}>
               <UserOutlined /> My Account
             </span>
           )}
         </div>
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items}
-        />
+        <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" items={items} />
       </Sider>
 
       {/* Main Layout */}
       <Layout>
-        <Header>
-          <HeaderLogin />
-        </Header>
+        <HeaderLogin />
         <Content style={{ margin: "30px 16px 0" }}>
           <Outlet />
           <h1>My Account </h1>
