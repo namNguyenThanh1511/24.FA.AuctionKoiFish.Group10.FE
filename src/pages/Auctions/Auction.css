@@ -90,3 +90,32 @@ body {
     height: 500px; /* Đặt chiều cao cố định cho bức ảnh, bạn có thể điều chỉnh chiều cao theo nhu cầu */
     object-fit: cover; /* Đảm bảo bức ảnh fill hết khung ảnh */
 }
+
+/* Style cho phần chứa nút chuyển trang */
+.pagination {
+  display: flex;
+  justify-content: center; /* Căn giữa các nút */
+  align-items: center; /* Căn giữa theo chiều dọc nếu cần */
+  margin: 20px 0; /* Thêm khoảng cách phía trên và dưới */
+}
+
+/* Style cho các nút chuyển trang */
+.pagination-button {
+  margin: 0 5px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  background-color: lightgray; /* Màu nền mặc định */
+  color: black; /* Màu chữ mặc định */
+  transition: background-color 0.3s ease; /* Hiệu ứng chuyển đổi màu nền */
+}
+
+.pagination-button.active {
+  background-color: rgb(255, 255, 255); /* Màu nền cho nút hiện tại */
+  color: rgb(0, 0, 0); /* Màu chữ cho nút hiện tại */
+}
+
+.pagination-button:hover {
+  background-color: darkgray; /* Màu nền khi hover */
+}

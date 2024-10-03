@@ -78,3 +78,29 @@
 .card-info p {
   margin: 5px 0;
 }
+
+.card-time-left {
+  text-align: center; /* Căn giữa nội dung */
+}
+
+.time-left {
+  display: flex; /* Sử dụng flexbox để căn chỉnh các phần tử */
+  justify-content: space-around; /* Cách đều các phần tử */
+  margin-top: 10px; /* Khoảng cách giữa tiêu đề và thời gian */
+}
+
+.time-unit {
+  display: flex;
+  flex-direction: column; /* Đặt số và nhãn theo cột */
+  align-items: center; /* Căn giữa các phần tử con */
+}
+
+.time-value {
+  font-size: 23px; /* Kích thước chữ cho số */
+
+}
+
+.time-label {
+  font-size: 14px; /* Kích thước chữ cho nhãn */
+  font-weight: bold; 
+}
