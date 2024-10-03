@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Row, Col, Breadcrumb } from "antd";
 import api from "../../config/axios"; // Sử dụng api đã cấu hình
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import MainLayout from "../../components/profile/MainLayout"; // Import MainLayout
+import { Link, useNavigate } from "react-router-dom";
+
 import "./profile.css";
+
 
 const Profile = () => {
   const [form] = Form.useForm();
@@ -62,16 +63,11 @@ const Profile = () => {
   };
 
   return (
-    <MainLayout collapsed={collapsed} setCollapsed={setCollapsed}>
+  
       <div className="profile-form">
         <h2>My profile</h2>
         <h4>Manage your profile information to keep your account secure</h4>
-        <Form
-          form={form}
-          name="profile"
-          onFinish={handleSaveProfile}
-          layout="vertical"
-        >
+        <Form form={form} name="profile" onFinish={handleSaveProfile} layout="vertical">
           <Form.Item label="Name" required>
             <Row gutter={16}>
               <Col span={12}>
@@ -90,9 +86,7 @@ const Profile = () => {
               <Col span={12}>
                 <Form.Item
                   name="lastName"
-                  rules={[
-                    { required: true, message: "Please enter your last name!" },
-                  ]}
+                  rules={[{ required: true, message: "Please enter your last name!" }]}
                 >
                   <Input placeholder="Last Name" />
                 </Form.Item>
@@ -144,7 +138,7 @@ const Profile = () => {
           </Form.Item>
         </Form>
       </div>
-    </MainLayout>
+    
   );
 };
 

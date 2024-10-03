@@ -6,15 +6,17 @@ import {
   NotificationOutlined,
   LogoutOutlined,
   AppstoreOutlined,
+  WalletOutlined,
+  TransactionOutlined,
 } from "@ant-design/icons"; // Import các icon từ Ant Design
-import "./headerlogin.css"; // Import file CSS cho Header
-import avatar from "../images/avata.jpg"; // Thêm đường dẫn avatar
+import "./index.css"; // Import file CSS cho Header
+import avatar from "../../images/avata.jpg"; // Thêm đường dẫn avatar
 
-const Header = () => {
+const HeaderLogin = () => {
   const menu = (
     <Menu>
       <Menu.Item key="1" icon={<UserOutlined />}>
-        <Link to="/profile">Personal</Link>
+        <Link to="/profile/personal">Personal</Link>
       </Menu.Item>
       <Menu.Item key="2" icon={<NotificationOutlined />}>
         <Link to="/notification">Notification</Link>
@@ -23,7 +25,15 @@ const Header = () => {
         <Link to="/my-auction">My Auction</Link>
       </Menu.Item>
       <Menu.Item key="4" icon={<LogoutOutlined />} danger>
-        <Link to="/logout">Logout</Link>
+        <Link
+          onClick={() => {
+            localStorage.removeItem("token");
+            window.location.reload();
+          }}
+          to="/"
+        >
+          Logout
+        </Link>
       </Menu.Item>
     </Menu>
   );
@@ -46,11 +56,7 @@ const Header = () => {
           </li>
           <li>
             {/* Thay thế Login và Register bằng avatar với menu dropdown */}
-            <Dropdown
-              overlay={menu}
-              trigger={["hover"]}
-              placement="bottomRight"
-            >
+            <Dropdown overlay={menu} trigger={["hover"]} placement="bottomRight">
               <div className="avatar-wrapper">
                 <img src={avatar} alt="User Avatar" className="avatar" />
               </div>
@@ -62,4 +68,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default HeaderLogin;

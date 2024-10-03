@@ -6,22 +6,31 @@ import {
   NotificationOutlined,
   FileOutlined,
   LogoutOutlined,
+  WalletOutlined,
+  TransactionOutlined,
 } from "@ant-design/icons";
-import HeaderLogin from "../HeaderLogin";
+
 import Footer from "../footer/Footer";
+import { Link, Outlet } from "react-router-dom";
+import HeaderLogin from "../header-logged-in";
 const { Header, Sider, Content } = Layout;
-// Các item trong menu sidebar
-const getItem = (label, key, icon) => ({
-  key,
-  icon,
-  label,
-});
+
+function getItem(label, key, icon, children) {
+  return {
+    key,
+    icon,
+    children,
+    label: <Link to={`/profile/${key}`}> {label} </Link>,
+  };
+}
 
 const items = [
-  getItem("Personal", "1", <PieChartOutlined />),
-  getItem("Notification", "2", <NotificationOutlined />),
-  getItem("My Auction", "3", <FileOutlined />),
-  getItem("Logout", "4", <LogoutOutlined />),
+  getItem("Personal", "personal", <PieChartOutlined />),
+  getItem("Notification", "notification", <NotificationOutlined />),
+  getItem("My Auction", "my-auction", <FileOutlined />),
+  getItem("Payment Resquest", "payment-request", <TransactionOutlined />),
+  getItem("Wallet", "wallet", <WalletOutlined />),
+  getItem("Logout", "logout", <LogoutOutlined />),
 ];
 
 const MainLayout = ({ children, collapsed, setCollapsed }) => {
@@ -43,27 +52,21 @@ const MainLayout = ({ children, collapsed, setCollapsed }) => {
           }}
         >
           {!collapsed && (
-            <span
-              style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}
-            >
+            <span style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}>
               <UserOutlined /> My Account
             </span>
           )}
         </div>
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items}
-        />
+        <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" items={items} />
       </Sider>
 
       {/* Main Layout */}
       <Layout>
-        <Header>
-          <HeaderLogin />
-        </Header>
-        <Content style={{ margin: "30px 16px 0" }}>{children}</Content>
+        <HeaderLogin />
+        <Content style={{ margin: "30px 16px 0" }}>
+          <Outlet />
+          <h1>My Account </h1>
+        </Content>
         {/* Sử dụng Footer từ components */}
         <Footer />
       </Layout>

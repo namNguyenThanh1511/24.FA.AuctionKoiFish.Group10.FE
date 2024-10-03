@@ -1,10 +1,12 @@
 // Đường dẫn đúng tới file Card.jsx
-import Header from "../../components/HeaderLogin";
+
+import HeaderLogin from "../../components/header-logged-in";
 import Footer from "../../components/footer/Footer";
 import Koi from "../../images/Koi1.jpg";
 import "./detail.css";
 import { useState } from "react";
 import { Table } from "antd"; // Nhập Table từ Ant Design
+
 
 const Detail = () => {
   // Dữ liệu cố định cho bảng
@@ -35,19 +37,20 @@ const Detail = () => {
 
   return (
     <div className="container">
-      <Header />
       <div className="product-detail">
         <div className="product-image">
           <img src={Koi} alt="Sản phẩm" />
         </div>
         <div className="product-info">
           <h1>Koi Koi Koi #Aa33639</h1>
+
           <div className ="Current-bid">
+
             <span>Current bid: 300.000.000</span>
           </div>
           <p>
-            Cá Koi dòng luxury với body chuẩn quốc tế, chiều cao lý tưởng cùng
-            với đường nét cơ thể vô cùng tinh xảo lần đầu được bán tại Việt Nam.
+            Cá Koi dòng luxury với body chuẩn quốc tế, chiều cao lý tưởng cùng với đường nét cơ thể
+            vô cùng tinh xảo lần đầu được bán tại Việt Nam.
           </p>
           <div className="info">
             <h3>Breeder: Omachi</h3>
@@ -57,8 +60,8 @@ const Detail = () => {
           </div>
 
           <div className="product-price">
-            <span className="sale-price">Start price 42.000.000₫</span> <br/>
-            <span className="original-price">Win price: 420.000.000₫</span> <br/>
+            <span className="sale-price">Start price 42.000.000₫</span> <br />
+            <span className="original-price">Win price: 420.000.000₫</span> <br />
           </div>
 
           <div className="bid-section">
@@ -66,10 +69,15 @@ const Detail = () => {
             <button className="bid-btn">Bid</button>
           </div>
 
-          <p className="time"><span>00:36:33</span></p>
+          <p className="time">
+            <span>00:36:33</span>
+          </p>
         </div>
       </div>
+
       
+
+
       <div className="additional-info-container">
         <h2>Lịch sử đấu giá</h2>
         <Table 
@@ -78,8 +86,6 @@ const Detail = () => {
           rowKey="date" // Dùng date làm khóa cho mỗi hàng
         />
       </div>
-
-      <Footer />
     </div>
   );
 };

@@ -4,20 +4,57 @@ import HomePage from "./pages/HomePages/HomePage";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
 import Profile from "./pages/profile/profile";
-import Detail from "./pages/Details/detail";
+import Wallet from "./pages/wallet/wallet"; // Import trang Wallet
 import Auction from "./pages/Auctions/Auction";
 import Dashboard from "./components/dashboard";
 import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
+import Layout from "./layout/general-layout";
+import Detail from "./pages/Details/detail";
+import MainLayout from "./components/profile/MainLayout";
 
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/", // Đường dẫn gốc trỏ tới trang HomePage
-      element: <Detail />,
-    },
-    {
-      path: "/homepage", // Trang này có thể giữ lại nếu cần
-      element: <HomePage />,
+      path: "/",
+      element: <Layout />,
+      children: [
+        {
+          path: "", // Trỏ tới trang HomePage
+          element: <HomePage />,
+        },
+        {
+          path: "/auctions",
+          element: <Auction />,
+        },
+        {
+          path: "/auctions/details",
+          element: <Detail />,
+        },
+        {
+          path: "/profile",
+          element: <MainLayout />,
+          children: [
+            {
+              path: "personal",
+              element: <Profile />,
+            },
+            {
+              path: "wallet", // Trang con Wallet
+              element: <Wallet />,
+            },
+          ],
+        },
+        {
+          path: "/dashboard",
+          element: <Dashboard title={"Koi Breeder"} />,
+          children: [
+            {
+              path: "koiFish",
+              element: <ManageKoiFish />,
+            },
+          ],
+        },
+      ],
     },
     {
       path: "/login",
@@ -26,24 +63,6 @@ function App() {
     {
       path: "/register",
       element: <Register />,
-    },
-    {
-      path: "/profile",
-      element: <Profile />,
-    },
-    {
-      path: "/auctions",
-      element: <Auction />,
-    },
-    {
-      path: "/dashboard",
-      element: <Dashboard title={"Koi Breeder"} />,
-      children: [
-        {
-          path: "koiFish",
-          element: <ManageKoiFish />,
-        },
-      ],
     },
   ]);
 

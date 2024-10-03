@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import Header from "../../components/HeaderLogin";
-import Footer from "../../components/footer/Footer";
+import HeaderLogin from "../../components/header-logged-in";
+import Footer from '../../components/footer/Footer'; // Đường dẫn đến Footer
 import "./Auction.css";
 import {
   Form,
@@ -295,7 +295,7 @@ const Auction = () => {
 
   return (
     <div>
-      <Header />
+      
       <div className="auction-form-container">
         <Form
           form={form}
@@ -408,7 +408,7 @@ const Auction = () => {
         </Button>
       </div>
 
-      <Footer />
+     
     </div>
   );
 };
