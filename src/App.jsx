@@ -8,13 +8,27 @@ import Wallet from "./pages/wallet/wallet"; // Import trang Wallet
 import Auction from "./pages/Auctions/Auction";
 import Dashboard from "./components/dashboard";
 import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
-import MainLayout from "./components/profile/MainLayout";
+import Layout from "./layout/general-layout";
 
 function App() {
   const router = createBrowserRouter([
     {
-      path: "/",
-      element: <HomePage />,
+      path: "",
+      element: <Layout />,
+      children: [
+        {
+          path: "/",
+          element: <HomePage />,
+        },
+        {
+          path: "/auctions",
+          element: <Auction />,
+        },
+        {
+          path: "/auctions/details",
+          element: <Detail />,
+        },
+      ],
     },
     {
       path: "/login",
@@ -39,10 +53,6 @@ function App() {
         },
         // Các trang con khác
       ],
-    },
-    {
-      path: "/auctions",
-      element: <Auction />,
     },
     {
       path: "/dashboard",
