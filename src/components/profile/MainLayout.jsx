@@ -65,12 +65,6 @@ const MainLayout = ({ children, collapsed, setCollapsed }) => {
           mode="inline"
           items={items}
         />
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items}
-        />
       </Sider>
 
       {/* Main Layout */}
