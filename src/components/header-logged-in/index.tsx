@@ -28,7 +28,7 @@ const HeaderLogin = () => {
         <Link to="/payment-request">Payment Request</Link>
       </Menu.Item>
       <Menu.Item key="5" icon={<WalletOutlined />}>
-        <Link to="/wallet">Wallet</Link>
+        <Link to="/profile/wallet">Wallet</Link>
       </Menu.Item>
       <Menu.Item key="6" icon={<LogoutOutlined />} danger>
         <Link
