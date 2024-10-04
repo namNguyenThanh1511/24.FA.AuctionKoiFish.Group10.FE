@@ -17,8 +17,8 @@ const Register = () => {
     }
   };
 
-   // Xử lý khi form được submit
-   const onFinish = (values) => {
+  // Xử lý khi form được submit
+  const onFinish = (values) => {
     console.log("Received values of form: ", values);
   };
 
@@ -28,7 +28,9 @@ const Register = () => {
       return Promise.resolve();
     }
     return Promise.reject(
-      new Error("Phone number must be 10 digits, start with 0 and not contain letters or special characters..")
+      new Error(
+        "Phone number must be 10 digits, start with 0 and not contain letters or special characters.."
+      )
     );
   };
 
@@ -115,7 +117,7 @@ const Register = () => {
             name="phoneNumber"
             rules={[
               { required: true, message: "Please enter your phone number!" },
-              { validator: validatePhoneNumber }, 
+              { validator: validatePhoneNumber },
             ]}
           >
             <Input placeholder="Enter Phone Number" />
@@ -143,7 +145,7 @@ const Register = () => {
               { validator: validatePassword },
             ]}
           >
-            <Input.Password placeholder="Enter Password" />
+            <Input type="password" placeholder="Enter Password" />
           </Form.Item>
 
           <Form.Item
@@ -162,7 +164,7 @@ const Register = () => {
               }),
             ]}
           >
-            <Input.Password placeholder="Re-type Password" />
+            <Input type="password" placeholder="Re-type Password" />
           </Form.Item>
 
           <Form.Item>

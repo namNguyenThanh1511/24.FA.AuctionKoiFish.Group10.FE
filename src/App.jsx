@@ -4,14 +4,14 @@ import HomePage from "./pages/HomePages/HomePage";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
 import Profile from "./pages/profile/profile";
-import Wallet from "./pages/wallet/wallet"; // Import trang Wallet
+import Wallet from "./pages/wallet/wallet"; 
 import Auction from "./pages/Auctions/Auction";
 import Dashboard from "./components/dashboard";
 import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
 import Layout from "./layout/general-layout";
 import Detail from "./pages/Details/detail";
 import MainLayout from "./components/profile/MainLayout";
-
+import MyAuction from "./pages/Member-MyAuction/Member-MyAuction";
 function App() {
   const router = createBrowserRouter([
     {
@@ -47,6 +47,10 @@ function App() {
         {
           path: "personal",
           element: <Profile />,
+        },
+        {
+          path: "my-auction",
+          element: <MyAuction />,
         },
 
         {
