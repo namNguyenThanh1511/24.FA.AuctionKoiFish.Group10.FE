@@ -30,6 +30,16 @@ function App() {
           path: "/auctions/details",
           element: <Detail />,
         },
+        {
+          path: "/dashboard",
+          element: <Dashboard title={"Koi Breeder"} />,
+          children: [
+            {
+              path: "koiFish",
+              element: <ManageKoiFish />,
+            },
+          ],
+        },
       ],
     },
     {
@@ -54,16 +64,6 @@ function App() {
           element: <Wallet />,
         },
         // Các trang con khác
-      ],
-    },
-    {
-      path: "/dashboard",
-      element: <Dashboard title={"Koi Breeder"} />,
-      children: [
-        {
-          path: "koiFish",
-          element: <ManageKoiFish />,
-        },
       ],
     },
   ]);

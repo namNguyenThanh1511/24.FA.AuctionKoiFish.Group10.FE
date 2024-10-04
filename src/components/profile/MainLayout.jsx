@@ -65,7 +65,6 @@ const MainLayout = ({ children, collapsed, setCollapsed }) => {
         <HeaderLogin />
         <Content style={{ margin: "30px 16px 0" }}>
           <Outlet />
-          <h1>My Account </h1>
         </Content>
         {/* Sử dụng Footer từ components */}
         <Footer />
