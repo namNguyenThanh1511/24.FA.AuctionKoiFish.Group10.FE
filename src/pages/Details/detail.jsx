@@ -1,10 +1,40 @@
 // Đường dẫn đúng tới file Card.jsx
 
+import HeaderLogin from "../../components/header-logged-in";
 import Footer from "../../components/footer/Footer";
 import Koi from "../../images/Koi1.jpg";
 import "./detail.css";
+import { useState } from "react";
+import { Table } from "antd"; // Nhập Table từ Ant Design
+
 
 const Detail = () => {
+  // Dữ liệu cố định cho bảng
+  const fixedBidHistory = [
+    { date: "2024-10-01 10:00:00", bid: "300.000.000", name: "Người A" },
+    { date: "2024-10-02 11:30:00", bid: "350.000.000", name: "Người B" },
+    { date: "2024-10-03 09:15:00", bid: "400.000.000", name: "Người C" },
+  ];
+
+  // Cột tiêu đề cho bảng
+  const columns = [
+    {
+      title: 'Date',
+      dataIndex: 'date',
+      key: 'date',
+    },
+    {
+      title: 'Bid',
+      dataIndex: 'bid',
+      key: 'bid',
+    },
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+    },
+  ];
+
   return (
     <div className="container">
       <div className="product-detail">
@@ -13,7 +43,9 @@ const Detail = () => {
         </div>
         <div className="product-info">
           <h1>Koi Koi Koi #Aa33639</h1>
-          <div className="Current-bid">
+
+          <div className ="Current-bid">
+
             <span>Current bid: 300.000.000</span>
           </div>
           <p>
@@ -43,11 +75,16 @@ const Detail = () => {
         </div>
       </div>
 
+      
+
+
       <div className="additional-info-container">
-        <h2>Thông tin thêm</h2>
-        <p>Chất lượng cá: Đạt tiêu chuẩn quốc tế</p>
-        <p>Bảo hành: 1 năm</p>
-        <p>Phương thức vận chuyển: Hỗ trợ toàn quốc</p>
+        <h2>Lịch sử đấu giá</h2>
+        <Table 
+          dataSource={fixedBidHistory} // Sử dụng dữ liệu cố định
+          columns={columns} 
+          rowKey="date" // Dùng date làm khóa cho mỗi hàng
+        />
       </div>
     </div>
   );
