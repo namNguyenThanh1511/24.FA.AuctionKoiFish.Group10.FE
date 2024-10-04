@@ -17,6 +17,8 @@ function DashboardTemplate({
   dateFields = [],
   keyField,
   formViewDetails,
+  isBasicCRUD,
+  isRerender,
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -27,58 +29,64 @@ function DashboardTemplate({
   const [tableColumns, setTableColumns] = useState([]);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
+
+  useEffect(() => {
+    fetchData();
+  }, [isRerender]);
+
   useEffect(() => {
     const newColumns = [
       ...columns,
-      {
-        title: "Action",
-        dataIndex: keyField,
-        key: keyField,
-        render: (id, record) => (
-          <div style={{ gap: "10px", display: "flex" }}>
-            <Popconfirm
-              title={`Delete ${title}`}
-              description="Are you sure to delete ?"
-              onConfirm={() => {
-                console.log(id);
-                handleDelete(id);
-              }}
-            >
-              <Button type="primary" danger>
-                Delete
-              </Button>
-            </Popconfirm>
-            <span style={{ margin: "10px 5px" }}>|</span>
-            <Button
-              type="primary"
-              style={{ backgroundColor: "orange" }}
-              onClick={() => {
-                const newRecord = { ...record };
+      ...(isBasicCRUD
+        ? [
+            {
+              title: "Action",
+              dataIndex: keyField,
+              key: keyField,
+              render: (id, record) => (
+                <div style={{ gap: "10px", display: "flex" }}>
+                  <Popconfirm
+                    title={`Delete ${title}`}
+                    description="Are you sure to delete ?"
+                    onConfirm={() => {
+                      console.log(id);
+                      handleDelete(id);
+                    }}
+                  >
+                    <Button type="primary" danger>
+                      Delete
+                    </Button>
+                  </Popconfirm>
+                  <span style={{ margin: "10px 5px" }}>|</span>
+                  <Button
+                    type="primary"
+                    style={{ backgroundColor: "orange" }}
+                    onClick={() => {
+                      const newRecord = { ...record };
+                      console.log(record);
+                      setIsUpdate(true);
 
-                console.log(record);
-                setIsUpdate(true);
-
-                for (var key of Object.keys(newRecord)) {
-                  const value = newRecord[key];
-                  // Check if the field is listed in `dateFields` and should be treated as a date
-                  if (dateFields.includes(key)) {
-                    newRecord[key] = dayjs(value); // Convert to dayjs for date handling in Ant Design
-                    console.log(`${key} is a date`);
-                  } else {
-                    newRecord[key] = record[key]; // Keep original value for non-date fields
-                    console.log(`${key} is not a date`);
-                  }
-                }
-                console.log(newRecord);
-                formTag.setFieldsValue(newRecord);
-                handleOpenModal();
-              }}
-            >
-              Update
-            </Button>
-          </div>
-        ),
-      },
+                      for (var key of Object.keys(newRecord)) {
+                        const value = newRecord[key];
+                        if (dateFields.includes(key)) {
+                          newRecord[key] = dayjs(value);
+                          console.log(`${key} is a date`);
+                        } else {
+                          newRecord[key] = record[key];
+                          console.log(`${key} is not a date`);
+                        }
+                      }
+                      formTag.setFieldsValue(newRecord);
+                      handleOpenModal();
+                    }}
+                  >
+                    Update
+                  </Button>
+                </div>
+              ),
+            },
+          ]
+        : []),
       {
         title: "More details",
         dataIndex: "details",
