@@ -66,7 +66,7 @@ const Login = () => {
           >
             <Input type="password" placeholder="Enter Password" />
           </Form.Item>
-
+       
           <div className="forgot-password">
             <a href="/">Forgot password?</a>
           </div>

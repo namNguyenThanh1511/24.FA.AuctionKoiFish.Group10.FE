@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import HeaderLogin from "../../components/header-logged-in";
-import Footer from '../../components/footer/Footer'; // Đường dẫn đến Footer
+import Footer from "../../components/footer/Footer"; // Đường dẫn đến Footer
 import "./Auction.css";
 import {
   Form,
@@ -295,7 +295,6 @@ const Auction = () => {
 
   return (
     <div>
-      
       <div className="auction-form-container">
         <Form
           form={form}
@@ -312,7 +311,20 @@ const Auction = () => {
             <Col span={8}>
               <Form.Item name="breeder" label="Breeder">
                 <Select placeholder="Select breeder">
-                  {/* Các Option ở đây */}
+                  <Select.Option value="NND">NND</Select.Option>
+                  <Select.Option value="Marushin">Marushin</Select.Option>
+                  <Select.Option value="Sakai">Sakai</Select.Option>
+                  <Select.Option value="Isa">Isa</Select.Option>
+                  <Select.Option value="Maruhiro">Maruhiro</Select.Option>
+                  <Select.Option value="Torazo">Torazo</Select.Option>
+                  <Select.Option value="Shinoda">Shinoda</Select.Option>
+                  <Select.Option value="Kanno">Kanno</Select.Option>
+                  <Select.Option value="Dainichi">Dainichi</Select.Option>
+                  <Select.Option value="Omosako">Omosako</Select.Option>
+                  <Select.Option value="Izumiya">Izumiya</Select.Option>
+                  <Select.Option value="Marudo">Marudo</Select.Option>
+                  <Select.Option value="Marujyu">Marujyu</Select.Option>
+                  <Select.Option value="Shintaro">Shintaro</Select.Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -330,7 +342,13 @@ const Auction = () => {
             <Col span={8}>
               <Form.Item name="variety" label="Variety">
                 <Select placeholder="Select variety">
-                  {/* Các Option ở đây */}
+                  <Select.Option value="Kōhaku">Kōhaku</Select.Option>
+                  <Select.Option value="Showa">Showa</Select.Option>
+                  <Select.Option value="Asagi">Asagi</Select.Option>
+                  <Select.Option value="Sanke">Sanke</Select.Option>
+                  <Select.Option value="Shusui">Shusui</Select.Option>
+                  <Select.Option value="Ogon">Ogon</Select.Option>
+                  <Select.Option value="Koromo">Koromo</Select.Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -407,8 +425,6 @@ const Auction = () => {
           {">"} {/* Nút Tiếp theo */}
         </Button>
       </div>
-
-     
     </div>
   );
 };
