@@ -11,6 +11,7 @@ import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
 import Layout from "./layout/general-layout";
 import Detail from "./pages/Details/detail";
 import MainLayout from "./components/profile/MainLayout";
+import ManageAuctionRequestOfKoiBreeder from "./pages/KOI_BREEDER/auctionRequest";
 
 function App() {
   const router = createBrowserRouter([
@@ -31,12 +32,16 @@ function App() {
           element: <Detail />,
         },
         {
-          path: "/dashboard",
+          path: "/dashboard/koiBreeder",
           element: <Dashboard title={"Koi Breeder"} />,
           children: [
             {
               path: "koiFish",
               element: <ManageKoiFish />,
+            },
+            {
+              path: "auctionRequest",
+              element: <ManageAuctionRequestOfKoiBreeder />,
             },
           ],
         },

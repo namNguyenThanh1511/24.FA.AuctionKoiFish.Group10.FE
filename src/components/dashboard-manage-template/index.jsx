@@ -18,11 +18,14 @@ function DashboardTemplate({
   keyField,
   formViewDetails,
   isBasicCRUD,
+  isIncludeImage,
   isRerender,
+  form,
+  apiUriPOST,
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [formTag] = useForm();
+
   const [loading, setLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
@@ -76,7 +79,7 @@ function DashboardTemplate({
                           console.log(`${key} is not a date`);
                         }
                       }
-                      formTag.setFieldsValue(newRecord);
+                      form.setFieldsValue(newRecord);
                       handleOpenModal();
                     }}
                   >
@@ -113,7 +116,7 @@ function DashboardTemplate({
                   }
                 }
 
-                formTag.setFieldsValue(newRecord);
+                form.setFieldsValue(newRecord);
               }}
             >
               View details
@@ -143,17 +146,16 @@ function DashboardTemplate({
   };
   const handleCloseModal = () => {
     setIsOpenModal(false);
-    formTag.resetFields();
+    form.resetFields();
   };
   const handleCloseViewModal = () => {
     setIsViewModalOpen(false);
-    formTag.resetFields();
+    form.resetFields();
     setCurrentRecord(null);
   };
 
   const handleSubmitForm = async (values) => {
     setLoading(true); // loading save button when calling api
-
     try {
       let url = null;
       console.log(values);
@@ -172,10 +174,10 @@ function DashboardTemplate({
         toast.success("update succesfully");
       } else {
         // id non exist => create
-        await api.post(`${apiURI}`, values);
+        await api.post(`${apiUriPOST}`, values);
         toast.success("add succesfully");
       }
-      formTag.resetFields();
+      form.resetFields();
       handleCloseModal();
       fetchData();
     } catch (error) {
@@ -217,7 +219,7 @@ function DashboardTemplate({
             <Button onClick={handleCloseModal}>Cancel</Button>
             <Button
               onClick={() => {
-                formTag.submit();
+                form.submit();
               }}
               loading={loading}
             >
@@ -226,7 +228,7 @@ function DashboardTemplate({
           </>
         }
       >
-        <Form labelCol={{ span: 24 }} onFinish={handleSubmitForm} form={formTag}>
+        <Form labelCol={{ span: 24 }} onFinish={handleSubmitForm} form={form}>
           <Form.Item name={keyField} hidden>
             <Input />
           </Form.Item>
@@ -239,20 +241,23 @@ function DashboardTemplate({
         onCancel={handleCloseViewModal}
         footer={<Button onClick={handleCloseViewModal}>Close</Button>}
       >
-        <Form labelCol={{ span: 24 }} onFinish={handleSubmitForm} form={formTag}>
+        <Form labelCol={{ span: 24 }} onFinish={handleSubmitForm} form={form}>
           <Form.Item name={keyField} hidden>
             <Input />
           </Form.Item>
           {formViewDetails}
 
-          {/* Image URL */}
-          <Form.Item label="Image" name="image_url">
-            {currentRecord && currentRecord.image_url ? (
-              <Image width={200} src={currentRecord.image_url} />
-            ) : (
-              <span>No image available</span>
-            )}
-          </Form.Item>
+          {isIncludeImage ? (
+            <Form.Item label="Image" name="image_url">
+              {currentRecord && currentRecord.image_url ? (
+                <Image width={200} src={currentRecord.image_url} />
+              ) : (
+                <span>No image available</span>
+              )}
+            </Form.Item>
+          ) : (
+            []
+          )}
         </Form>
       </Modal>
     </div>
