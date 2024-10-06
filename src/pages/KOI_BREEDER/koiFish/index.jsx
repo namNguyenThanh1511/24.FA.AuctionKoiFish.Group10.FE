@@ -26,6 +26,7 @@ function ManageKoiFish() {
   const [health, setHealth] = useState();
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [hongthinh, setHongThinh] = useState(false);
+  const [formHealth] = useForm();
   const [form] = useForm();
   const columns = [
     {
@@ -132,12 +133,12 @@ function ManageKoiFish() {
         healthNote: values.healthNote,
       });
       toast.success("Updated!!!");
-      setHongThinh((prev) => !prev);//set isRenderer to make column in dashboard template re-rendered
+      setHongThinh((prev) => !prev); //set isRenderer to make column in dashboard template re-rendered
     } catch (error) {
       console.log(error);
     }
     setIsOpenModal(false);
-    form.resetFields();
+    formHealth.resetFields();
   };
 
   const formItems = (
@@ -250,7 +251,7 @@ function ManageKoiFish() {
         //after submit
         handleSubmitForm(values);
       }}
-      form={form}
+      form={formHealth}
     >
       <Form.Item label="Status" name={"koiStatus"}>
         <Radio.Group onChange={onChange} value={health}>
@@ -336,7 +337,8 @@ function ManageKoiFish() {
     <div style={{ margin: "100px auto" }}>
       <DashboardTemplate
         isRerender={hongthinh}
-        apiURI="koiFish"
+        apiURI="koiFish/koiBreeder"
+        apiUriPOST={"koiFish"}
         formItems={formItems}
         title={title}
         columns={columns}
@@ -344,10 +346,12 @@ function ManageKoiFish() {
         keyField={"koi_id"}
         formViewDetails={formViewDetailsItems}
         isBasicCRUD={false}
+        isIncludeImage={true}
+        form={form}
       />
       <Modal
         onOk={() => {
-          form.submit();
+          formHealth.submit();
         }}
         onCancel={() => {
           setIsOpenModal(false);
