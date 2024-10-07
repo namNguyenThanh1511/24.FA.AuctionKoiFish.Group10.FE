@@ -35,8 +35,7 @@ const Register = () => {
   };
 
   const validatePassword = (_, value) => {
-    const passwordPattern =
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!value || passwordPattern.test(value)) {
       return Promise.resolve();
     }
@@ -82,9 +81,7 @@ const Register = () => {
               <Col span={12}>
                 <Form.Item
                   name="lastName"
-                  rules={[
-                    { required: true, message: "Please enter your last name!" },
-                  ]}
+                  rules={[{ required: true, message: "Please enter your last name!" }]}
                 >
                   <Input placeholder="Last Name" />
                 </Form.Item>
@@ -175,7 +172,7 @@ const Register = () => {
         </Form>
 
         <div className="signin-link">
-          Already a member? <a href="/login">Sign In</a>
+          Already a member? <Link to={"/login"}>Sign in</Link>
         </div>
       </div>
     </div>

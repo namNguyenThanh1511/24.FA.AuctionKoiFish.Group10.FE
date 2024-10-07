@@ -7,7 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 
 import "./profile.css";
 
-
 const Profile = () => {
   const [form] = Form.useForm();
   const [collapsed, setCollapsed] = useState(false);
@@ -26,6 +25,7 @@ const Profile = () => {
         address: userData.address,
         phoneNumber: userData.phoneNumber,
         email: userData.email,
+        user_id: userData.user_id,
       });
     } catch (error) {
       toast.error(error.response.data);
@@ -39,8 +39,10 @@ const Profile = () => {
   // Hàm xử lý khi lưu thay đổi profile
   const handleSaveProfile = async (values) => {
     setLoading(true);
+    console.log(values);
     try {
-      // Giả sử bạn sẽ có API cập nhật thông tin user
+      const response = await api.put(`account/update-profile/${values.user_id}`, values);
+
       toast.success("Profile updated successfully");
     } catch (error) {
       toast.error(error.response.data);
@@ -63,82 +65,84 @@ const Profile = () => {
   };
 
   return (
-  
-      <div className="profile-form">
-        <h2>My profile</h2>
-        <h4>Manage your profile information to keep your account secure</h4>
-        <Form form={form} name="profile" onFinish={handleSaveProfile} layout="vertical">
-          <Form.Item label="Name" required>
-            <Row gutter={16}>
-              <Col span={12}>
-                <Form.Item
-                  name="firstName"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Please enter your first name!",
-                    },
-                  ]}
-                >
-                  <Input placeholder="First Name" />
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  name="lastName"
-                  rules={[{ required: true, message: "Please enter your last name!" }]}
-                >
-                  <Input placeholder="Last Name" />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form.Item>
+    <div className="profile-form">
+      <h2>My profile</h2>
+      <h4>Manage your profile information to keep your account secure</h4>
+      <Form form={form} name="profile" onFinish={handleSaveProfile} layout="vertical">
+        <Form.Item label="Name" required>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="firstName"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please enter your first name!",
+                  },
+                ]}
+              >
+                <Input placeholder="First Name" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="lastName"
+                rules={[{ required: true, message: "Please enter your last name!" }]}
+              >
+                <Input placeholder="Last Name" />
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form.Item>
 
-          <Form.Item
-            label="Address"
-            name="address"
-            rules={[{ required: true, message: "Please enter your address!" }]}
-          >
-            <Input placeholder="Enter Address" />
-          </Form.Item>
+        <Form.Item
+          label="Address"
+          name="address"
+          rules={[{ required: true, message: "Please enter your address!" }]}
+        >
+          <Input placeholder="Enter Address" />
+        </Form.Item>
 
-          <Form.Item
-            label="Phone"
-            name="phoneNumber"
-            rules={[
-              { required: true, message: "Please enter your phone number!" },
-              { validator: validatePhoneNumber },
-            ]}
-          >
-            <Input placeholder="Enter Phone Number" />
-          </Form.Item>
+        <Form.Item
+          label="Phone"
+          name="phoneNumber"
+          rules={[
+            { required: true, message: "Please enter your phone number!" },
+            { validator: validatePhoneNumber },
+          ]}
+        >
+          <Input placeholder="Enter Phone Number" />
+        </Form.Item>
 
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              {
-                required: true,
-                type: "email",
-                message: "Please enter a valid email!",
-              },
-            ]}
-          >
-            <Input type="email" placeholder="Enter Email" disabled />
-          </Form.Item>
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            {
+              required: true,
+              type: "email",
+              message: "Please enter a valid email!",
+            },
+          ]}
+        >
+          <Input type="email" placeholder="Enter Email" disabled />
+        </Form.Item>
 
-          <Form.Item label="Username" name="username">
-            <Input />
-          </Form.Item>
+        <Form.Item label="Username" name="username">
+          <Input />
+        </Form.Item>
 
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block loading={loading}>
-              Save Change
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
-    
+        <Form.Item hidden name="user_id">
+          <Input />
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" block loading={loading}>
+            Save Change
+          </Button>
+        </Form.Item>
+      </Form>
+    </div>
   );
 };
 

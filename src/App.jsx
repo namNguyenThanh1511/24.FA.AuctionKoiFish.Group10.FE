@@ -4,7 +4,7 @@ import HomePage from "./pages/HomePages/HomePage";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
 import Profile from "./pages/profile/profile";
-import Wallet from "./pages/wallet/wallet"; 
+import Wallet from "./pages/wallet/wallet";
 import Auction from "./pages/Auctions/Auction";
 import Dashboard from "./components/dashboard";
 import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
@@ -12,6 +12,8 @@ import Layout from "./layout/general-layout";
 import Detail from "./pages/Details/detail";
 import MainLayout from "./components/profile/MainLayout";
 import MyAuction from "./pages/Member-MyAuction/Member-MyAuction";
+import ForgotPassword from "./pages/forgotpassword/forgotpassword";
+import ResetPassword from "./pages/resetpassword/resetpassword";
 function App() {
   const router = createBrowserRouter([
     {
@@ -30,6 +32,16 @@ function App() {
           path: "/auctions/details",
           element: <Detail />,
         },
+        {
+          path: "/dashboard",
+          element: <Dashboard title={"Koi Breeder"} />,
+          children: [
+            {
+              path: "koiFish",
+              element: <ManageKoiFish />,
+            },
+          ],
+        },
       ],
     },
     {
@@ -39,6 +51,14 @@ function App() {
     {
       path: "/register",
       element: <Register />,
+    },
+    {
+      path: "/forgot-password",
+      element: <ForgotPassword />,
+    },
+    { // Để đỡ như vậ để test , về sau sẽ sửa lại 
+      path: "/reset-password",
+      element: <ResetPassword />,
     },
     {
       path: "/profile",
@@ -58,16 +78,6 @@ function App() {
           element: <Wallet />,
         },
         // Các trang con khác
-      ],
-    },
-    {
-      path: "/dashboard",
-      element: <Dashboard title={"Koi Breeder"} />,
-      children: [
-        {
-          path: "koiFish",
-          element: <ManageKoiFish />,
-        },
       ],
     },
   ]);

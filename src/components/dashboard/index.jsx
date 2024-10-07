@@ -36,6 +36,7 @@ const Dashboard = ({ title }) => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
+        style={{ marginTop: "100px" }}
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
@@ -55,12 +56,7 @@ const Dashboard = ({ title }) => {
           )}
         </div>
 
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items}
-        />
+        <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" items={items} />
       </Sider>
       <Layout>
         <Header style={{ padding: 0, background: colorBgContainer }} />
