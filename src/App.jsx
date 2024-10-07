@@ -14,6 +14,8 @@ import MainLayout from "./components/profile/MainLayout";
 import MyAuction from "./pages/Member-MyAuction/Member-MyAuction";
 import ForgotPassword from "./pages/forgotpassword/forgotpassword";
 import ResetPassword from "./pages/resetpassword/resetpassword";
+import ManageAuctionRequestOfKoiBreeder from "./pages/KOI_BREEDER/auctionRequest";
+
 function App() {
   const router = createBrowserRouter([
     {
@@ -33,12 +35,16 @@ function App() {
           element: <Detail />,
         },
         {
-          path: "/dashboard",
+          path: "/dashboard/koiBreeder",
           element: <Dashboard title={"Koi Breeder"} />,
           children: [
             {
               path: "koiFish",
               element: <ManageKoiFish />,
+            },
+            {
+              path: "auctionRequest",
+              element: <ManageAuctionRequestOfKoiBreeder />,
             },
           ],
         },

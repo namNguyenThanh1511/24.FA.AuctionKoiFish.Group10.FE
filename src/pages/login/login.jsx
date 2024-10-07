@@ -20,7 +20,7 @@ const Login = () => {
       localStorage.setItem("token", token);
       toast.success("Login success");
       if (roleEnum === "KOI_BREEDER") {
-        navigate("/dashboard");
+        navigate("/dashboard/koiBreeder");
       } else {
         navigate("/");
       }
@@ -66,7 +66,7 @@ const Login = () => {
           >
             <Input type="password" placeholder="Enter Password" />
           </Form.Item>
-       
+
           <div className="forgot-password">
           <Link to="/forgot-password">Forgot password?</Link>
           </div>

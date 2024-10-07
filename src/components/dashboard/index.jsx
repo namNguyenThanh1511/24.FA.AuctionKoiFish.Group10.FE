@@ -16,7 +16,7 @@ function getItem(label, key, icon, children) {
     key,
     icon,
     children,
-    label: <Link to={`/dashboard/${key}`}> {label} </Link>,
+    label: <Link to={`/dashboard/koiBreeder/${key}`}> {label} </Link>,
   };
 }
 
