@@ -12,7 +12,7 @@ import Layout from "./layout/general-layout";
 import Detail from "./pages/Details/detail";
 import MainLayout from "./components/profile/MainLayout";
 import ManageAuctionRequestOfKoiBreeder from "./pages/KOI_BREEDER/auctionRequest";
-
+import About from "./pages/About/about";
 function App() {
   const router = createBrowserRouter([
     {
@@ -31,6 +31,11 @@ function App() {
           path: "/auctions/details",
           element: <Detail />,
         },
+        {
+          path: "/about",
+          element: <About />,
+        },
+        
         {
           path: "/dashboard/koiBreeder",
           element: <Dashboard title={"Koi Breeder"} />,
