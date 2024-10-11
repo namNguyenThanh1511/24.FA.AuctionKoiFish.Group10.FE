@@ -10,9 +10,9 @@ import {
   TransactionOutlined,
 } from "@ant-design/icons";
 
-import Footer from "../footer/Footer";
+import Footer from "../../footer/Footer";
 import { Link, Outlet } from "react-router-dom";
-import HeaderLogin from "../header-logged-in";
+import HeaderLogin from "../../header-logged-in";
 const { Header, Sider, Content } = Layout;
 
 function getItem(label, key, icon, children) {
@@ -20,7 +20,7 @@ function getItem(label, key, icon, children) {
     key,
     icon,
     children,
-    label: <Link to={`/profile/${key}`}> {label} </Link>,
+    label: <Link to={`${key}`}> {label} </Link>,
   };
 }
 
@@ -33,7 +33,7 @@ const items = [
   getItem("Logout", "logout", <LogoutOutlined />),
 ];
 
-const MainLayout = ({ children, collapsed, setCollapsed }) => {
+const MemberProfileLayout = ({ children, collapsed, setCollapsed }) => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
@@ -57,7 +57,7 @@ const MainLayout = ({ children, collapsed, setCollapsed }) => {
             </span>
           )}
         </div>
-        <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" items={items} />
+        <Menu theme="dark" defaultSelectedKeys={["personal"]} mode="inline" items={items} />
       </Sider>
 
       {/* Main Layout */}
@@ -73,4 +73,4 @@ const MainLayout = ({ children, collapsed, setCollapsed }) => {
   );
 };
 
-export default MainLayout;
+export default MemberProfileLayout;

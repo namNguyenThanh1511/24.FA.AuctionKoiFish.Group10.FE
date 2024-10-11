@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom"; // Import Link từ react-router-dom
+import { Link, useNavigate } from "react-router-dom"; // Import Link từ react-router-dom
 import { Menu, Dropdown, Button } from "antd";
 import {
   UserOutlined,
@@ -13,10 +13,14 @@ import "./index.css"; // Import file CSS cho Header
 import avatar from "../../images/avata.jpg"; // Thêm đường dẫn avatar
 
 const HeaderLogin = () => {
+  const navigate = useNavigate();
+
+  const role = "";
+  const base_URL = "";
   const menu = (
     <Menu>
       <Menu.Item key="1" icon={<UserOutlined />}>
-        <Link to="/profile/personal">Personal</Link>
+        <Link to="/member-profile/personal">Personal</Link>
       </Menu.Item>
       <Menu.Item key="2" icon={<NotificationOutlined />}>
         <Link to="/notification">Notification</Link>
@@ -31,15 +35,15 @@ const HeaderLogin = () => {
         <Link to="/profile/wallet">Wallet</Link>
       </Menu.Item>
       <Menu.Item key="6" icon={<LogoutOutlined />} danger>
-        <Link
+        <div
           onClick={() => {
             localStorage.removeItem("token");
+            navigate("/");
             window.location.reload();
           }}
-          to="/"
         >
-          Logout
-        </Link>
+          Log out
+        </div>
       </Menu.Item>
     </Menu>
   );

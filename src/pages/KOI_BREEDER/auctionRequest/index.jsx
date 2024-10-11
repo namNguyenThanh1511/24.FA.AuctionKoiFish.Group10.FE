@@ -24,6 +24,7 @@ import api from "../../../config/axios";
 import { toast } from "react-toastify";
 import formatToVND from "../../../utils/currency";
 import { useForm } from "antd/es/form/Form";
+import CardKoiFish from "../../../components/card-koi-fish";
 
 function ManageAuctionRequestOfKoiBreeder() {
   const title = "Auction Request";
@@ -35,6 +36,7 @@ function ManageAuctionRequestOfKoiBreeder() {
   const [selectedFish, setSelectedFish] = useState(null); // State for the selected fish
 
   const [form] = useForm();
+  const [formViewDetails] = useForm();
   const koiColumns = [
     {
       title: "Image",
@@ -142,7 +144,7 @@ function ManageAuctionRequestOfKoiBreeder() {
   // Fetch fish data
   const fetchFish = async () => {
     try {
-      const response = await api.get("koiFish/koiBreeder/available"); // Adjust the endpoint as necessary
+      const response = await api.get("koiFish/koiBreeder/available");
       setFishList(response.data);
     } catch (error) {
       toast.error(error);
@@ -158,7 +160,7 @@ function ManageAuctionRequestOfKoiBreeder() {
     setSelectedFish(fish); // Set the selected fish
     setIsOpenModal(false); // Close the modal
     form.setFieldsValue({
-      koiFish_id: fish?.koi_id, // Assuming you want to fill the description with koi_id
+      koiFish_id: fish?.koi_id, //when create new auction request
     });
   };
 
@@ -281,6 +283,10 @@ function ManageAuctionRequestOfKoiBreeder() {
       <Form.Item label="Response note" name="responseNote">
         <Input style={{ color: "red" }} disabled />
       </Form.Item>
+      <Form.Item hidden name="koi_id">
+        <Input />
+      </Form.Item>
+      {/* <CardKoiFish id={formViewDetails.getFieldValue("koi_id")} /> */}
     </>
   );
 
@@ -295,10 +301,12 @@ function ManageAuctionRequestOfKoiBreeder() {
         columns={columns}
         dateFields={"createdDate"}
         keyField={"koi_id"}
-        formViewDetails={formViewDetailsItems}
+        formViewDetailsItem={formViewDetailsItems}
         isBasicCRUD={false}
         isIncludeImage={false}
         apiURI={"auctionRequest/koiBreeder"}
+        formViewDetails={formViewDetails}
+        isShownCardKoiFish={true}
       />
     </div>
   );

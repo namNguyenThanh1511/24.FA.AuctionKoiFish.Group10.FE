@@ -28,6 +28,7 @@ function ManageKoiFish() {
   const [hongthinh, setHongThinh] = useState(false);
   const [formHealth] = useForm();
   const [form] = useForm();
+  const [formViewDetails] = useForm();
   const columns = [
     {
       title: "Name",
@@ -302,9 +303,11 @@ function ManageKoiFish() {
       {/* Variety */}
       <Form.Item label="Variety" name="varietiesID" disabled>
         <Select disabled mode="multiple" placeholder="Select varieties">
-          <Select.Option value={1}>Sowa</Select.Option>
-          <Select.Option value={2}>Kohaku</Select.Option>
-          <Select.Option value={3}>Origi</Select.Option>
+          {varieties.map((variety) => (
+            <Select.Option key={variety.id} value={variety.id}>
+              {variety.name}
+            </Select.Option>
+          ))}
         </Select>
       </Form.Item>
 
@@ -344,10 +347,11 @@ function ManageKoiFish() {
         columns={columns}
         dateFields={"bornIn"}
         keyField={"koi_id"}
-        formViewDetails={formViewDetailsItems}
-        isBasicCRUD={false}
+        formViewDetailsItem={formViewDetailsItems}
+        isBasicCRUD={true}
         isIncludeImage={true}
         form={form}
+        formViewDetails={formViewDetails}
       />
       <Modal
         onOk={() => {
