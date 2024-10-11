@@ -1,13 +1,13 @@
-// src/pages/Profile.js
+// src/pages/Personal.js
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Row, Col, Breadcrumb } from "antd";
-import api from "../../config/axios"; // Sử dụng api đã cấu hình
+import api from "../../../config/axios"; // Sử dụng api đã cấu hình
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
 import "./profile.css";
 
-const Profile = () => {
+const Personal = () => {
   const [form] = Form.useForm();
   const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -146,4 +146,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Personal;

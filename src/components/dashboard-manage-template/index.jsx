@@ -1,4 +1,4 @@
-import { Button, Form, Input, Modal, Popconfirm, Table, Image } from "antd";
+import { Button, Form, Input, Modal, Popconfirm, Table, Image, Row, Col } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -8,6 +8,7 @@ import { useForm } from "antd/es/form/Form";
 import uploadFile from "../../utils/upload";
 import api from "../../config/axios";
 import dayjs from "dayjs";
+import CardKoiFish from "../card-koi-fish";
 
 function DashboardTemplate({
   columns,
@@ -16,12 +17,14 @@ function DashboardTemplate({
   apiURI,
   dateFields = [],
   keyField,
-  formViewDetails,
+  formViewDetailsItem,
   isBasicCRUD,
   isIncludeImage,
   isRerender,
   form,
   apiUriPOST,
+  formViewDetails,
+  isShownCardKoiFish,
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -36,6 +39,10 @@ function DashboardTemplate({
   useEffect(() => {
     fetchData();
   }, [isRerender]);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const newColumns = [
@@ -100,8 +107,8 @@ function DashboardTemplate({
               onClick={() => {
                 const newRecord = { ...record };
                 setCurrentRecord(newRecord);
-                console.log(record);
-                setIsViewModalOpen(true); // Open the View Details modal
+                //console.log(record);
+                setIsViewModalOpen(true);
 
                 for (var key of Object.keys(newRecord)) {
                   const value = newRecord[key];
@@ -109,14 +116,15 @@ function DashboardTemplate({
                   // Check if the field is listed in `dateFields` and should be treated as a date
                   if (dateFields.includes(key)) {
                     newRecord[key] = dayjs(value); // Convert to dayjs for date handling in Ant Design
-                    console.log(`${key} is a date`);
+                    //console.log(`${key} is a date`);
                   } else {
                     newRecord[key] = record[key]; // Keep original value for non-date fields
-                    console.log(`${key} is not a date`);
+                    // console.log(`${key} is not a date`);
                   }
                 }
-
-                form.setFieldsValue(newRecord);
+                formViewDetails.setFieldsValue(newRecord);
+                console.log(formViewDetails.getFieldsValue());
+                console.log(formViewDetails.getFieldValue("koi_id"));
               }}
             >
               View details
@@ -150,7 +158,6 @@ function DashboardTemplate({
   };
   const handleCloseViewModal = () => {
     setIsViewModalOpen(false);
-    form.resetFields();
     setCurrentRecord(null);
   };
 
@@ -236,28 +243,33 @@ function DashboardTemplate({
         </Form>
       </Modal>
       <Modal
+        width={800}
         open={isViewModalOpen}
         title={`View ${title} details`}
         onCancel={handleCloseViewModal}
         footer={<Button onClick={handleCloseViewModal}>Close</Button>}
       >
-        <Form labelCol={{ span: 24 }} onFinish={handleSubmitForm} form={form}>
+        <Form labelCol={{ span: 24 }} form={formViewDetails}>
           <Form.Item name={keyField} hidden>
             <Input />
           </Form.Item>
-          {formViewDetails}
-
-          {isIncludeImage ? (
-            <Form.Item label="Image" name="image_url">
-              {currentRecord && currentRecord.image_url ? (
-                <Image width={200} src={currentRecord.image_url} />
+          <Row gutter={16}>
+            <Col span={12}>{formViewDetailsItem}</Col>
+            <Col span={12}>
+              {isShownCardKoiFish && <CardKoiFish id={formViewDetails.getFieldValue("koi_id")} />}
+              {isIncludeImage ? (
+                <Form.Item label="Image" name="image_url">
+                  {currentRecord && currentRecord.image_url ? (
+                    <Image width={200} src={currentRecord.image_url} />
+                  ) : (
+                    <span>No image available</span>
+                  )}
+                </Form.Item>
               ) : (
-                <span>No image available</span>
+                []
               )}
-            </Form.Item>
-          ) : (
-            []
-          )}
+            </Col>
+          </Row>
         </Form>
       </Modal>
     </div>
