@@ -10,9 +10,9 @@ import {
   TransactionOutlined,
 } from "@ant-design/icons";
 
-import Footer from "../footer/Footer";
-import { Link, Outlet, useNavigate } from "react-router-dom";
-import HeaderLogin from "../header-logged-in";
+import Footer from "../../footer/Footer";
+import { Link, Outlet } from "react-router-dom";
+import HeaderLogin from "../../header-logged-in";
 const { Header, Sider, Content } = Layout;
 
 function getItem(label, key, icon, onClick = null, children) {
@@ -20,30 +20,20 @@ function getItem(label, key, icon, onClick = null, children) {
     key,
     icon,
     children,
-    label: onClick ? (
-      <span onClick={onClick}> {label} </span> // Nếu có onClick thì thêm action gì đó vào 
-    ) : (
-      <Link to={`/profile/${key}`}> {label} </Link> // Nếu không có onClick, dùng Link như bình thường
-    ),
+    label: <Link to={`${key}`}> {label} </Link>,
   };
 }
 
-const MainLayout = ({ children, collapsed, setCollapsed }) => {
-  const navigate = useNavigate();
+const items = [
+  getItem("Personal", "personal", <PieChartOutlined />),
+  getItem("Notification", "notification", <NotificationOutlined />),
+  getItem("My Auction", "my-auction", <FileOutlined />),
+  getItem("Payment Resquest", "payment-request", <TransactionOutlined />),
+  getItem("Wallet", "wallet", <WalletOutlined />),
+  getItem("Logout", "logout", <LogoutOutlined />),
+];
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/");
-    window.location.reload();
-  };
-  const items = [
-    getItem("Personal", "personal", <PieChartOutlined />),
-    getItem("Notification", "notification", <NotificationOutlined />),
-    getItem("My Auction", "my-auction", <FileOutlined />),
-    getItem("Payment Resquest", "payment-request", <TransactionOutlined />),
-    getItem("Wallet", "wallet", <WalletOutlined />),
-    getItem("Logout", "logout", <LogoutOutlined />,handleLogout),
-  ];
+const MemberProfileLayout = ({ children, collapsed, setCollapsed }) => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
@@ -69,19 +59,12 @@ const MainLayout = ({ children, collapsed, setCollapsed }) => {
             </span>
           )}
         </div>
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["1"]}
-          mode="inline"
-          items={items}
-        />
+        <Menu theme="dark" defaultSelectedKeys={["personal"]} mode="inline" items={items} />
       </Sider>
 
       {/* Main Layout */}
       <Layout>
-        <Header>
-          <HeaderLogin />
-        </Header>
+
         <Content style={{ margin: "30px 16px 0" }}>
           <Outlet />
         </Content>
@@ -92,4 +75,4 @@ const MainLayout = ({ children, collapsed, setCollapsed }) => {
   );
 };
 
-export default MainLayout;
+export default MemberProfileLayout;

@@ -3,19 +3,25 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePages/HomePage";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
-import Profile from "./pages/profile/profile";
+
 import Wallet from "./pages/wallet/wallet";
 import Auction from "./pages/Auctions/Auction";
-import Dashboard from "./components/dashboard";
+
 import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
 import Layout from "./layout/general-layout";
 import Detail from "./pages/Details/detail";
-import MainLayout from "./components/profile/MainLayout";
 import MyAuction from "./pages/Member-MyAuction/Member-MyAuction";
 import ForgotPassword from "./pages/forgotpassword/forgotpassword";
 import ResetPassword from "./pages/resetpassword/resetpassword";
 import ManageAuctionRequestOfKoiBreeder from "./pages/KOI_BREEDER/auctionRequest";
 import About from "./pages/About/about";
+
+import MemberProfileLayout from "./components/profile-layout/member-profile-layout";
+import ManagerProfileLayout from "./components/profile-layout/manager-profile-layout";
+import Personal from "./pages/MEMBER/personal";
+import KoibreederProfileLayout from "./components/profile-layout/koibreeder-profile-layout";
+import StaffProfileLayout from "./components/profile-layout/staff-profile-layout";
+
 function App() {
   const router = createBrowserRouter([
     {
@@ -38,21 +44,6 @@ function App() {
           path: "/about",
           element: <About />,
         },
-        
-        {
-          path: "/dashboard/koiBreeder",
-          element: <Dashboard title={"Koi Breeder"} />,
-          children: [
-            {
-              path: "koiFish",
-              element: <ManageKoiFish />,
-            },
-            {
-              path: "auctionRequest",
-              element: <ManageAuctionRequestOfKoiBreeder />,
-            },
-          ],
-        },
       ],
     },
     {
@@ -72,23 +63,83 @@ function App() {
       element: <ResetPassword />,
     },
     {
-      path: "/profile",
-      element: <MainLayout />,
+      path: "/member-profile",
+      element: <MemberProfileLayout />,
       children: [
         {
           path: "personal",
-          element: <Profile />,
+          element: <Personal />,
         },
         {
           path: "my-auction",
           element: <MyAuction />,
         },
-
         {
-          path: "wallet", // Trang con Wallet
+          path: "wallet",
           element: <Wallet />,
         },
-        // Các trang con khác
+      ],
+    },
+    {
+      path: "/koibreeder-profile",
+      element: <KoibreederProfileLayout />,
+      children: [
+        {
+          path: "personal",
+          element: <Personal />,
+        },
+        {
+          path: "koiFish",
+          element: <ManageKoiFish />,
+        },
+        {
+          path: "auctionRequest",
+          element: <ManageAuctionRequestOfKoiBreeder />,
+        },
+      ],
+    },
+    {
+      path: "/staff-profile",
+      element: <StaffProfileLayout />,
+      children: [
+        {
+          path: "personal",
+          element: <Personal />,
+        },
+        {
+          path: "manage-auction-request",
+          element: <div>manage-auction-request</div>,
+        },
+        {
+          path: "manage-assigned-session",
+          element: <div>manage-assigned-session</div>,
+        },
+      ],
+    },
+    {
+      path: "/manager-profile",
+      element: <ManagerProfileLayout />,
+      children: [
+        {
+          path: "personal",
+          element: <Personal />,
+        },
+        {
+          path: "manage-request",
+          element: <div>hello</div>,
+        },
+        {
+          path: "manage-auction",
+          element: <div>hello</div>,
+        },
+        {
+          path: "manage-staff-account",
+          element: <div>hello</div>,
+        },
+        {
+          path: "manage-koibreeder-account",
+          element: <div>hello</div>,
+        },
       ],
     },
   ]);

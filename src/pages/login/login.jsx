@@ -20,7 +20,9 @@ const Login = () => {
       localStorage.setItem("token", token);
       toast.success("Login success");
       if (roleEnum === "KOI_BREEDER") {
-        navigate("/dashboard/koiBreeder");
+        navigate("/koibreeder-profile/personal");
+      } else if (roleEnum === "MANAGER") {
+        navigate("/manager-profile/personal");
       } else {
         navigate("/");
       }
