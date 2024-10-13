@@ -1,17 +1,18 @@
 .card-container {
   width: 220px;
-  background-color: #1e1e1e;
-  border-radius: 10px;
+  background-color: #ffffff; /* Đổi màu nền thành trắng */
+  border: none; /* Loại bỏ border */
   overflow: hidden;
-  color: white;
+  color: #333; /* Đổi màu chữ thành màu tối để dễ nhìn hơn */
   font-family: 'Fredoka', sans-serif;
-  transition: transform 0.3s, box-shadow 0.3s; /* Thêm hiệu ứng chuyển động */
-  margin: 10px; /* Thêm khoảng cách cho các thẻ */
+  transition: transform 0.3s, box-shadow 0.3s;
+  margin: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4); /* Tăng độ bóng */
 }
 
 .card-container:hover {
-  transform: translateY(-5px); /* Đẩy thẻ lên khi hover */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Tăng bóng đổ khi hover */
+  transform: translateY(-5px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5); /* Tăng bóng khi hover */
 }
 
 .card-header {
@@ -28,10 +29,11 @@
   position: absolute;
   top: 10px;
   left: 10px;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.7); /* Đổi màu nền cho likes */
   padding: 5px 10px;
   border-radius: 20px;
   font-size: 12px;
+  color: #333; /* Đổi màu chữ */
 }
 
 .card-body {
@@ -40,12 +42,24 @@
 
 .card-title {
   font-size: 18px;
-  margin: 0;
+  margin: 10px 0; /* Thêm margin cho title */
+  color: #333; /* Đổi màu chữ */
 }
 
-.card-status {
-  color: #888;
-  font-size: 14px;
+.card-status-type {
+  margin: 8px 0; /* Thêm khoảng cách giữa status và type */
+}
+
+.card-status,
+.card-type {
+  color: #666; /* Đổi màu chữ thành tối hơn để dễ nhìn */
+  font-size: 14px; /* Kích thước chữ */
+  margin: 4px 0; /* Khoảng cách giữa các dòng */
+}
+
+.card-status strong,
+.card-type strong {
+  color: #333; /* Màu chữ cho nhãn (strong) */
 }
 
 .card-rating {
@@ -62,12 +76,12 @@
 }
 
 .card-price {
-  background-color: #333;
+  background-color: #f9f9f9; /* Đổi màu nền thành màu sáng cho price */
   padding: 5px;
-  border-radius: 10px;
   text-align: center;
-  font-size: 16px;
-  margin: 5px 0;
+  font-size: 20px; /* Giữ kích thước lớn hơn cho dễ đọc */
+  margin: 10px 0; /* Thay đổi margin để tạo khoảng cách với thời gian */
+  color: #333; /* Đổi màu chữ thành tối hơn */
 }
 
 .card-info {
@@ -80,27 +94,36 @@
 }
 
 .card-time-left {
-  text-align: center; /* Căn giữa nội dung */
+  text-align: center;
+  margin: 10px 0; /* Thêm khoảng cách cho thời gian */
 }
 
 .time-left {
-  display: flex; /* Sử dụng flexbox để căn chỉnh các phần tử */
-  justify-content: space-around; /* Cách đều các phần tử */
-  margin-top: 10px; /* Khoảng cách giữa tiêu đề và thời gian */
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
 }
 
 .time-unit {
   display: flex;
-  flex-direction: column; /* Đặt số và nhãn theo cột */
-  align-items: center; /* Căn giữa các phần tử con */
+  flex-direction: column;
+  align-items: center;
 }
 
 .time-value {
-  font-size: 23px; /* Kích thước chữ cho số */
-
+  font-size: 23px;
+  color: #333; /* Đổi màu chữ thành tối hơn */
 }
 
 .time-label {
-  font-size: 14px; /* Kích thước chữ cho nhãn */
+  font-size: 14px;
   font-weight: bold; 
+  color: #666; /* Đổi màu chữ thành tối hơn */
+}
+
+.card-countdown {
+  font-size: 16px;
+  color: #ff0000; /* Giữ màu chữ đỏ cho countdown */
+  font-weight: bold;
+  margin: 10px 0; /* Thêm margin dưới countdown */
 }
