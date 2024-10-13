@@ -16,10 +16,11 @@ import {
   Table,
   Card,
   Row,
+  Tooltip,
 } from "antd";
 import DashboardTemplate from "../../../components/dashboard-manage-template";
 import dayjs from "dayjs";
-import { UploadOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, CloseCircleOutlined, UploadOutlined } from "@ant-design/icons";
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
 import formatToVND from "../../../utils/currency";
@@ -87,47 +88,109 @@ function ManageAuctionRequestOfKoiBreeder() {
       title: "Title",
       dataIndex: "title",
       key: "title",
+      render: (text) => (
+        <Tooltip title={text}>
+          <span style={{ fontWeight: "bold" }}>{text}</span>
+        </Tooltip>
+      ),
     },
     {
       title: "Created at",
       dataIndex: "createdDate",
       key: "createdDate",
+      render: (date) => (
+        <Tooltip title={dayjs(date).format("MMMM D, YYYY, h:mm A")}>
+          <span>{dayjs(date).format("MM/DD/YYYY")}</span>
+        </Tooltip>
+      ),
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
+      render: (text) => (
+        <Tooltip title={text}>
+          <span
+            style={{
+              maxWidth: "200px",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {text}
+          </span>
+        </Tooltip>
+      ),
     },
     {
       title: "Response Note",
       dataIndex: "responseNote",
       key: "responseNote",
-      render: (response, record) => (
-        <>
-          {record.status === "PENDING" ? (
-            ""
-          ) : (record.status === "ACCEPTED_BY_STAFF") |
-            (record.status === "APPROVED_BY_MANAGER") ? (
-            <Alert message={response} type="success" />
-          ) : (
-            <Alert message={response} type="error" />
-          )}
-        </>
-      ),
-    },
+      render: (response, record) => {
+        // If status is pending or response is empty, return an empty string
+        if (record.status === "PENDING" || response === "") {
+          return "";
+        }
 
+        // Determine alert type based on the record status
+        const alertType =
+          record.status === "ACCEPTED_BY_STAFF" || record.status === "APPROVED_BY_MANAGER"
+            ? "success"
+            : "error";
+
+        // Determine the icon to show based on alert type
+        const alertIcon =
+          alertType === "success" ? (
+            <CheckCircleOutlined style={{ color: "green" }} />
+          ) : (
+            <CloseCircleOutlined style={{ color: "red" }} />
+          );
+
+        return (
+          <Tooltip title={response} placement="top">
+            <span style={{ display: "flex", alignItems: "center" }}>
+              {alertIcon}
+              <Alert
+                message={response}
+                type={alertType}
+                showIcon
+                style={{
+                  marginLeft: 8,
+                  border: "none",
+                  boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+                }}
+                closable
+              />
+            </span>
+          </Tooltip>
+        );
+      },
+    },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (s) => {
-        const checkStatus =
-          (s == "ACCEPTED_BY_STAFF") | (s == "APPROVED_BY_MANAGER")
-            ? "green"
-            : s === "PENDING"
-            ? "yellow"
-            : "red";
-        return <Tag color={checkStatus}>{s}</Tag>;
+      render: (status) => {
+        let color;
+        switch (status) {
+          case "ACCEPTED_BY_STAFF":
+          case "APPROVED_BY_MANAGER":
+            color = "green";
+            break;
+          case "PENDING":
+            color = "yellow";
+            break;
+          default:
+            color = "red";
+        }
+        return (
+          <Tooltip title={status}>
+            <Tag color={color} style={{ cursor: "pointer" }}>
+              {status}
+            </Tag>
+          </Tooltip>
+        );
       },
     },
   ];
@@ -214,7 +277,12 @@ function ManageAuctionRequestOfKoiBreeder() {
             alignItems: "center",
           }}
         >
-          <Button style={{ textAlign: "center" }} onClick={() => setIsOpenModal(true)}>
+          <Button
+            style={{ textAlign: "center" }}
+            onClick={() => {
+              setIsOpenModal(true);
+            }}
+          >
             Select Fish
           </Button>
         </div>
@@ -307,6 +375,8 @@ function ManageAuctionRequestOfKoiBreeder() {
         apiURI={"auctionRequest/koiBreeder"}
         formViewDetails={formViewDetails}
         isShownCardKoiFish={true}
+        isCreateNew={true}
+        selectedFish={selectedFish}
       />
     </div>
   );

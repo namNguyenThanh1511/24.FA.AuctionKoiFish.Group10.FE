@@ -23,6 +23,8 @@ const Login = () => {
         navigate("/koibreeder-profile/personal");
       } else if (roleEnum === "MANAGER") {
         navigate("/manager-profile/personal");
+      } else if (roleEnum === "STAFF") {
+        navigate("/staff-profile/personal");
       } else {
         navigate("/");
       }
