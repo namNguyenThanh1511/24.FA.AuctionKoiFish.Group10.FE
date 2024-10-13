@@ -3,48 +3,19 @@ import "./Card.css";
 
 const Card = ({
   image,
-  title,
-  id,
+  title, // Nhận title từ props
+  name, // Nhận name từ props
   breeder,
   length,
   sex,
   age,
-  stars,
+  countdown,
   price,
-  time, // Sử dụng lại biến time thay vì endTime
   likes,
   variety,
+  auctionStatus,
+  auctionType,
 }) => {
-  // Hàm tính thời gian còn lại
-  const calculateTimeLeft = (timeString) => {
-    const auctionEndTime = new Date(timeString).getTime();
-    const currentTime = new Date().getTime();
-    const difference = auctionEndTime - currentTime;
-
-    let timeLeft = {};
-
-    if (difference > 0) {
-      timeLeft = {
-        days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((difference / 1000 / 60) % 60),
-        seconds: Math.floor((difference / 1000) % 60),
-      };
-    } else {
-      timeLeft = {
-        days: 0,
-        hours: 0,
-        minutes: 0,
-        seconds: 0,
-      };
-    }
-
-    return timeLeft;
-  };
-
-  // Lấy thời gian còn lại từ hàm
-  const timeLeft = calculateTimeLeft(time);
-
   return (
     <div className="card-container">
       <div className="card-header">
@@ -54,41 +25,13 @@ const Card = ({
         </div>
       </div>
       <div className="card-body">
+        {/* Hiển thị title ở đầu */}
         <h3 className="card-title">{title}</h3>
-        <p className="card-id">{id}</p>
-        <div className="card-time-left">
-          <p>Time left</p>
-          <div className="time-left">
-            <div className="time-unit">
-              <span className="time-value">{timeLeft.days}</span>
-              <span className="time-label">Days</span>
-            </div>
-            <div className="time-unit">
-              <span className="time-value">{timeLeft.hours}</span>
-              <span className="time-label">Hours</span>
-            </div>
-            <div className="time-unit">
-              <span className="time-value">{timeLeft.minutes}</span>
-              <span className="time-label">Minutes</span>
-            </div>
-            <div className="time-unit">
-              <span className="time-value">{timeLeft.seconds}</span>
-              <span className="time-label">Seconds</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="card-rating">
-          {Array.from({ length: 5 }).map((_, index) => (
-            <span
-              key={index}
-              className={`star ${index < stars ? "filled" : ""}`}
-            >
-              ★
-            </span>
-          ))}
-        </div>
-        <div className="card-price">${price}</div>
+        {/* Hiển thị countdown ở trên giá */}
+        <div className="card-countdown">{countdown}</div>
+        <div className="card-price">${price}</div> {/* Giá tiền */}
+        {/* Hiển thị name ở dưới giá */}
+        <h4 className="card-name">{name}</h4> {/* Hiển thị name */}
         <div className="card-info">
           <p>
             <strong>Breeder: </strong>
@@ -109,6 +52,17 @@ const Card = ({
           <p>
             <strong>Variety: </strong>
             {variety}
+          </p>
+        </div>
+        {/* Hiển thị auctionStatus và auctionType */}
+        <div className="card-status-type">
+          <p className="card-status">
+            <strong>Status: </strong>
+            {auctionStatus}
+          </p>
+          <p className="card-type">
+            <strong>Type: </strong>
+            {auctionType}
           </p>
         </div>
       </div>

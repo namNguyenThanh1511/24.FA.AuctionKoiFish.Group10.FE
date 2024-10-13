@@ -1,19 +1,20 @@
 body {
-    background-color:#ededed; /* Đặt nền màu trắng */
-    margin: 0;
-    padding: 0;
-  }
+  background-color: #ededed; /* Nền trang */
+  margin: 0;
+  padding: 0;
+}
 
 /* Style cho toàn bộ form */
 .auction-form-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    margin-top: 130px;
-  }
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #ffffff; /* Thay đổi màu nền thành trắng để không có màu xám của .auction-form-container */
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 130px;
+}
+
   
   /* Style các trường của form */
   .auction-form .ant-form-item {
