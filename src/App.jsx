@@ -21,6 +21,7 @@ import ManagerProfileLayout from "./components/profile-layout/manager-profile-la
 import Personal from "./pages/MEMBER/personal";
 import KoibreederProfileLayout from "./components/profile-layout/koibreeder-profile-layout";
 import StaffProfileLayout from "./components/profile-layout/staff-profile-layout";
+import ManageKoiBreederAccount from "./pages/MANAGER/manage-koibreeder-account";
 
 function App() {
   const router = createBrowserRouter([
@@ -58,7 +59,7 @@ function App() {
       path: "/forgot-password",
       element: <ForgotPassword />,
     },
-    { // Để đỡ như vậ để test , về sau sẽ sửa lại 
+    { 
       path: "/reset-password",
       element: <ResetPassword />,
     },
@@ -108,7 +109,7 @@ function App() {
         },
         {
           path: "manage-auction-request",
-          element: <div>manage-auction-request</div>,
+          element: <div>manage-..auction-request</div>,
         },
         {
           path: "manage-assigned-session",
@@ -138,7 +139,7 @@ function App() {
         },
         {
           path: "manage-koibreeder-account",
-          element: <div>hello</div>,
+          element: <ManageKoiBreederAccount/>,
         },
       ],
     },

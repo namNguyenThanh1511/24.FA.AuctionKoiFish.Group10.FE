@@ -3,16 +3,17 @@ import { Form, Input, Button } from "antd";
 import "./forgotpassword.css";
 import api from "../../config/axios";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
+  const navigate = useNavigate();
   const onFinish = async (values) => {
     try {
-      // Gửi yêu cầu đặt lại mật khẩu
       const response = await api.post("forgot-password", {
         email: values.email,
       });
       toast.success("Password reset link sent to your email.");
+      navigate("/reset-password");
     } catch (err) {
       toast.error(err.response.data || "An error occurred. Please try again.");
     }

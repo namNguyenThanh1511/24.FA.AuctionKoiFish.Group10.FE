@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Form, Input, Button } from "antd";
 import "./resetpassword.css";
 import api from "../../config/axios";
@@ -13,17 +13,24 @@ const ResetPassword = () => {
   const searchParams = new URLSearchParams(location.search);
   const token = searchParams.get("token");
 
-  // Hàm xử lý khi submit form
+  useEffect(() => {
+    if (!token) {
+      toast.error("Token is missing or invalid. Please request a new password reset link.");
+      navigate("/forgot-password"); // Điều hướng về forgot-password nếu token không có
+    }
+  }, [token, navigate]);
+
   const onFinish = async (values) => {
     try {
-      // Gửi yêu cầu đặt lại mật khẩu
+     
       await api.post("/reset-password", {
-        token,
+        token, 
         password: values.password,
         confirmPassword: values.confirmPassword,
       });
+
       toast.success("Password has been reset successfully.");
-      navigate("/login"); // Chuyển hướng về trang đăng nhập sau khi thành công
+      navigate("/login"); 
     } catch (err) {
       toast.error(
         err.response?.data?.message || "An error occurred. Please try again."
@@ -31,7 +38,6 @@ const ResetPassword = () => {
     }
   };
 
-  // Xác thực mật khẩu
   const validatePassword = (_, value) => {
     const passwordPattern =
       /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
