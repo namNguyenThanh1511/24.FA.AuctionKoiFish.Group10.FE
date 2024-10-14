@@ -24,7 +24,7 @@ import StaffProfileLayout from "./components/profile-layout/staff-profile-layout
 import ManageAuctionRequest from "./pages/STAFF/manage-auction-request";
 import ManagerManageAuctionRequest from "./pages/MANAGER/manage-auction-request";
 import ManageAuctionSessionManager from "./pages/MANAGER/manage-auction-session";
-
+import ManageKoiBreederAccount from "./pages/MANAGER/manage-koibreeder-account";
 function App() {
   const router = createBrowserRouter([
     {
@@ -61,7 +61,7 @@ function App() {
       path: "/forgot-password",
       element: <ForgotPassword />,
     },
-    { 
+   {
       path: "/reset-password",
       element: <ResetPassword />,
     },
@@ -141,7 +141,7 @@ function App() {
         },
         {
           path: "manage-koibreeder-account",
-          element: <ManageKoiBreederAccount/>,
+          element: <ManageKoiBreederAccount />,
         },
       ],
     },

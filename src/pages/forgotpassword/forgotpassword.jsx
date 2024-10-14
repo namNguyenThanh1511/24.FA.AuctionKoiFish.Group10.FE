@@ -13,9 +13,9 @@ const ForgotPassword = () => {
         email: values.email,
       });
       toast.success("Password reset link sent to your email.");
-      navigate("/reset-password");
+      
     } catch (err) {
-      toast.error(err.response.data || "An error occurred. Please try again.");
+      toast.error(err.response.data);
     }
   };
 

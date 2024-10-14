@@ -15,26 +15,25 @@ const ResetPassword = () => {
 
   useEffect(() => {
     if (!token) {
-      toast.error("Token is missing or invalid. Please request a new password reset link.");
-      navigate("/forgot-password"); // Điều hướng về forgot-password nếu token không có
+      toast.error(
+        "Token is missing or invalid. Please request a new password reset link."
+      );
+      // Điều hướng về forgot-password nếu token không có
     }
   }, [token, navigate]);
 
   const onFinish = async (values) => {
     try {
-     
       await api.post("/reset-password", {
-        token, 
+        token,
         password: values.password,
         confirmPassword: values.confirmPassword,
       });
 
       toast.success("Password has been reset successfully.");
-      navigate("/login"); 
+      navigate("/login");
     } catch (err) {
-      toast.error(
-        err.response?.data?.message || "An error occurred. Please try again."
-      );
+      toast.error(err.response?.data?.message);
     }
   };
 
