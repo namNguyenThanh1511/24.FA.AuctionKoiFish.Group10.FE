@@ -1,9 +1,9 @@
-.manage-account-container {
+.staff-account-container {
     padding: 20px;
     margin-top: 40px;
   }
   
-  .table-manager-account {
+  .table-staff-account {
     border: 2px solid black; /* Viền đen cho bảng */
     border-radius: 20px; /* Bo góc bảng */
     overflow: hidden; /* Đảm bảo viền không bị cắt */

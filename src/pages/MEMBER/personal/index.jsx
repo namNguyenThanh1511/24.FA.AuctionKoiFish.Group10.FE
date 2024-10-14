@@ -41,7 +41,10 @@ const Personal = () => {
     setLoading(true);
     console.log(values);
     try {
-      const response = await api.put(`account/update-profile/${values.user_id}`, values);
+      const response = await api.put(
+        `account/update-profile-current-user`,
+        values
+      );
 
       toast.success("Profile updated successfully");
     } catch (error) {
@@ -68,7 +71,12 @@ const Personal = () => {
     <div className="profile-form">
       <h2>My profile</h2>
       <h4>Manage your profile information to keep your account secure</h4>
-      <Form form={form} name="profile" onFinish={handleSaveProfile} layout="vertical">
+      <Form
+        form={form}
+        name="profile"
+        onFinish={handleSaveProfile}
+        layout="vertical"
+      >
         <Form.Item label="Name" required>
           <Row gutter={16}>
             <Col span={12}>
@@ -87,7 +95,9 @@ const Personal = () => {
             <Col span={12}>
               <Form.Item
                 name="lastName"
-                rules={[{ required: true, message: "Please enter your last name!" }]}
+                rules={[
+                  { required: true, message: "Please enter your last name!" },
+                ]}
               >
                 <Input placeholder="Last Name" />
               </Form.Item>
