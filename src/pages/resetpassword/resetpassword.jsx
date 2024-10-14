@@ -13,12 +13,12 @@ const ResetPassword = () => {
   const searchParams = new URLSearchParams(location.search);
   const token = searchParams.get("token");
 
+  localStorage.setItem("token", token);
   useEffect(() => {
     if (!token) {
       toast.error(
         "Token is missing or invalid. Please request a new password reset link."
       );
-      // Điều hướng về forgot-password nếu token không có
     }
   }, [token, navigate]);
 

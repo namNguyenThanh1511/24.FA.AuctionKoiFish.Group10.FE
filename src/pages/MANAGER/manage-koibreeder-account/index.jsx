@@ -31,13 +31,13 @@ const ManageKoiBreederAccount = () => {
   }, []);
 
   
-  const handleBanAccount = async (user_id) => {
+  const handleBanKoibreederAccount = async (user_id) => {
     try {
       await api.delete(`/account/${user_id}`); 
       message.success("Account deleted successfully");
       fetchAccounts(); // Tải lại danh sách tài khoản sau khi xóa
     } catch (error) {
-      message.error("Failed to delete account.");
+      message.error("Failed to disable account.");
     }
   };
 
@@ -104,7 +104,7 @@ const ManageKoiBreederAccount = () => {
         <Space size="middle">
           <Popconfirm
             title="Are you sure to disable this account?"
-            onConfirm={() => handleBanAccount(record.user_id)}
+            onConfirm={() => handleBanKoibreederAccount(record.user_id)}
             okText="Yes"
             cancelText="No"
           >
@@ -124,7 +124,7 @@ const ManageKoiBreederAccount = () => {
   return (
     <div className="manage-account-container">
       <Table
-        className="table-account"
+        className="table-manager-account"
         columns={columns}
         dataSource={accounts}
         loading={loading}

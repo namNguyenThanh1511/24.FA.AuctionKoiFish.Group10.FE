@@ -25,6 +25,7 @@ import ManageAuctionRequest from "./pages/STAFF/manage-auction-request";
 import ManagerManageAuctionRequest from "./pages/MANAGER/manage-auction-request";
 import ManageAuctionSessionManager from "./pages/MANAGER/manage-auction-session";
 import ManageKoiBreederAccount from "./pages/MANAGER/manage-koibreeder-account";
+import ManageStaffAccount from "./pages/MANAGER/manage-staff-account";
 function App() {
   const router = createBrowserRouter([
     {
@@ -137,7 +138,7 @@ function App() {
         },
         {
           path: "manage-staff-account",
-          element: <div>hello</div>,
+          element: <ManageStaffAccount/>,
         },
         {
           path: "manage-koibreeder-account",
