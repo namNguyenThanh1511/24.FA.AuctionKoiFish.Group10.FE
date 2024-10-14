@@ -142,7 +142,7 @@ const Register = () => {
               { validator: validatePassword },
             ]}
           >
-            <Input.Password placeholder="Enter Password" />
+            <Input type="password" placeholder="Enter Password" />
           </Form.Item>
 
           <Form.Item
@@ -161,7 +161,7 @@ const Register = () => {
               }),
             ]}
           >
-            <Input.Password placeholder="Re-type Password" />
+            <Input type="password" placeholder="Re-type Password" />
           </Form.Item>
 
           <Form.Item>

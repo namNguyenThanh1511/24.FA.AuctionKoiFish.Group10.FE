@@ -72,18 +72,28 @@ const Login = () => {
           </Form.Item>
 
           <div className="forgot-password">
-            <a href="/">Forgot password?</a>
+            <Link to="/forgot-password">Forgot password?</Link>
           </div>
 
           <Form.Item>
-            <Button className="signin-button" type="primary" htmlType="submit" block>
+            <Button
+              className="signin-button"
+              type="primary"
+              htmlType="submit"
+              block
+            >
               SIGN IN
             </Button>
           </Form.Item>
         </Form>
 
         <div className="login-google">
-          <Button className="google-button" type="default" block onClick={handleLoginGoogle}>
+          <Button
+            className="google-button"
+            type="default"
+            block
+            onClick={handleLoginGoogle}
+          >
             <img
               src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASsAAACoCAMAAACPKThEAAABklBMVEX////+/v40qFP///1FhPXqQjf4vA
               TtQTfsQjUzp1RFhPZFhfP8uwc+fvqYufFChfUzqFA3eu7e7v4zeefk8PzpQzP7///3vQH73d3oRDf+//r6uAAxq1PoPC/vQjbsOy7eOS3bOjR

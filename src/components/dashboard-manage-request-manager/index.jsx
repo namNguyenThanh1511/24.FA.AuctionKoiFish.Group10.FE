@@ -19,7 +19,12 @@ import api from "../../config/axios";
 import dayjs from "dayjs";
 import CardKoiFish from "../card-koi-fish";
 import moment from "moment";
-import { CheckOutlined, DeleteOutlined, EyeOutlined, CloseOutlined } from "@ant-design/icons";
+import {
+  CheckOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  CloseOutlined,
+} from "@ant-design/icons";
 
 function DashboardManageRequestTemplateForManager({
   columns,
@@ -76,7 +81,11 @@ function DashboardManageRequestTemplateForManager({
                 type="success"
                 showIcon
                 icon={<CheckOutlined style={{ color: "green" }} />}
-                style={{ marginBottom: 8, border: "1px solid green", borderRadius: 4 }}
+                style={{
+                  marginBottom: 8,
+                  border: "1px solid green",
+                  borderRadius: 4,
+                }}
               />
             );
           }
@@ -87,7 +96,11 @@ function DashboardManageRequestTemplateForManager({
                 type="error"
                 showIcon
                 icon={<CloseOutlined style={{ color: "red" }} />}
-                style={{ marginBottom: 8, border: "1px solid red", borderRadius: 4 }}
+                style={{
+                  marginBottom: 8,
+                  border: "1px solid red",
+                  borderRadius: 4,
+                }}
               />
             );
           }
@@ -105,7 +118,12 @@ function DashboardManageRequestTemplateForManager({
                     setActions(apiUriDelete);
                   }}
                 >
-                  <Button type="primary" danger icon={<DeleteOutlined />} size="small" />
+                  <Button
+                    type="primary"
+                    danger
+                    icon={<DeleteOutlined />}
+                    size="small"
+                  />
                 </Popconfirm>
               </Tooltip>
               <Tooltip title="Approve Request">
@@ -118,7 +136,9 @@ function DashboardManageRequestTemplateForManager({
                     setIsUpdate(true);
                     handleOpenAuctionModal();
                     form.setFieldsValue({ [keyField]: id });
-                    formCreateAuctionSession.setFieldsValue({ auction_request_id: id });
+                    formCreateAuctionSession.setFieldsValue({
+                      auction_request_id: id,
+                    });
                     setActions(apiUriPUT);
                   }}
                 />
@@ -198,7 +218,9 @@ function DashboardManageRequestTemplateForManager({
   const handleSubmitAuctionSessionForm = async (values) => {
     setLoading(true);
     try {
-      await api.put(`auctionRequest/approve/${values[keyField]}`, { responseNote: "" });
+      await api.put(`auctionRequest/approve/${values[keyField]}`, {
+        responseNote: "",
+      });
       await api.post(`auctionSession`, values);
       toast.success("Successfully created auction session");
       formCreateAuctionSession.resetFields();
@@ -236,7 +258,11 @@ function DashboardManageRequestTemplateForManager({
         []
       )}
 
-      <Table columns={tableColumns} dataSource={dataSource} loading={isFetching} />
+      <Table
+        columns={tableColumns}
+        dataSource={dataSource}
+        loading={isFetching}
+      />
       <Modal
         open={isOpenModal}
         title={isUpdate === true ? `Edit ${title}` : `Create new ${title}`}
@@ -276,7 +302,9 @@ function DashboardManageRequestTemplateForManager({
           <Row gutter={16}>
             <Col span={12}>{formViewDetailsItem}</Col>
             <Col span={12}>
-              {isShownCardKoiFish && <CardKoiFish id={formViewDetails.getFieldValue("koi_id")} />}
+              {isShownCardKoiFish && (
+                <CardKoiFish id={formViewDetails.getFieldValue("koi_id")} />
+              )}
               {isIncludeImage ? (
                 <Form.Item label="Image" name="image_url">
                   {currentRecord && currentRecord.image_url ? (

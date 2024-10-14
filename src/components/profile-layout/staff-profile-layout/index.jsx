@@ -3,17 +3,14 @@ import { Layout, Menu } from "antd";
 import {
   UserOutlined,
   PieChartOutlined,
-  NotificationOutlined,
-  FileOutlined,
-  LogoutOutlined,
-  WalletOutlined,
-  TransactionOutlined,
+  TeamOutlined,
+  PullRequestOutlined,
 } from "@ant-design/icons";
 
 import Footer from "../../footer/Footer";
 import { Link, Outlet } from "react-router-dom";
 import HeaderLogin from "../../header-logged-in";
-const { Header, Sider, Content } = Layout;
+const {  Sider, Content } = Layout;
 
 function getItem(label, key, icon, children) {
   return {
@@ -25,8 +22,8 @@ function getItem(label, key, icon, children) {
 }
 
 const items = [
-  getItem("Personal", "personal", <PieChartOutlined />),
-  getItem("Auction Request", "manage-auction-request", <PieChartOutlined />),
+  getItem("Personal", "personal", <TeamOutlined />),
+  getItem("Auction Request", "manage-auction-request", <PullRequestOutlined />),
   getItem("Assigned Auction", "manage-assigned-session", <PieChartOutlined />),
 ];
 
@@ -49,12 +46,19 @@ const StaffProfileLayout = ({ children, collapsed, setCollapsed }) => {
           }}
         >
           {!collapsed && (
-            <span style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}>
+            <span
+              style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}
+            >
               <UserOutlined /> My Account
             </span>
           )}
         </div>
-        <Menu theme="dark" defaultSelectedKeys={["personal"]} mode="inline" items={items} />
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={["personal"]}
+          mode="inline"
+          items={items}
+        />
       </Sider>
 
       {/* Main Layout */}
