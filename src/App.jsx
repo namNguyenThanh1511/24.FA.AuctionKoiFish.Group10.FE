@@ -21,7 +21,9 @@ import ManagerProfileLayout from "./components/profile-layout/manager-profile-la
 import Personal from "./pages/MEMBER/personal";
 import KoibreederProfileLayout from "./components/profile-layout/koibreeder-profile-layout";
 import StaffProfileLayout from "./components/profile-layout/staff-profile-layout";
-import ManageKoiBreederAccount from "./pages/MANAGER/manage-koibreeder-account";
+import ManageAuctionRequest from "./pages/STAFF/manage-auction-request";
+import ManagerManageAuctionRequest from "./pages/MANAGER/manage-auction-request";
+import ManageAuctionSessionManager from "./pages/MANAGER/manage-auction-session";
 
 function App() {
   const router = createBrowserRouter([
@@ -109,7 +111,7 @@ function App() {
         },
         {
           path: "manage-auction-request",
-          element: <div>manage-..auction-request</div>,
+          element: <ManageAuctionRequest />,
         },
         {
           path: "manage-assigned-session",
@@ -127,11 +129,11 @@ function App() {
         },
         {
           path: "manage-request",
-          element: <div>hello</div>,
+          element: <ManagerManageAuctionRequest />,
         },
         {
           path: "manage-auction",
-          element: <div>hello</div>,
+          element: <ManageAuctionSessionManager />,
         },
         {
           path: "manage-staff-account",

@@ -12,6 +12,7 @@ import {
   Modal,
   Switch,
   Tag,
+  Tooltip,
 } from "antd";
 import DashboardTemplate from "../../../components/dashboard-manage-template";
 import dayjs from "dayjs";
@@ -34,6 +35,11 @@ function ManageKoiFish() {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      render: (text) => (
+        <Tooltip title={text}>
+          <span style={{ fontWeight: "bold", color: "#1890ff" }}>{text}</span>
+        </Tooltip>
+      ),
     },
     {
       title: "Sex",
@@ -41,60 +47,76 @@ function ManageKoiFish() {
       key: "sex",
     },
     {
-      title: "Size_cm",
+      title: "Size (cm)",
       dataIndex: "sizeCm",
       key: "sizeCm",
+      render: (size) => (
+        <Tooltip title={`Size: ${size} cm`}>
+          <span>{size} cm</span>
+        </Tooltip>
+      ),
     },
     {
-      title: "Weight_kg",
+      title: "Weight (kg)",
       dataIndex: "weightKg",
       key: "weightKg",
+      render: (weight) => (
+        <Tooltip title={`Weight: ${weight} kg`}>
+          <span>{weight} kg</span>
+        </Tooltip>
+      ),
     },
-
     {
       title: "Estimated Value",
       dataIndex: "estimatedValue",
       key: "estimatedValue",
-      render: (value) => <span>{formatToVND(value)}</span>,
+      render: (value) => (
+        <Tooltip title={`Estimated value: ${formatToVND(value)}`}>
+          <span>{formatToVND(value)}</span>
+        </Tooltip>
+      ),
     },
-
     {
       title: "Image",
       dataIndex: "image_url",
       key: "image_url",
       render: (image_url) => (
-        <>
-          <Image width={200} src={image_url} />
-        </>
+        <Tooltip title="View Image">
+          <Image
+            width={100} // Adjust width for a smaller display
+            src={image_url}
+            style={{ borderRadius: "5px", objectFit: "cover" }} // Maintain aspect ratio
+            preview={false} // Prevent default Ant Design preview
+          />
+        </Tooltip>
       ),
     },
     {
       title: "Status",
       dataIndex: "koiStatus",
       key: "koiStatus",
-      render: (s) => {
-        const checkStatus = s == "AVAILABLE" ? "green" : s === "PENDING_AUCTION" ? "yellow" : "red";
-        return <Tag color={checkStatus}>{s}</Tag>;
+      render: (status) => {
+        let color;
+        switch (status) {
+          case "AVAILABLE":
+            color = "green";
+            break;
+          case "PENDING_AUCTION":
+            color = "yellow";
+            break;
+          default:
+            color = "red";
+        }
+        return (
+          <Tooltip title={status}>
+            <Tag color={color} style={{ cursor: "pointer" }}>
+              {status}
+            </Tag>
+          </Tooltip>
+        );
       },
     },
-    {
-      title: "Action",
-      dataIndex: "koi_id",
-      key: "koi_id",
-      render: (id, record) => (
-        <Button
-          onClick={() => {
-            setIsOpenModal(true);
-            const newRecord = { ...record };
-            form.setFieldsValue(newRecord);
-          }}
-        >
-          Update Health status
-        </Button>
-      ),
-    },
   ];
-
   const fetchVarieties = async () => {
     try {
       const response = await api.get("variety/all");
@@ -242,32 +264,6 @@ function ManageKoiFish() {
       </Form.Item>
     </>
   );
-  const onChange = (e) => {
-    console.log("radio checked", e.target.value);
-    setHealth(e.target.value);
-  };
-  const formUpdateHealthStatus = (
-    <Form
-      onFinish={(values) => {
-        //after submit
-        handleSubmitForm(values);
-      }}
-      form={formHealth}
-    >
-      <Form.Item label="Status" name={"koiStatus"}>
-        <Radio.Group onChange={onChange} value={health}>
-          <Radio value={"AVAILABLE"}>Good</Radio>
-          <Radio value={"UNAVAILABLE"}>Not good</Radio>
-        </Radio.Group>
-      </Form.Item>
-      <Form.Item label="Reason : " name={"healthNote"}>
-        <Input />
-      </Form.Item>
-      <Form.Item name={"koi_id"} hidden>
-        <Input type="number" />
-      </Form.Item>
-    </Form>
-  );
   const formViewDetailsItems = (
     <>
       <Form.Item
@@ -342,6 +338,8 @@ function ManageKoiFish() {
         isRerender={hongthinh}
         apiURI="koiFish/koiBreeder"
         apiUriPOST={"koiFish"}
+        apiUriPUT={"koiFish"}
+        apiUriDelete={"koiFish"}
         formItems={formItems}
         title={title}
         columns={columns}
@@ -352,18 +350,8 @@ function ManageKoiFish() {
         isIncludeImage={true}
         form={form}
         formViewDetails={formViewDetails}
+        isCreateNew={true}
       />
-      <Modal
-        onOk={() => {
-          formHealth.submit();
-        }}
-        onCancel={() => {
-          setIsOpenModal(false);
-        }}
-        open={isOpenModal}
-      >
-        {formUpdateHealthStatus}
-      </Modal>
     </div>
   );
 }

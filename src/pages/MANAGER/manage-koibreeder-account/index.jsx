@@ -20,7 +20,7 @@ const ManageKoiBreederAccount = () => {
       const accountsData = response.data;
       setAccounts(accountsData); // Gán dữ liệu tài khoản vào state
     } catch (error) {
-      message.error("Error fetching account data."); // Thông báo lỗi nếu có
+      message.error("Error fetching account data."); 
     } finally {
       setLoading(false); // Tắt trạng thái loading sau khi dữ liệu được load
     }
@@ -30,10 +30,10 @@ const ManageKoiBreederAccount = () => {
     fetchAccounts(); // Gọi hàm fetchAccounts khi component được render lần đầu
   }, []);
 
-  // Xử lý khi xóa tài khoản
+  
   const handleBanAccount = async (user_id) => {
     try {
-      await api.delete(`/account/${user_id}`); // Gọi API xóa tài khoản
+      await api.delete(`/account/${user_id}`); 
       message.success("Account deleted successfully");
       fetchAccounts(); // Tải lại danh sách tài khoản sau khi xóa
     } catch (error) {

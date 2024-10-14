@@ -1,14 +1,24 @@
-import { Button, Form, Input, Modal, Popconfirm, Table, Image, Row, Col } from "antd";
-import axios from "axios";
-import { useEffect, useState } from "react";
-
-import { toast } from "react-toastify";
-import { useForm } from "antd/es/form/Form";
-
+import {
+  Button,
+  Form,
+  Input,
+  Modal,
+  Popconfirm,
+  Table,
+  Image,
+  Row,
+  Col,
+  Alert,
+  Tooltip,
+  notification,
+} from "antd";
+import { EditOutlined, DeleteOutlined, InfoCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
 import uploadFile from "../../utils/upload";
 import api from "../../config/axios";
-import dayjs from "dayjs";
 import CardKoiFish from "../card-koi-fish";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 function DashboardTemplate({
   columns,
@@ -23,12 +33,15 @@ function DashboardTemplate({
   isRerender,
   form,
   apiUriPOST,
+  apiUriPUT,
+  apiUriDelete,
   formViewDetails,
   isShownCardKoiFish,
+  isCreateNew,
+  selectedFish,
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
-
   const [loading, setLoading] = useState(false);
   const [isUpdate, setIsUpdate] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
@@ -36,13 +49,10 @@ function DashboardTemplate({
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
 
+  // Fetch data when component mounts or `isRerender` changes
   useEffect(() => {
     fetchData();
   }, [isRerender]);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   useEffect(() => {
     const newColumns = [
@@ -50,186 +60,176 @@ function DashboardTemplate({
       ...(isBasicCRUD
         ? [
             {
-              title: "Action",
+              title: "Actions",
               dataIndex: keyField,
               key: keyField,
-              render: (id, record) => (
-                <div style={{ gap: "10px", display: "flex" }}>
-                  <Popconfirm
-                    title={`Delete ${title}`}
-                    description="Are you sure to delete ?"
-                    onConfirm={() => {
-                      console.log(id);
-                      handleDelete(id);
-                    }}
-                  >
-                    <Button type="primary" danger>
-                      Delete
-                    </Button>
-                  </Popconfirm>
-                  <span style={{ margin: "10px 5px" }}>|</span>
-                  <Button
-                    type="primary"
-                    style={{ backgroundColor: "orange" }}
-                    onClick={() => {
-                      const newRecord = { ...record };
-                      console.log(record);
-                      setIsUpdate(true);
-
-                      for (var key of Object.keys(newRecord)) {
-                        const value = newRecord[key];
-                        if (dateFields.includes(key)) {
-                          newRecord[key] = dayjs(value);
-                          console.log(`${key} is a date`);
-                        } else {
-                          newRecord[key] = record[key];
-                          console.log(`${key} is not a date`);
-                        }
-                      }
-                      form.setFieldsValue(newRecord);
-                      handleOpenModal();
-                    }}
-                  >
-                    Update
-                  </Button>
-                </div>
-              ),
+              width: 150,
+              render: (id, record) =>
+                record?.koiStatus === "AVAILABLE" ? (
+                  <div style={{ display: "flex", justifyContent: "space-around" }}>
+                    <Tooltip title="Delete">
+                      <Popconfirm title={`Delete ${title}`} onConfirm={() => handleDelete(id)}>
+                        <Button danger icon={<DeleteOutlined />} shape="round" />
+                      </Popconfirm>
+                    </Tooltip>
+                    <Tooltip title="Edit">
+                      <Button
+                        style={{ backgroundColor: "orange", borderColor: "orange" }}
+                        icon={<EditOutlined />}
+                        shape="round"
+                        onClick={() => {
+                          const newRecord = { ...record };
+                          setIsUpdate(true);
+                          for (var key of Object.keys(newRecord)) {
+                            const value = newRecord[key];
+                            if (dateFields.includes(key)) {
+                              newRecord[key] = dayjs(value);
+                            }
+                          }
+                          form.setFieldsValue(newRecord);
+                          handleOpenModal();
+                        }}
+                      />
+                    </Tooltip>
+                  </div>
+                ) : (
+                  <Tooltip title="Fish is not available">
+                    <Alert message="Unavailable" type="warning" showIcon />
+                  </Tooltip>
+                ),
             },
           ]
         : []),
       {
-        title: "More details",
+        title: (
+          <Tooltip title="View details">
+            <span>Details</span>
+            <InfoCircleOutlined style={{ marginLeft: 4 }} />
+          </Tooltip>
+        ),
         dataIndex: "details",
         key: "details",
+        width: 120,
         render: (id, record) => (
-          <>
-            <Button
-              onClick={() => {
-                const newRecord = { ...record };
-                setCurrentRecord(newRecord);
-                //console.log(record);
-                setIsViewModalOpen(true);
-
-                for (var key of Object.keys(newRecord)) {
-                  const value = newRecord[key];
-
-                  // Check if the field is listed in `dateFields` and should be treated as a date
-                  if (dateFields.includes(key)) {
-                    newRecord[key] = dayjs(value); // Convert to dayjs for date handling in Ant Design
-                    //console.log(`${key} is a date`);
-                  } else {
-                    newRecord[key] = record[key]; // Keep original value for non-date fields
-                    // console.log(`${key} is not a date`);
-                  }
+          <Button
+            onClick={() => {
+              const newRecord = { ...record };
+              setCurrentRecord(newRecord);
+              setIsViewModalOpen(true);
+              for (var key of Object.keys(newRecord)) {
+                const value = newRecord[key];
+                if (dateFields.includes(key)) {
+                  newRecord[key] = dayjs(value);
                 }
-                formViewDetails.setFieldsValue(newRecord);
-                console.log(formViewDetails.getFieldsValue());
-                console.log(formViewDetails.getFieldValue("koi_id"));
-              }}
-            >
-              View details
-            </Button>
-          </>
+              }
+              formViewDetails.setFieldsValue(newRecord);
+            }}
+          >
+            View
+          </Button>
         ),
       },
     ];
     setTableColumns(newColumns);
   }, [columns]);
+
   const fetchData = async () => {
     try {
       const response = await api.get(apiURI);
-      console.log("fetched");
       setIsFetching(false);
       setDataSource(response.data);
     } catch (err) {
-      console.log(err);
-      toast.error(err.response.data);
+      console.error(err);
     }
   };
-  useEffect(() => {
-    fetchData();
-  }, []);
+
   const handleOpenModal = () => {
     setIsOpenModal(true);
   };
+
   const handleCloseModal = () => {
     setIsOpenModal(false);
     form.resetFields();
   };
+
   const handleCloseViewModal = () => {
     setIsViewModalOpen(false);
     setCurrentRecord(null);
   };
 
   const handleSubmitForm = async (values) => {
-    setLoading(true); // loading save button when calling api
+    setLoading(true);
     try {
       let url = null;
-      console.log(values);
-      console.log(typeof values.image_url === "object");
       if (typeof values.image_url === "object") {
         url = await uploadFile(values.image_url.file.originFileObj);
         values.image_url = url;
-      } else {
-        // not upload any new file -> keep old image -> do nothing
-        console.log("not a file");
       }
 
       if (values[keyField]) {
-        // id exist => update
-        await api.put(`${apiURI}/${values[keyField]}`, values);
-        toast.success("update succesfully");
+        await api.put(`${apiUriPUT}/${values[keyField]}`, values);
+        notification.success({ message: `${title} updated successfully` });
       } else {
-        // id non exist => create
         await api.post(`${apiUriPOST}`, values);
-        toast.success("add succesfully");
+        notification.success({ message: `${title} created successfully` });
       }
       form.resetFields();
       handleCloseModal();
       fetchData();
     } catch (error) {
       toast.error(error.response.data);
+      console.error(error);
     }
-    setLoading(false); // cancel loading when calling api done
+    setLoading(false);
   };
+
   const handleDelete = async (id) => {
     try {
-      await api.delete(`${apiURI}/${id}`);
-      toast.success("Delete successfully");
+      await api.delete(`${apiUriDelete}/${id}`);
       fetchData();
+      notification.success({ message: `${title} deleted successfully` });
     } catch (err) {
-      toast.error(err.response.data);
+      notification.error({ message: `Error while deleting ${title}` });
+      console.error(err);
     }
   };
+
   return (
     <div>
-      <Button
-        onClick={() => {
-          setIsUpdate(false);
-          handleOpenModal();
-        }}
-        type="primary"
-      >
-        Add new {title}
-      </Button>
-      <Table columns={tableColumns} dataSource={dataSource} loading={isFetching} />
+      {isCreateNew && (
+        <Button
+          onClick={() => {
+            setIsUpdate(false);
+            handleOpenModal();
+          }}
+          type="primary"
+          icon={<PlusOutlined />}
+          shape="round"
+          style={{ marginBottom: 16 }}
+        >
+          Add new {title}
+        </Button>
+      )}
+
+      <Table
+        columns={tableColumns}
+        dataSource={dataSource}
+        loading={isFetching}
+        rowClassName={(record) =>
+          record.koiStatus === "AVAILABLE" ? "row-available" : "row-unavailable"
+        }
+        pagination={{ pageSize: 10 }}
+      />
+
+      {/* Modal for creating or editing a record */}
       <Modal
         open={isOpenModal}
-        title={isUpdate === true ? `Edit ${title}` : `Create new ${title}`}
+        title={isUpdate ? `Edit ${title}` : `Create new ${title}`}
         onCancel={handleCloseModal}
-        // onOk={() => {
-        //   /* submit user input to get "values" (parameter)  */
-        //   formTag.submit();
-        // }}
         footer={
           <>
             <Button onClick={handleCloseModal}>Cancel</Button>
-            <Button
-              onClick={() => {
-                form.submit();
-              }}
-              loading={loading}
-            >
+            <Button type="primary" onClick={() => form.submit()} loading={loading}>
               Save
             </Button>
           </>
@@ -242,6 +242,8 @@ function DashboardTemplate({
           {formItems}
         </Form>
       </Modal>
+
+      {/* Modal for viewing details */}
       <Modal
         width={800}
         open={isViewModalOpen}
@@ -250,23 +252,18 @@ function DashboardTemplate({
         footer={<Button onClick={handleCloseViewModal}>Close</Button>}
       >
         <Form labelCol={{ span: 24 }} form={formViewDetails}>
-          <Form.Item name={keyField} hidden>
-            <Input />
-          </Form.Item>
           <Row gutter={16}>
             <Col span={12}>{formViewDetailsItem}</Col>
             <Col span={12}>
               {isShownCardKoiFish && <CardKoiFish id={formViewDetails.getFieldValue("koi_id")} />}
-              {isIncludeImage ? (
+              {isIncludeImage && (
                 <Form.Item label="Image" name="image_url">
-                  {currentRecord && currentRecord.image_url ? (
+                  {currentRecord?.image_url ? (
                     <Image width={200} src={currentRecord.image_url} />
                   ) : (
                     <span>No image available</span>
                   )}
                 </Form.Item>
-              ) : (
-                []
               )}
             </Col>
           </Row>
