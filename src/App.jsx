@@ -26,6 +26,7 @@ import ManagerManageAuctionRequest from "./pages/MANAGER/manage-auction-request"
 import ManageAuctionSessionManager from "./pages/MANAGER/manage-auction-session";
 import ManageKoiBreederAccount from "./pages/MANAGER/manage-koibreeder-account";
 import ManageStaffAccount from "./pages/MANAGER/manage-staff-account";
+import PaymentSuccess from "./pages/payment-notification";
 function App() {
   const router = createBrowserRouter([
     {
@@ -62,7 +63,7 @@ function App() {
       path: "/forgot-password",
       element: <ForgotPassword />,
     },
-   {
+    {
       path: "/reset-password",
       element: <ResetPassword />,
     },
@@ -81,6 +82,10 @@ function App() {
         {
           path: "wallet",
           element: <Wallet />,
+        },
+        {
+          path: "wallet/success",
+          element: <PaymentSuccess />,
         },
       ],
     },
@@ -138,7 +143,7 @@ function App() {
         },
         {
           path: "manage-staff-account",
-          element: <ManageStaffAccount/>,
+          element: <ManageStaffAccount />,
         },
         {
           path: "manage-koibreeder-account",
