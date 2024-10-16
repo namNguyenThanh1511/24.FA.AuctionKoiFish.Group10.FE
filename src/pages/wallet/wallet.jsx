@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button } from "antd";
-import api from "../../config/axios"; // Sử dụng api đã cấu hình
+import { Form, Input, Button, InputNumber } from "antd";
+import api from "../../config/axios";
 import { toast } from "react-toastify";
-import "./wallet.css"; // Import CSS riêng cho Wallet
-import { useNavigate } from "react-router-dom";
+import "./wallet.css";
 import formatToVND from "../../utils/currency";
+import { useLocation } from "react-router-dom";
 const Wallet = () => {
-  const [balance, setBalance] = useState(0); // Số dư tài khoản
+  const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const navigate = useNavigate();
-
   // Fetch số dư tài khoản từ API
   const fetchBalance = async () => {
     try {
-      const response = await api.get("account/profile"); // Giả sử có API lấy số dư
+      const response = await api.get("user/balance");
       setBalance(response.data.balance);
     } catch (error) {
-      toast.error("Failed to fetch balance");
+      toast.error(error.response.data);
     }
   };
 
@@ -25,17 +23,14 @@ const Wallet = () => {
     fetchBalance();
   }, []);
 
-  // Hàm xử lý khi nạp tiền
   const handleDeposit = async (values) => {
     setLoading(true);
     const fAmount = parseFloat(values.amount);
     try {
-      const response = await api.post("paymentURL/vn-pay", values); // API nạp tiền
-
-      const vnpayUrl = response.data;
-      console.log(vnpayUrl);
-      // window.location.href = vnpayUrl;
+      const response = await api.post("paymentURL/vn-pay", { amount: values.amount }); // API nạp tiền
       toast.success("Deposit successful");
+      window.location.href = response.data;
+      fetchBalance();
       form.resetFields();
       fetchBalance();
     } catch (error) {
@@ -58,12 +53,7 @@ const Wallet = () => {
       {/* Form nạp tiền */}
       <div className="deposit-form">
         <h4>Deposit Money</h4>
-        <Form
-          form={form}
-          name="deposit"
-          onFinish={handleDeposit}
-          layout="vertical"
-        >
+        <Form form={form} name="deposit" onFinish={handleDeposit} layout="vertical">
           <Form.Item
             label="Amount"
             name="amount"
@@ -75,7 +65,7 @@ const Wallet = () => {
               },
             ]}
           >
-            <Input type="number" placeholder="Enter amount" />
+            <InputNumber min={0} addonBefore="+" addonAfter="đ" style={{ width: "100%" }} />
           </Form.Item>
 
           <Form.Item>

@@ -1,0 +1,48 @@
+.custom-payment-success-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #f0f2f5;
+}
+
+.custom-result-card {
+  background-color: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.custom-success-icon {
+  color: #52c41a; /* Success green color */
+  font-size: 60px;
+}
+
+.custom-result-card .ant-result-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.custom-result-card .ant-result-subtitle {
+  font-size: 16px;
+  color: #595959;
+}
+
+.custom-button {
+  background-color: #1890ff;
+  border-color: #1890ff;
+  font-weight: bold;
+  padding: 6px 24px;
+  font-size: 16px;
+}
+
+.custom-button:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+.custom-button:focus {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
