@@ -3,16 +3,18 @@ import { Form, Input, Button } from "antd";
 import api from "../../config/axios"; // Sử dụng api đã cấu hình
 import { toast } from "react-toastify";
 import "./wallet.css"; // Import CSS riêng cho Wallet
-
+import { useNavigate } from "react-router-dom";
+import formatToVND from "../../utils/currency";
 const Wallet = () => {
   const [balance, setBalance] = useState(0); // Số dư tài khoản
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   // Fetch số dư tài khoản từ API
   const fetchBalance = async () => {
     try {
-      const response = await api.get("wallet/balance"); // Giả sử có API lấy số dư
+      const response = await api.get("account/profile"); // Giả sử có API lấy số dư
       setBalance(response.data.balance);
     } catch (error) {
       toast.error("Failed to fetch balance");
@@ -26,11 +28,16 @@ const Wallet = () => {
   // Hàm xử lý khi nạp tiền
   const handleDeposit = async (values) => {
     setLoading(true);
+    const fAmount = parseFloat(values.amount);
     try {
-      const response = await api.post("wallet/deposit", { amount: values.amount }); // API nạp tiền
+      const response = await api.post("paymentURL/vn-pay", values); // API nạp tiền
+
+      const vnpayUrl = response.data;
+      console.log(vnpayUrl);
+      // window.location.href = vnpayUrl;
       toast.success("Deposit successful");
-      setBalance(balance + parseFloat(values.amount)); // Cập nhật số dư sau khi nạp
       form.resetFields();
+      fetchBalance();
     } catch (error) {
       toast.error("Failed to deposit");
     } finally {
@@ -45,7 +52,7 @@ const Wallet = () => {
       {/* Hiển thị số dư tài khoản */}
       <div className="balance-info">
         <h4>Your Balance:</h4>
-        <p>${balance.toFixed(2)}</p>
+        <p>{formatToVND(balance)}</p>
       </div>
 
       {/* Form nạp tiền */}
@@ -68,7 +75,7 @@ const Wallet = () => {
               },
             ]}
           >
-            <Input placeholder="Enter amount" />
+            <Input type="number" placeholder="Enter amount" />
           </Form.Item>
 
           <Form.Item>
