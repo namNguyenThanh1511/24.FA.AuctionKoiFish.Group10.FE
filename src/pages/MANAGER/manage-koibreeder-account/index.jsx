@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Space, Popconfirm, message, Form, Modal, Input } from "antd";
-import api from "../../../config/axios";
 import {
-  EditOutlined,
-  DeleteOutlined,
-  UserSwitchOutlined,
-} from "@ant-design/icons";
+  Table,
+  Button,
+  Space,
+  Popconfirm,
+  message,
+  Form,
+  Modal,
+  Input,
+} from "antd";
+import api from "../../../config/axios";
+import { DeleteOutlined } from "@ant-design/icons";
 import "./index.css";
-
+import dayjs from "dayjs";
 const ManageKoiBreederAccount = () => {
   const [accounts, setAccounts] = useState([]); // Dữ liệu các tài khoản
   const [loading, setLoading] = useState(false); // Trạng thái tải dữ liệu
@@ -41,7 +46,7 @@ const ManageKoiBreederAccount = () => {
     }
   };
   const validatePhoneNumber = (_, value) => {
-    const phonePattern = /^0\d{9}$/; 
+    const phonePattern = /^0\d{9}$/;
     if (!value || phonePattern.test(value)) {
       return Promise.resolve();
     }
@@ -97,6 +102,7 @@ const ManageKoiBreederAccount = () => {
       title: "Creation Date",
       dataIndex: "createdDate",
       key: "createdDate",
+      render: (createdDate) => dayjs(createdDate).format("DD-MM-YYYY HH:mm:ss"),
     },
     {
       title: "Balance",
@@ -160,13 +166,17 @@ const ManageKoiBreederAccount = () => {
         rowKey={(record) => record.user_id}
         pagination={{ pageSize: 10 }}
       />
-    <Modal
-    title="Create KoiBreeder Account"
-    visible={isModalVisible}
-    onCancel={()=> setIsModalVisible(false)}
-    footer={null}
-    >
-       <Form form={form} onFinish={handleCreateKoiBreederAccount} layout="vertical">
+      <Modal
+        title="Create KoiBreeder Account"
+        visible={isModalVisible}
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
+      >
+        <Form
+          form={form}
+          onFinish={handleCreateKoiBreederAccount}
+          layout="vertical"
+        >
           <Form.Item
             label="Username"
             name="username"
@@ -217,18 +227,17 @@ const ManageKoiBreederAccount = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ marginRight: 10 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ marginRight: 10 }}
+            >
               Submit
             </Button>
             <Button onClick={() => setIsModalVisible(false)}>Cancel</Button>
           </Form.Item>
         </Form>
-      
-    </Modal>
-
-
-
-
+      </Modal>
     </div>
   );
 };

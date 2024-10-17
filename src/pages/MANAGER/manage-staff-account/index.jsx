@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Table, Button, Space, Popconfirm, message, Form, Modal, Input } from "antd";
 import api from "../../../config/axios";
 import {
-  EditOutlined,
   DeleteOutlined,
-  UserSwitchOutlined,
 } from "@ant-design/icons";
 import "./index.css";
+import dayjs from "dayjs";
 
 const ManageStaffAccount = () => {
   const [accounts, setAccounts] = useState([]);
@@ -99,6 +98,7 @@ const ManageStaffAccount = () => {
       title: "Creation Date",
       dataIndex: "createdDate",
       key: "createdDate",
+      render: (createdDate) => dayjs(createdDate).format("DD-MM-YYYY HH:mm:ss"),
     },
     {
       title: "Role",

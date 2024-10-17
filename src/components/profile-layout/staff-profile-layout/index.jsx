@@ -10,7 +10,7 @@ import {
 import Footer from "../../footer/Footer";
 import { Link, Outlet } from "react-router-dom";
 import HeaderLogin from "../../header-logged-in";
-const {  Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
 function getItem(label, key, icon, children) {
   return {
@@ -25,6 +25,7 @@ const items = [
   getItem("Personal", "personal", <TeamOutlined />),
   getItem("Auction Request", "manage-auction-request", <PullRequestOutlined />),
   getItem("Assigned Auction", "manage-assigned-session", <PieChartOutlined />),
+  getItem("Member Account", "manage-member-account", <PieChartOutlined />),
 ];
 
 const StaffProfileLayout = ({ children, collapsed, setCollapsed }) => {

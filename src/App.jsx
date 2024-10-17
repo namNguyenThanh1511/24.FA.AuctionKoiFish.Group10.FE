@@ -27,6 +27,7 @@ import ManageAuctionSessionManager from "./pages/MANAGER/manage-auction-session"
 import ManageKoiBreederAccount from "./pages/MANAGER/manage-koibreeder-account";
 import ManageStaffAccount from "./pages/MANAGER/manage-staff-account";
 import PaymentSuccess from "./pages/payment-notification";
+import ManageMemberAccount from "./pages/STAFF/manage-member-account";
 function App() {
   const router = createBrowserRouter([
     {
@@ -102,6 +103,10 @@ function App() {
           element: <ManageKoiFish />,
         },
         {
+          path: "wallet",
+          element: <Wallet />,
+        },
+        {
           path: "auctionRequest",
           element: <ManageAuctionRequestOfKoiBreeder />,
         },
@@ -122,6 +127,10 @@ function App() {
         {
           path: "manage-assigned-session",
           element: <div>manage-assigned-session</div>,
+        },
+        {
+          path: "manage-member-account",
+          element: <ManageMemberAccount/>,
         },
       ],
     },
