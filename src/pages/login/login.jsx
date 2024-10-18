@@ -2,12 +2,16 @@ import React from "react";
 import { Form, Input, Button } from "antd";
 import "./login.css";
 import { auth, googleprovider } from "../../config/firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import api from "../../config/axios";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { login, selectUser } from "../../redux/feature/userSlice";
 
 const Login = () => {
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const onFinish = (values) => {
@@ -19,6 +23,8 @@ const Login = () => {
       const { token, roleEnum } = response.data;
       localStorage.setItem("token", token);
       toast.success("Login success");
+      const user = response.data;
+      dispatch(login(user));
       if (roleEnum === "KOI_BREEDER") {
         navigate("/koibreeder-profile/personal");
       } else if (roleEnum === "MANAGER") {
@@ -33,16 +39,29 @@ const Login = () => {
       toast.error(err.response.data);
     }
   };
-  const handleLoginGoogle = () => {
-    signInWithPopup(auth, googleprovider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        console.log(credential);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+  const handleLoginGoogle = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleprovider);
+      const token = result.user.accessToken;
+      const response = await api.post("login-google", { token: token });
+
+      localStorage.setItem("token", response.data.token);
+      const { roleEnum } = response.data;
+      const user = response.data;
+      dispatch(login(user));
+
+      if (roleEnum === "KOI_BREEDER") {
+        navigate("/koibreeder-profile/personal");
+      } else if (roleEnum === "MANAGER") {
+        navigate("/manager-profile/personal");
+      } else if (roleEnum === "STAFF") {
+        navigate("/staff-profile/personal");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error(error.response?.data || error.message);
+    }
   };
 
   return (
@@ -72,7 +91,7 @@ const Login = () => {
           </Form.Item>
 
           <div className="forgot-password">
-            <a href="/">Forgot password?</a>
+            <Link to="/forgot-password">Forgot password?</Link>
           </div>
 
           <Form.Item>

@@ -4,12 +4,15 @@ import HomePage from "./pages/HomePages/HomePage";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
 
-import Wallet from "./pages/wallet/wallet"; // Import trang Wallet
+import Wallet from "./pages/wallet/wallet";
 import Auction from "./pages/Auctions/Auction";
 
 import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
 import Layout from "./layout/general-layout";
-
+import Detail from "./pages/Details/detail";
+import MyAuction from "./pages/Member-MyAuction/Member-MyAuction";
+import ForgotPassword from "./pages/forgotpassword/forgotpassword";
+import ResetPassword from "./pages/resetpassword/resetpassword";
 import ManageAuctionRequestOfKoiBreeder from "./pages/KOI_BREEDER/auctionRequest";
 import About from "./pages/About/about";
 
@@ -21,8 +24,9 @@ import StaffProfileLayout from "./components/profile-layout/staff-profile-layout
 import ManageAuctionRequest from "./pages/STAFF/manage-auction-request";
 import ManagerManageAuctionRequest from "./pages/MANAGER/manage-auction-request";
 import ManageAuctionSessionManager from "./pages/MANAGER/manage-auction-session";
-import Detail from "./pages/Details_Auction_fish/detail";
-
+import ManageKoiBreederAccount from "./pages/MANAGER/manage-koibreeder-account";
+import ManageStaffAccount from "./pages/MANAGER/manage-staff-account";
+import PaymentSuccess from "./pages/payment-notification";
 function App() {
   const router = createBrowserRouter([
     {
@@ -57,6 +61,14 @@ function App() {
       element: <Register />,
     },
     {
+      path: "/forgot-password",
+      element: <ForgotPassword />,
+    },
+    {
+      path: "/reset-password",
+      element: <ResetPassword />,
+    },
+    {
       path: "/member-profile",
       element: <MemberProfileLayout />,
       children: [
@@ -65,8 +77,16 @@ function App() {
           element: <Personal />,
         },
         {
+          path: "my-auction",
+          element: <MyAuction />,
+        },
+        {
           path: "wallet",
           element: <Wallet />,
+        },
+        {
+          path: "wallet/success",
+          element: <PaymentSuccess />,
         },
       ],
     },
@@ -124,11 +144,11 @@ function App() {
         },
         {
           path: "manage-staff-account",
-          element: <div>hello</div>,
+          element: <ManageStaffAccount />,
         },
         {
           path: "manage-koibreeder-account",
-          element: <div>hello</div>,
+          element: <ManageKoiBreederAccount />,
         },
       ],
     },

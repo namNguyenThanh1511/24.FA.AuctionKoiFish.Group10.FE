@@ -2,38 +2,57 @@ import React from "react";
 import { Layout, Menu } from "antd";
 import {
   UserOutlined,
-  PieChartOutlined,
+  PullRequestOutlined,
   NotificationOutlined,
-  FileOutlined,
   LogoutOutlined,
-  WalletOutlined,
-  TransactionOutlined,
+  UserAddOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 
 import Footer from "../../footer/Footer";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import HeaderLogin from "../../header-logged-in";
-const { Header, Sider, Content } = Layout;
+const { Sider, Content } = Layout;
 
-function getItem(label, key, icon, children) {
+function getItem(label, key, icon, onClick = null, children) {
   return {
     key,
     icon,
     children,
-    label: <Link to={`${key}`}> {label} </Link>,
+    label: onClick ? (
+      <span onClick={onClick} style={{ cursor: "pointer" }}>
+        {label}
+      </span>
+    ) : (
+      <Link to={`${key}`}> {label} </Link>
+    ),
   };
 }
 
-const items = [
-  getItem("Personal", "personal", <PieChartOutlined />),
-  getItem("Manage Request", "manage-request", <PieChartOutlined />),
-  getItem("Manage Auction", "manage-auction", <NotificationOutlined />),
-  getItem("Manage Staff Account", "manage-staff-account", <FileOutlined />),
-  getItem("Manage Koi Breeder Account", "manage-koibreeder-account", <TransactionOutlined />),
-  getItem("Logout", "logout", <LogoutOutlined />),
-];
-
 const ManagerProfileLayout = ({ children, collapsed, setCollapsed }) => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+    window.location.reload();
+  };
+
+  const items = [
+    getItem("Personal", "personal", <TeamOutlined />),
+    getItem("Manage Request", "manage-request", <PullRequestOutlined />),
+    getItem("Manage Auction", "manage-auction", <NotificationOutlined />),
+    getItem(
+      "Manage Staff Account",
+      "manage-staff-account",
+      <UserAddOutlined />
+    ),
+    getItem(
+      "Manage Koi Breeder Account",
+      "manage-koibreeder-account",
+      <UserAddOutlined />
+    ),
+    getItem("Logout", "logout", <LogoutOutlined />, handleLogout),
+  ];
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
@@ -52,12 +71,19 @@ const ManagerProfileLayout = ({ children, collapsed, setCollapsed }) => {
           }}
         >
           {!collapsed && (
-            <span style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}>
+            <span
+              style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}
+            >
               <UserOutlined /> My Account
             </span>
           )}
         </div>
-        <Menu theme="dark" defaultSelectedKeys={["personal"]} mode="inline" items={items} />
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={["personal"]}
+          mode="inline"
+          items={items}
+        />
       </Sider>
 
       {/* Main Layout */}

@@ -22,7 +22,7 @@ body {
   border-radius: 20px;
   width: 300px;
   box-shadow: 50px 50px 50px rgba(0, 0, 0, 0.2);
-  margin-left: 10%; /* Đặt form cách mép trái 5% */
+  margin-left: 10%; /* Đặt form cách mép trái 10% */
 }
 
 .login-form h2 {
