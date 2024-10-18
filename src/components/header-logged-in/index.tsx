@@ -11,9 +11,12 @@ import {
 } from "@ant-design/icons"; // Import các icon từ Ant Design
 import "./index.css"; // Import file CSS cho Header
 import avatar from "../../images/avata.jpg"; // Thêm đường dẫn avatar
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/feature/userSlice";
 
 const HeaderLogin = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const role = "";
   const base_URL = "";
@@ -38,6 +41,7 @@ const HeaderLogin = () => {
         <div
           onClick={() => {
             localStorage.removeItem("token");
+            dispatch(logout());
             navigate("/");
             window.location.reload();
           }}
