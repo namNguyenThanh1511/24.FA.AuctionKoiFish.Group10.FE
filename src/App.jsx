@@ -107,6 +107,10 @@ function App() {
           path: "auctionRequest",
           element: <ManageAuctionRequestOfKoiBreeder />,
         },
+        {
+          path: "wallet",
+          element: <Wallet />,
+        },
       ],
     },
     {

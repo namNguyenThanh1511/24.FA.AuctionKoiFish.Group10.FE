@@ -28,6 +28,7 @@ const items = [
   getItem("Personal", "personal", <PieChartOutlined />),
   getItem("My Koi", "koiFish", <PieChartOutlined />),
   getItem("My Auction Request", "auctionRequest", <PieChartOutlined />),
+  getItem("Wallet", "wallet", <WalletOutlined />),
 ];
 
 const KoibreederProfileLayout = ({ children, collapsed, setCollapsed }) => {
