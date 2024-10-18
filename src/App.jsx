@@ -104,6 +104,10 @@ function App() {
           element: <ManageKoiFish />,
         },
         {
+          path: "wallet",
+          element: <Wallet />,
+        },
+        {
           path: "auctionRequest",
           element: <ManageAuctionRequestOfKoiBreeder />,
         },
@@ -128,6 +132,10 @@ function App() {
         {
           path: "manage-assigned-session",
           element: <div>manage-assigned-session</div>,
+        },
+        {
+          path: "manage-member-account",
+          element: <ManageMemberAccount/>,
         },
       ],
     },

@@ -2,25 +2,31 @@ import React from "react";
 import { Layout, Menu } from "antd";
 import {
   UserOutlined,
-  PieChartOutlined,
   NotificationOutlined,
   FileOutlined,
   LogoutOutlined,
   WalletOutlined,
   TransactionOutlined,
+  TeamOutlined,
 } from "@ant-design/icons";
 
 import Footer from "../../footer/Footer";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import HeaderLogin from "../../header-logged-in";
 const { Sider, Content } = Layout;
 
-function getItem(label, key, icon, children) {
+function getItem(label, key, icon, onClick= null, children) {
   return {
     key,
     icon,
     children,
-    label: <Link to={`${key}`}> {label} </Link>,
+    label: onClick ? (
+      <span onClick={onClick} style={{ cursor: "pointer" }}>
+        {label}
+      </span>
+    ) : (
+      <Link to={`${key}`}> {label} </Link>
+    ),
   };
 }
 
@@ -32,6 +38,19 @@ const items = [
 ];
 
 const KoibreederProfileLayout = ({ children, collapsed, setCollapsed }) => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+    window.location.reload();
+  };
+  const items = [
+    getItem("Personal", "personal", <TeamOutlined />),
+    getItem("My Koi", "koiFish", <NotificationOutlined />),
+    getItem("My Auction Request", "auctionRequest", <FileOutlined />),
+    getItem("Wallet", "wallet", <WalletOutlined />),
+    getItem("Logout", "logout", <LogoutOutlined />, handleLogout),
+  ];
   return (
     <Layout style={{ minHeight: "100vh" }}>
       {/* Sidebar */}
@@ -50,12 +69,19 @@ const KoibreederProfileLayout = ({ children, collapsed, setCollapsed }) => {
           }}
         >
           {!collapsed && (
-            <span style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}>
+            <span
+              style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}
+            >
               <UserOutlined /> My Account
             </span>
           )}
         </div>
-        <Menu theme="dark" defaultSelectedKeys={["personal"]} mode="inline" items={items} />
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={["personal"]}
+          mode="inline"
+          items={items}
+        />
       </Sider>
 
       {/* Main Layout */}
