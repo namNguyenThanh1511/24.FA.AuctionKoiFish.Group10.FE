@@ -9,7 +9,7 @@ import Auction from "./pages/Auctions/Auction";
 
 import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
 import Layout from "./layout/general-layout";
-import Detail from "./pages/Details/detail";
+
 import MyAuction from "./pages/Member-MyAuction/Member-MyAuction";
 import ForgotPassword from "./pages/forgotpassword/forgotpassword";
 import ResetPassword from "./pages/resetpassword/resetpassword";
@@ -27,6 +27,7 @@ import ManageAuctionSessionManager from "./pages/MANAGER/manage-auction-session"
 import ManageKoiBreederAccount from "./pages/MANAGER/manage-koibreeder-account";
 import ManageStaffAccount from "./pages/MANAGER/manage-staff-account";
 import PaymentSuccess from "./pages/payment-notification";
+import Detail from "./pages/Details_Auction_fish/detail";
 function App() {
   const router = createBrowserRouter([
     {
