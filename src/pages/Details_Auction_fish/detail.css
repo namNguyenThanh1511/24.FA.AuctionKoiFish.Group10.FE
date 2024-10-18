@@ -1,0 +1,60 @@
+.product-detail {
+    display: flex;
+    align-items: flex-start;
+    background-color: #f9f9f9 !important; /* Đổi màu nền với !important */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    max-width: 1200px;
+    width: 100%;
+    padding: 20px;
+    margin: 20px auto;
+    margin-top: 150px;
+    height: auto;
+    flex-direction: row; /* Giữ sắp xếp theo hàng ngang */
+}
+
+.product-info-container {
+    display: flex;
+    flex-direction: column;
+    flex: 3;
+    align-items: center; /* Đặt phần chứa thông tin ở giữa */
+    text-align: left;  /* Căn trái văn bản */
+    font-size: 14px; /* Thu nhỏ kích thước chữ */
+    padding: 10px; /* Thêm khoảng đệm để phần nội dung không sát lề */
+}
+
+.product-info-container p, .product-info-container h1, .product-info-container h2 {
+    margin: 5px 0; /* Giảm khoảng cách trên dưới giữa các dòng thông tin */
+}
+
+.product-image {
+    flex: 1;
+    margin-right: 20px;
+    text-align: center;
+}
+
+.product-image img {
+    width: 300px;
+    height: auto;
+    border-radius: 8px;
+    border: 2px solid #ccc; /* Thêm viền cho ảnh */
+}
+
+.time {
+    font-size: 40px;
+    color: red; /* Đổi màu chữ thành màu đỏ */
+    margin-top: 10px; /* Khoảng cách trên với ảnh */
+}
+
+.additional-info-container {
+    background-color: white;
+    padding: 20px;
+    margin: 20px auto;
+    margin-top: -5px;
+    max-width: 1200px;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}

@@ -5,12 +5,12 @@ import { Button } from "antd";
 import Card from "../../components/Card/Card";
 import Koi from "../../images/Koi1.jpg";
 import api from "../../config/axios";
-
+import { useNavigate } from "react-router-dom";
 const Auction = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [cardsData, setCardsData] = useState([]);
   const cardsPerPage = 12;
-
+  const navigate = useNavigate(); // Khởi tạo useNavigate
   // Hàm tính toán tuổi theo định dạng "x years y months"
   const calculateAge = (dateOfBirth) => {
     const now = new Date();
@@ -32,12 +32,7 @@ const Auction = () => {
   useEffect(() => {
     const fetchKoiFish = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await api.get("/auctionSession", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await api.get("/auctionSession");
 
         const data = response.data;
 
@@ -52,6 +47,7 @@ const Auction = () => {
           const countdown = getCountdown(startDate, endDate); // Tính toán countdown
 
           return {
+            auctionSessionId: item.auctionSessionId,
             name: item.koi.name || "Unknown", // Lấy name từ API
             title: item.title || "Unknown", // Lấy title từ API
             breeder: item.koi.breeder.username || "Unknown",
@@ -122,26 +118,29 @@ const Auction = () => {
 
   return (
     <div className="auction-form-container">
-      {" "}
-      {/* Thêm class cho container */}
-      <HeaderLogin />
       <div className="card-grid">
-        {currentCards.map((card, index) => (
+        {currentCards.map((card) => (
           <Card
-            key={index}
+            key={card.auctionSessionId}
             image={card.image || Koi}
-            title={card.title} // Truyền title vào Card
-            name={card.name} // Truyền name vào Card
+            title={card.title}
+            name={card.name}
             breeder={card.breeder}
             length={card.length}
             sex={card.sex}
             age={card.age}
-            countdown={card.countdown} // Truyền countdown vào Card
+            countdown={card.countdown}
             price={card.price.toLocaleString("en-US")}
             likes={card.likes}
             variety={card.variety}
-            auctionStatus={card.auctionStatus} // Truyền auctionStatus vào Card
-            auctionType={card.auctionType} // Truyền auctionType vào Card
+            auctionStatus={card.auctionStatus}
+            auctionType={card.auctionType}
+            auctionSessionId={card.auctionSessionId}
+            onViewClick={() => {
+              console.log(card);
+
+              navigate(`${card.auctionSessionId}`, { replace: true });
+            }} // Điều hướng khi nhấn nút View
           />
         ))}
       </div>
