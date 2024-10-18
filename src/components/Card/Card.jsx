@@ -1,10 +1,11 @@
 import React from "react";
 import "./Card.css";
+import { Button } from "antd"; // Nhập Button từ Ant Design
 
 const Card = ({
   image,
-  title, // Nhận title từ props
-  name, // Nhận name từ props
+  title,
+  name,
   breeder,
   length,
   sex,
@@ -15,6 +16,8 @@ const Card = ({
   variety,
   auctionStatus,
   auctionType,
+  onViewClick, // Thêm prop cho nút View
+  auctionSessionId, // Thêm prop auctionSessionId nếu cần
 }) => {
   return (
     <div className="card-container">
@@ -25,13 +28,10 @@ const Card = ({
         </div>
       </div>
       <div className="card-body">
-        {/* Hiển thị title ở đầu */}
         <h3 className="card-title">{title}</h3>
-        {/* Hiển thị countdown ở trên giá */}
         <div className="card-countdown">{countdown}</div>
-        <div className="card-price">${price}</div> {/* Giá tiền */}
-        {/* Hiển thị name ở dưới giá */}
-        <h4 className="card-name">{name}</h4> {/* Hiển thị name */}
+        <div className="card-price">${price}</div>
+        <h4 className="card-name">{name}</h4>
         <div className="card-info">
           <p>
             <strong>Breeder: </strong>
@@ -54,7 +54,6 @@ const Card = ({
             {variety}
           </p>
         </div>
-        {/* Hiển thị auctionStatus và auctionType */}
         <div className="card-status-type">
           <p className="card-status">
             <strong>Status: </strong>
@@ -65,6 +64,9 @@ const Card = ({
             {auctionType}
           </p>
         </div>
+        <Button className="view-button" onClick={onViewClick}>
+          View
+        </Button>
       </div>
     </div>
   );
