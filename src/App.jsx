@@ -9,7 +9,7 @@ import Auction from "./pages/Auctions/Auction";
 
 import ManageKoiFish from "./pages/KOI_BREEDER/koiFish";
 import Layout from "./layout/general-layout";
-import Detail from "./pages/Details/detail";
+
 import ManageAuctionRequestOfKoiBreeder from "./pages/KOI_BREEDER/auctionRequest";
 import About from "./pages/About/about";
 
@@ -21,6 +21,7 @@ import StaffProfileLayout from "./components/profile-layout/staff-profile-layout
 import ManageAuctionRequest from "./pages/STAFF/manage-auction-request";
 import ManagerManageAuctionRequest from "./pages/MANAGER/manage-auction-request";
 import ManageAuctionSessionManager from "./pages/MANAGER/manage-auction-session";
+import Detail from "./pages/Details_Auction_fish/detail";
 
 function App() {
   const router = createBrowserRouter([
@@ -37,9 +38,10 @@ function App() {
           element: <Auction />,
         },
         {
-          path: "/auctions/details",
+          path: "/auctions/:auctionSessionId", // Đường dẫn cho trang chi tiết
           element: <Detail />,
         },
+
         {
           path: "/about",
           element: <About />,
