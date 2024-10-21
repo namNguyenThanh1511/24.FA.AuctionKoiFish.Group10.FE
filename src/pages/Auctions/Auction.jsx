@@ -120,28 +120,27 @@ const Auction = () => {
     <div className="auction-form-container">
       <div className="card-grid">
         {currentCards.map((card) => (
-          <Card
-            key={card.auctionSessionId}
-            image={card.image || Koi}
-            title={card.title}
-            name={card.name}
-            breeder={card.breeder}
-            length={card.length}
-            sex={card.sex}
-            age={card.age}
-            countdown={card.countdown}
-            price={card.price.toLocaleString("en-US")}
-            likes={card.likes}
-            variety={card.variety}
-            auctionStatus={card.auctionStatus}
-            auctionType={card.auctionType}
-            auctionSessionId={card.auctionSessionId}
-            onViewClick={() => {
-              console.log(card);
-
-              navigate(`${card.auctionSessionId}`, { replace: true });
-            }} // Điều hướng khi nhấn nút View
-          />
+         <Card
+         key={card.auctionSessionId}
+         image={card.image || Koi}
+         title={card.title}
+         name={card.name}
+         breeder={card.breeder}
+         length={card.length}
+         sex={card.sex}
+         age={card.age}
+         countdown={card.countdown}
+         price={card.price.toLocaleString("en-US")}
+         likes={card.likes}
+         variety={card.variety}
+         auctionStatus={card.auctionStatus} // Đảm bảo đây là giá trị trạng thái
+         auctionType={card.auctionType} // Đảm bảo đây là giá trị loại
+         auctionSessionId={card.auctionSessionId}
+         onViewClick={() => {
+           navigate(`${card.auctionSessionId}`, { replace: true });
+         }}
+       />
+       
         ))}
       </div>
       <div className="pagination">

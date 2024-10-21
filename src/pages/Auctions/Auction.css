@@ -1,19 +1,22 @@
 body {
-  background-color: #ededed; /* Nền trang */
+  background-color: #ffffff !important; /* Nền toàn bộ trang thành màu trắng */
   margin: 0;
   padding: 0;
 }
 
 /* Style cho toàn bộ form */
 .auction-form-container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
   padding: 20px;
-  background-color: #ffffff; /* Thay đổi màu nền thành trắng để không có màu xám của .auction-form-container */
+  /* Xóa thuộc tính background-color để bỏ nền */
   border-radius: 8px;
   box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
   margin-top: 130px;
 }
+
+/* Các style khác không thay đổi */
+
 
   
   /* Style các trường của form */
@@ -54,7 +57,7 @@ body {
     max-width: 1200px; /* Giới hạn chiều rộng của grid */
     margin-bottom: 30px;
     margin-top: 10px;
-    border-radius: 10px;
+    border-radius: 8px;
 }
 
 /* Style cho từng thẻ Card */

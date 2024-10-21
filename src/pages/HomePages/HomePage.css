@@ -1,47 +1,109 @@
 .homepage {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f8f9fa; /* Màu nền */
+  font-family: 'Fredoka', sans-serif; /* Chọn font bạn muốn */
 }
 
-.banner {
-  position: relative;
-  text-align: center;
+
+.banner img {
   width: 100%;
 }
 
-.banner img {
-  width: 100%; /* Đặt chiều rộng hình ảnh chiếm toàn bộ chiều rộng của container */
-  height: auto; /* Chiều cao tự động */
+.content-section {
+  width: 100%;
+  background-color: #ffffff;
+  padding: 50px 0;
 }
 
-.banner h1 {
-  position: absolute; /* Đặt tiêu đề lên hình ảnh */
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%); /* Giữa theo cả hai trục */
-  color: white; /* Màu chữ */
-  font-size: 2rem; /* Kích thước chữ */
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* Đổ bóng cho chữ */
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 20px;
 }
 
-.banner-buttons {
-  margin-top: 20px;
+.content h1 {
+  font-size: 36px;
+  margin-bottom: 20px;
 }
 
-.btn-register,
-.btn-auctions {
-  padding: 10px 20px;
-  margin: 0 10px;
-  text-decoration: none;
+.content p {
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.slider-section {
+  position: relative;
+  width: 100vw;
+  height: 800px;
+}
+
+.slider-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('../../images/nenHP.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.3;
+  z-index: 1;
+}
+
+.slider-text {
+  position: absolute;
+  top: 70px; /* Tăng khoảng cách từ trên xuống */
+  left: 100px; /* Tăng khoảng cách từ trái vào */
+  z-index: 2;
   color: white;
-  background-color: #007bff; /* Màu nền nút */
-  border-radius: 5px; /* Bo tròn góc */
-  transition: background-color 0.3s ease; /* Hiệu ứng chuyển màu */
 }
 
-.btn-register:hover,
-.btn-auctions:hover {
-  background-color: #0056b3; /* Màu nền khi hover */
+
+.slider-text h1 {
+  font-size: 48px;
+  font-weight: bold;
+  margin-bottom: 30px; /* Tăng khoảng cách giữa title và nội dung */
 }
+
+.slider-text p {
+  font-size: 18px;
+  line-height: 1.5;
+  max-width: 500px;
+  margin-top: 20px; /* Thêm khoảng cách nếu cần */
+}
+
+
+.image-container {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+}
+
+.logo-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 20px;
+  justify-items: center;
+  align-items: center;
+}
+
+.logo-item {
+  text-align: center;
+}
+
+.logo-item img {
+  width: 100px;
+  height: auto;
+  border-radius: 10px;
+  transition: transform 0.3s ease;
+}
+
+.logo-item:hover img {
+  transform: scale(1.2);
+}
+
