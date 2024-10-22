@@ -49,7 +49,8 @@
   background-image: url('../../images/nenHP.jpg');
   background-size: cover;
   background-position: center;
-  opacity: 0.3;
+  opacity: 1;
+  filter: brightness(0.35) hue-rotate(30deg);
   z-index: 1;
 }
 

@@ -1,149 +1,152 @@
-  .card-container {
-    display: flex;
-    flex-direction: column;
-    width: 180px; /* Giữ chiều rộng của card */
-    background-color: #ffffff;
-    border: none;
-    overflow: hidden;
-    color: #333;
-    font-family: 'Fredoka', sans-serif;
-    transition: transform 0.3s, box-shadow 0.3s;
-    margin: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  }
+.card-container {
+  display: flex;
+  flex-direction: column;
+  width: 180px; /* Giữ chiều rộng của card */
+  background-color: #ffffff;
+  border: none;
+  overflow: hidden;
+  color: #333;
+  font-family: 'Fredoka', sans-serif;
+  transition: transform 0.3s, box-shadow 0.3s;
+  margin: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
 
-  .card-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
-  }
+.card-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
+}
 
-  .card-header {
-    display: flex;
-    flex-direction: row; /* Sắp xếp ảnh và thông tin theo hàng ngang */
-    flex: 1; /* Chiếm không gian để có độ cao cố định */
-  }
+.card-header {
+  display: flex;
+  flex-direction: row; /* Sắp xếp ảnh và thông tin theo hàng ngang */
+  flex: 1; /* Chiếm không gian để có độ cao cố định */
+}
 
-  .card-image {
-    width: 50%; /* Hình ảnh sẽ chiếm 50% chiều rộng của card */
-    height: auto; /* Giảm chiều cao hình ảnh */
-  }
+.card-image {
+  width: 50%; /* Hình ảnh sẽ chiếm 50% chiều rộng của card */
+  height: auto; /* Giảm chiều cao hình ảnh */
+}
 
-  .card-info {
-    width: 50%; /* Thông tin chiếm 50% chiều rộng của card */
-    padding: 8px; /* Giảm khoảng cách bên trong */
-    display: flex;
-    flex-direction: column; /* Sắp xếp thông tin theo chiều dọc */
-    gap: 4px; /* Giảm khoảng cách giữa các mục thông tin */
-  }
+.card-info {
+  width: 50%; /* Thông tin chiếm 50% chiều rộng của card */
+  padding: 8px; /* Giảm khoảng cách bên trong */
+  display: flex;
+  flex-direction: column; /* Sắp xếp thông tin theo chiều dọc */
+  gap: 4px; /* Giảm khoảng cách giữa các mục thông tin */
+}
 
-  .card-details p {
-    margin: 0; /* Đặt margin thành 0 để giảm khoảng cách giữa các dòng */
-  }
+.card-details p {
+  margin: 0; /* Đặt margin thành 0 để giảm khoảng cách giữa các dòng */
+}
 
-  .card-title {
-    font-size: 16px; /* Giảm kích thước chữ của title */
-    margin: 8px 0; /* Thêm margin cho title */
-    color: #333; /* Đổi màu chữ */
-    white-space: normal; /* Cho phép xuống dòng */
-    overflow-wrap: break-word; /* Ngắt từ nếu cần thiết */
-    line-height: 1.3; /* Điều chỉnh chiều cao dòng cho dễ đọc */
-  }
+.card-title {
+  font-size: 16px; /* Giảm kích thước chữ của title */
+  margin: 8px 0; /* Thêm margin cho title */
+  color: #333; /* Đổi màu chữ */
+  white-space: normal; /* Cho phép xuống dòng */
+  overflow-wrap: break-word; /* Ngắt từ nếu cần thiết */
+  line-height: 1.3; /* Điều chỉnh chiều cao dòng cho dễ đọc */
+}
 
-  .card-name {
-    font-size: 14px; /* Giảm kích thước chữ của name */
-    margin: 6px 0; /* Thêm margin cho tên */
-    white-space: nowrap; /* Ngăn không cho text bị ngắt dòng */
-    overflow: hidden; /* Ẩn phần văn bản tràn ra ngoài */
-    text-overflow: ellipsis; /* Thêm dấu ... nếu văn bản quá dài */
-  }
+.card-name {
+  font-size: 14px; /* Giảm kích thước chữ của name */
+  margin: 6px 0; /* Thêm margin cho tên */
+  white-space: nowrap; /* Ngăn không cho text bị ngắt dòng */
+  overflow: hidden; /* Ẩn phần văn bản tràn ra ngoài */
+  text-overflow: ellipsis; /* Thêm dấu ... nếu văn bản quá dài */
+}
 
-  .card-details {
-    font-size: 12px; /* Giảm kích thước chữ cho các thông tin khác */
-    line-height: 1.4;
-  
-  }
+.card-details {
+  font-size: 12px; /* Giảm kích thước chữ cho các thông tin khác */
+  line-height: 1.4;
+}
 
-  .card-footer {
-    flex: 0 0 auto; /* Giữ chiều cao cố định cho footer */
-    padding: 4px; /* Giảm khoảng cách bên trong */
-    display: flex;
-    flex-direction: column; /* Sắp xếp các phần theo chiều dọc */
-    align-items: center; /* Giữa các phần tử trong footer */
-    background-color: #ffffff; /* Thay đổi màu nền thành xám */
-    border-top: 1px solid #ccc; /* Thêm viền trên nếu cần */
-    position: relative; /* Thêm thuộc tính này để sử dụng cho nút bên phải */
-  }
-  .card-footer h4 {
-    margin-top: 10px;
-  }
+.card-footer {
+  flex: 0 0 auto; /* Giữ chiều cao cố định cho footer */
+  padding: 4px; /* Giảm khoảng cách bên trong */
+  display: flex;
+  flex-direction: column; /* Sắp xếp các phần theo chiều dọc */
+  align-items: center; /* Giữa các phần tử trong footer */
+  background-color: #ffffff; /* Thay đổi màu nền thành xám */
+  border-top: 1px solid #ccc; /* Thêm viền trên nếu cần */
+  position: relative; /* Thêm thuộc tính này để sử dụng cho nút bên phải */
+}
 
-  .card-countdown {
-    font-size: 14px; /* Giảm kích thước chữ cho countdown */
-    color: #ff0000; /* Giữ màu chữ đỏ cho countdown */
-    font-weight: bold;
-    margin: 8px; /* Thêm margin dưới countdown */
-    margin-top: -10px; 
-  }
+.card-footer h4 {
+  margin-top: 10px;
+}
 
-  .card-price {
-    background-color: #d2d0d0; /* Đổi màu nền thành màu sáng cho price */
-    padding: 4px;
-    text-align: center;
-    font-size: 16px; /* Giảm kích thước chữ cho price */
-    margin: 8px 0; /* Thay đổi margin để tạo khoảng cách với countdown */
-    color: #333; /* Đổi màu chữ thành tối hơn */
-    width: 100%; /* Đảm bảo màu nền chiếm toàn bộ chiều ngang */
-    box-sizing: border-box; /* Đảm bảo padding không làm thay đổi chiều rộng */
-  }
+.card-countdown {
+  font-size: 14px; /* Giảm kích thước chữ cho countdown */
+  color: #ff0000; /* Giữ màu chữ đỏ cho countdown */
+  font-weight: bold;
+  margin: 8px; /* Thêm margin dưới countdown */
+  margin-top: -10px; 
+}
 
+.card-price {
+  background-color: #d2d0d0; /* Đổi màu nền thành màu sáng cho price */
+  padding: 4px;
+  text-align: center;
+  font-size: 16px; /* Giảm kích thước chữ cho price */
+  margin: 8px 0; /* Thay đổi margin để tạo khoảng cách với countdown */
+  color: #333; /* Đổi màu chữ thành tối hơn */
+  width: 100%; /* Đảm bảo màu nền chiếm toàn bộ chiều ngang */
+  box-sizing: border-box; /* Đảm bảo padding không làm thay đổi chiều rộng */
+}
 
-  .card-status-type {
-    margin: 6px 0; /* Giảm khoảng cách giữa status và type */
-    text-align: center; /* Giữa các phần tử trong status và type */
-  }
+.card-status-type {
+  margin: 6px 0; /* Giảm khoảng cách giữa status và type */
+  text-align: center; /* Giữa các phần tử trong status và type */
+}
 
-  .card-status,
-  .card-type {
-    color: #666; /* Đổi màu chữ thành tối hơn để dễ nhìn */
-    font-size: 12px; /* Giảm kích thước chữ */
-    margin: 2px 0; /* Giảm khoảng cách giữa các dòng */
-  }
+.card-status {
+  color: #666; /* Đổi màu chữ "Status" thành tối hơn */
+  font-size: 12px; /* Giảm kích thước chữ */
+  margin: 2px 0; /* Giảm khoảng cách giữa các dòng */
+}
 
-  /* Màu sắc cho trạng thái và loại */
-  .card-status.upcoming {
-    color: #ffc107; /* Màu vàng cho trạng thái Up-Coming */
-  }
+.card-status.upcoming span {
+  color: #ffc107; /* Màu vàng cho giá trị Up-Coming */
+}
 
-  .card-status.ongoing {
-    color: #28a745; /* Màu xanh lá cho trạng thái On-Going */
-  }
+.card-status.ongoing span {
+  color: #28a745; /* Màu xanh lá cho giá trị On-Going */
+}
 
-  .card-status.completed {
-    color: #dc3545; /* Màu đỏ cho trạng thái End */
-  }
+.card-status.completed span {
+  color: #dc3545; /* Màu đỏ cho giá trị End */
+}
 
-  .card-type.upcoming {
-    color: #ffc107; /* Màu vàng cho loại Up-Coming */
-  }
+.card-type {
+  color: #666; /* Đổi màu chữ thành tối hơn để dễ nhìn */
+  font-size: 12px; /* Giảm kích thước chữ */
+  margin: 2px 0; /* Giảm khoảng cách giữa các dòng */
+}
 
-  .card-type.ongoing {
-    color: #28a745; /* Màu xanh lá cho loại On-Going */
-  }
+.card-type.upcoming {
+  color: #ffc107; /* Màu vàng cho loại Up-Coming */
+}
 
-  .card-type.completed {
-    color: #dc3545; /* Màu đỏ cho loại End */
-  }
+.card-type.ongoing {
+  color: #28a745; /* Màu xanh lá cho loại On-Going */
+}
 
-  .view-button {
-    position: absolute; /* Đặt vị trí tuyệt đối */
-    bottom: 10px; /* Căn nút cách dưới cùng 10px */
-    right: 10px; /* Căn nút cách bên phải 10px */
-    background: none; /* Bỏ nền của nút */
-    border: none; /* Bỏ viền của nút */
-    padding: 0; /* Bỏ padding để nút nhỏ lại */
-    cursor: pointer; /* Hiển thị con trỏ chuột khi hover */
-  }
+.card-type.completed {
+  color: #dc3545; /* Màu đỏ cho loại End */
+}
 
-  .view-button:hover {
-    color: #007bff; /* Thay đổi màu khi hover nếu muốn */
-  }
+.view-button {
+  position: absolute; /* Đặt vị trí tuyệt đối */
+  bottom: 10px; /* Căn nút cách dưới cùng 10px */
+  right: 10px; /* Căn nút cách bên phải 10px */
+  background: none; /* Bỏ nền của nút */
+  border: none; /* Bỏ viền của nút */
+  padding: 0; /* Bỏ padding để nút nhỏ lại */
+  cursor: pointer; /* Hiển thị con trỏ chuột khi hover */
+}
+
+.view-button:hover {
+  color: #007bff; /* Thay đổi màu khi hover nếu muốn */
+}

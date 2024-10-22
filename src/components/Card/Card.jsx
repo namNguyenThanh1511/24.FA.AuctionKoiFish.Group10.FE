@@ -50,27 +50,28 @@ const Card = ({
         </div>
       </div>
       <div className="card-footer">
-        <h4>time left</h4>
+        <h4>Time left</h4>
         <div className="card-countdown">{countdown}</div>
         <div className="card-price">${price}</div>
 
         <div className="card-status-type">
           <p className={`card-status ${auctionStatus.toLowerCase()}`}>
             <strong>Status: </strong>
-            {auctionStatus}
+            <span>{auctionStatus}</span>
           </p>
+
           <p className={`card-type ${auctionType.toLowerCase()}`}>
             <strong>Type: </strong>
             {auctionType}
           </p>
         </div>
+        <Button
+          className="view-button"
+          onClick={onViewClick}
+          icon={<ArrowRightOutlined />} // Giữ biểu tượng mũi tên
+          iconPosition="right" // Đặt biểu tượng bên phải
+        />
       </div>
-      <Button
-        className="view-button"
-        onClick={onViewClick}
-        icon={<ArrowRightOutlined />} // Giữ biểu tượng mũi tên
-        iconPosition="right" // Đặt biểu tượng bên phải
-      />
     </div>
   );
 };
