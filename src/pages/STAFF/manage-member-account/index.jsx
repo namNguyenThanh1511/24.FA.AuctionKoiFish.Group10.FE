@@ -11,7 +11,7 @@ const ManageMemberAccount = () => {
   const fetchAccounts = async () => {
     setLoading(true);
     try {
-      const response = await api.get("/members"); // Gọi API lấy danh sách tài khoản
+      const response = await api.get("/members-paging"); // Gọi API lấy danh sách tài khoản
       const accountsData = response.data;
       setAccounts(accountsData);
     } catch (error) {
