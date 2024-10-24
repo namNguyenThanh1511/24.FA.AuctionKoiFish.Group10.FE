@@ -9,7 +9,8 @@ const Detail = () => {
   const { auctionSessionId } = useParams();
   const [productDetail, setProductDetail] = useState(null);
   const [countdown, setCountdown] = useState("");
-  const [currentBid, setCurrentBid] = useState(0); // Khởi tạo với 0
+  const [currentBid, setCurrentBid] = useState(0);
+  const [bidHistory, setBidHistory] = useState([]); // Khai báo để lưu lịch sử đấu giá
 
   // Hàm để lấy thông tin sản phẩm
   const fetchProductDetail = async () => {
@@ -24,6 +25,14 @@ const Detail = () => {
       console.log("Product detail from API: ", response.data);
       setProductDetail(response.data);
       setCurrentBid(response.data.currentPrice); // Thiết lập giá trị bid ban đầu
+
+      // Cập nhật lịch sử đấu giá
+      const historyData = response.data.bids.map(bid => ({
+        date: new Date(bid.bidAt).toLocaleString(),
+        bid: bid.bidAmount,
+        name: bid.member.fullName
+      }));
+      setBidHistory(historyData);
 
       if (response.data.auctionStatus === "COMPLETED") {
         setCountdown("Auction ended");
@@ -59,35 +68,22 @@ const Detail = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       fetchProductDetail(); // Gọi lại API để cập nhật thông tin
-      if (productDetail) {
-        if (productDetail.auctionStatus === "COMPLETED") {
-          setCountdown("Auction ended");
-        } else {
-          const startDate = new Date(productDetail.startDate);
-          const endDate = new Date(productDetail.endDate);
-          const countdown = getCountdown(startDate, endDate);
-          setCountdown(countdown);
-        }
-      }
     }, 1000);
 
     return () => clearInterval(intervalId); // Dọn dẹp interval khi component unmount
-  }, [productDetail]);
+  }, []);
 
   const handleBid = async (bidValue) => {
     try {
       const token = localStorage.getItem("token");
+      const bidDifference = bidValue - currentBid;
 
-      // Tính toán số chênh lệch giữa bidValue và currentPrice từ productDetail
-      const bidDifference = bidValue - productDetail.currentPrice;
-
-      // Kiểm tra nếu chênh lệch là hợp lệ (chênh lệch lớn hơn 0)
       if (bidDifference > 0) {
         const response = await api.post(
           `bid`,
           {
-            auctionSessionId, // ID phiên đấu giá
-            bidAmount: bidDifference, // Giá trị chênh lệch giữa bidValue và currentPrice
+            auctionSessionId,
+            bidAmount: bidDifference,
           },
           {
             headers: {
@@ -97,9 +93,6 @@ const Detail = () => {
         );
 
         message.success("Bid placed successfully!");
-        console.log("Bid response: ", response.data);
-
-        // Tải lại thông tin sản phẩm sau khi đặt bid thành công
         fetchProductDetail();
       } else {
         message.error("Bid amount must be higher than the current price!");
@@ -141,14 +134,10 @@ const Detail = () => {
           </div>
           <div className="product-info-container">
             <div className="info-box">
-              <p>
-                <strong>Name:</strong> {koi.name}
-              </p>
+              <p><strong>Name:</strong> {koi.name}</p>
             </div>
             <div className="info-box">
-              <p>
-                <strong>Breeder:</strong> {koi.breeder.username}
-              </p>
+              <p><strong>Breeder:</strong> {koi.breeder.username}</p>
             </div>
             <div className="info-box">
               <p>
@@ -159,25 +148,18 @@ const Detail = () => {
               </p>
             </div>
             <div className="info-box">
-              <p>
-                <strong>Auction Type:</strong> {auctionType}
-              </p>
+              <p><strong>Auction Type:</strong> {auctionType}</p>
             </div>
             <div className="info-box">
-              <p>
-                <strong>Length:</strong> {koi.sizeCm} cm
-              </p>
+              <p><strong>Length:</strong> {koi.sizeCm} cm</p>
             </div>
             <div className="info-box">
-              <p>
-                <strong>Sex:</strong> {koi.sex}
-              </p>
+              <p><strong>Sex:</strong> {koi.sex}</p>
             </div>
             <div className="info-box">
               <p>
                 <strong>Age:</strong>{" "}
-                {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()}{" "}
-                years
+                {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()}{" "} years
               </p>
             </div>
             <div className="info-box">
@@ -198,24 +180,24 @@ const Detail = () => {
         </div>
       </div>
 
-      {/* Phần bid và lịch sử đấu giá nằm dưới */}
       <div className="bid-container">
         <BidForm
           currentPrice={currentBid}
           bidIncrement={productDetail.bidIncrement}
-          handleBid={handleBid} // Truyền hàm handleBid
+          handleBid={handleBid}
         />
       </div>
 
       <div className="additional-info-container">
         <h2>Lịch sử đấu giá</h2>
         <Table
-          dataSource={[]} // Dữ liệu mẫu hoặc dữ liệu thực tế nếu có
+          dataSource={bidHistory} // Sử dụng lịch sử đấu giá thực tế
           columns={[
             { title: "Date", dataIndex: "date", key: "date" },
             { title: "Bid", dataIndex: "bid", key: "bid" },
             { title: "Name", dataIndex: "name", key: "name" },
           ]}
+          pagination={{ pageSize: 5 }} // Thiết lập số lượng dòng mỗi trang là 5
           rowKey="date"
         />
       </div>
