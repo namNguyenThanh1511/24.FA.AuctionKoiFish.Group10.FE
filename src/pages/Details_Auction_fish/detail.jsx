@@ -10,9 +10,8 @@ const Detail = () => {
   const [productDetail, setProductDetail] = useState(null);
   const [countdown, setCountdown] = useState("");
   const [currentBid, setCurrentBid] = useState(0);
-  const [bidHistory, setBidHistory] = useState([]); // Khai báo để lưu lịch sử đấu giá
+  const [bidHistory, setBidHistory] = useState([]);
 
-  // Hàm để lấy thông tin sản phẩm
   const fetchProductDetail = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -24,9 +23,8 @@ const Detail = () => {
 
       console.log("Product detail from API: ", response.data);
       setProductDetail(response.data);
-      setCurrentBid(response.data.currentPrice); // Thiết lập giá trị bid ban đầu
+      setCurrentBid(response.data.currentPrice);
 
-      // Cập nhật lịch sử đấu giá
       const historyData = response.data.bids.map(bid => ({
         date: new Date(bid.bidAt).toLocaleString(),
         bid: bid.bidAmount,
@@ -47,7 +45,6 @@ const Detail = () => {
     }
   };
 
-  // Gọi hàm fetchProductDetail khi component mount
   useEffect(() => {
     fetchProductDetail();
   }, [auctionSessionId]);
@@ -64,13 +61,12 @@ const Detail = () => {
       : "Auction ended";
   };
 
-  // Tự động cập nhật countdown và currentBid mỗi giây
   useEffect(() => {
     const intervalId = setInterval(() => {
-      fetchProductDetail(); // Gọi lại API để cập nhật thông tin
+      fetchProductDetail();
     }, 1000);
 
-    return () => clearInterval(intervalId); // Dọn dẹp interval khi component unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleBid = async (bidValue) => {
@@ -103,9 +99,34 @@ const Detail = () => {
     }
   };
 
+  // Hàm xử lý cho nút Buy Now
+  const handleBuyNow = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.post(
+        `bid/buyNow`,
+        {
+          auctionSessionId,
+          amount: productDetail.buyNowPrice,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      message.success("Item purchased successfully!");
+      fetchProductDetail();
+    } catch (error) {
+      console.error("Error purchasing item: ", error);
+      message.error("Failed to purchase item.");
+    }
+  };
+
   if (!productDetail) return <div>Loading...</div>;
 
-  const { koi, auctionStatus, auctionType } = productDetail;
+  const { koi, auctionStatus, auctionType, buyNowPrice } = productDetail;
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -184,20 +205,21 @@ const Detail = () => {
         <BidForm
           currentPrice={currentBid}
           bidIncrement={productDetail.bidIncrement}
+          buyNowPrice={productDetail.buyNowPrice}
           handleBid={handleBid}
+          handleBuyNow={handleBuyNow}
         />
       </div>
 
       <div className="additional-info-container">
         <h2>Lịch sử đấu giá</h2>
         <Table
-          dataSource={bidHistory} // Sử dụng lịch sử đấu giá thực tế
+          dataSource={bidHistory}
           columns={[
             { title: "Date", dataIndex: "date", key: "date" },
             { title: "Bid", dataIndex: "bid", key: "bid" },
             { title: "Name", dataIndex: "name", key: "name" },
           ]}
-          pagination={{ pageSize: 5 }} // Thiết lập số lượng dòng mỗi trang là 5
           rowKey="date"
         />
       </div>
