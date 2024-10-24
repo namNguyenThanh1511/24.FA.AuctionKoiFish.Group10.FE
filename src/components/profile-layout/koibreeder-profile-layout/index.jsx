@@ -8,6 +8,7 @@ import {
   WalletOutlined,
   TransactionOutlined,
   TeamOutlined,
+  PieChartOutlined,
 } from "@ant-design/icons";
 
 import Footer from "../../footer/Footer";
@@ -15,7 +16,7 @@ import { Link, Outlet, useNavigate } from "react-router-dom";
 import HeaderLogin from "../../header-logged-in";
 const { Sider, Content } = Layout;
 
-function getItem(label, key, icon, onClick= null, children) {
+function getItem(label, key, icon, onClick = null, children) {
   return {
     key,
     icon,
@@ -69,19 +70,12 @@ const KoibreederProfileLayout = ({ children, collapsed, setCollapsed }) => {
           }}
         >
           {!collapsed && (
-            <span
-              style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}
-            >
+            <span style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}>
               <UserOutlined /> My Account
             </span>
           )}
         </div>
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["personal"]}
-          mode="inline"
-          items={items}
-        />
+        <Menu theme="dark" defaultSelectedKeys={["personal"]} mode="inline" items={items} />
       </Sider>
 
       {/* Main Layout */}
