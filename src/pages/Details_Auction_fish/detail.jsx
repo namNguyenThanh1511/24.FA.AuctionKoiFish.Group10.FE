@@ -55,8 +55,10 @@ const Detail = () => {
       : "Auction ended";
   };
 
+  // Tự động cập nhật countdown và currentBid mỗi giây
   useEffect(() => {
     const intervalId = setInterval(() => {
+      fetchProductDetail(); // Gọi lại API để cập nhật thông tin
       if (productDetail) {
         if (productDetail.auctionStatus === "COMPLETED") {
           setCountdown("Auction ended");
@@ -69,7 +71,7 @@ const Detail = () => {
       }
     }, 1000);
 
-    return () => clearInterval(intervalId);
+    return () => clearInterval(intervalId); // Dọn dẹp interval khi component unmount
   }, [productDetail]);
 
   const handleBid = async (bidValue) => {
