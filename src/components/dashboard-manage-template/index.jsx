@@ -38,7 +38,7 @@ function DashboardTemplate({
   formViewDetails,
   isShownCardKoiFish,
   isCreateNew,
-  selectedFish,
+  setSelectedFish,
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -53,7 +53,6 @@ function DashboardTemplate({
   useEffect(() => {
     fetchData();
   }, [isRerender]);
-
   useEffect(() => {
     const newColumns = [
       ...columns,
@@ -150,6 +149,7 @@ function DashboardTemplate({
   const handleCloseModal = () => {
     setIsOpenModal(false);
     form.resetFields();
+    setSelectedFish(null);
   };
 
   const handleCloseViewModal = () => {
@@ -159,23 +159,24 @@ function DashboardTemplate({
 
   const handleSubmitForm = async (values) => {
     setLoading(true);
+    let url = null;
+    if (typeof values.image_url === "object") {
+      url = await uploadFile(values.image_url.file.originFileObj);
+      values.image_url = url;
+    }
     try {
-      let url = null;
-      if (typeof values.image_url === "object") {
-        url = await uploadFile(values.image_url.file.originFileObj);
-        values.image_url = url;
-      }
-
       if (values[keyField]) {
         await api.put(`${apiUriPUT}/${values[keyField]}`, values);
+        fetchData();
         notification.success({ message: `${title} updated successfully` });
       } else {
-        await api.post(`${apiUriPOST}`, values);
+        const response = await api.post(`${apiUriPOST}`, values);
+        fetchData();
         notification.success({ message: `${title} created successfully` });
       }
       form.resetFields();
       handleCloseModal();
-      fetchData();
+      console.log(response);
     } catch (error) {
       toast.error(error.response.data);
       console.error(error);
