@@ -71,33 +71,47 @@ const Detail = () => {
 
   const handleBid = async (bidValue) => {
     try {
-      const token = localStorage.getItem("token");
-      const bidDifference = bidValue - currentBid;
+        const token = localStorage.getItem("token");
+        const bidDifference = bidValue - currentBid;
 
-      if (bidDifference > 0) {
-        const response = await api.post(
-          `bid`,
-          {
-            auctionSessionId,
-            bidAmount: bidDifference,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        // Kiểm tra xem bidValue có lớn hơn Buy Now Price không
+        if (bidValue > productDetail.buyNowPrice) {
+            message.error("Bid amount cannot exceed Buy Now price!");
+            return;
+        }
 
-        message.success("Bid placed successfully!");
-        fetchProductDetail();
-      } else {
-        message.error("Bid amount must be higher than the current price!");
-      }
+        // Kiểm tra nếu bidValue bằng với Buy Now Price
+        if (bidValue === productDetail.buyNowPrice) {
+            await handleBuyNow(); // Gọi hàm mua ngay
+            return;
+        }
+
+        // Kiểm tra xem bidValue có lớn hơn currentBid không
+        if (bidDifference > 0) {
+            const response = await api.post(
+                `bid`,
+                {
+                    auctionSessionId,
+                    bidAmount: bidDifference,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+
+            message.success("Bid placed successfully!");
+            fetchProductDetail();
+        } else {
+            message.error("Bid amount must be higher than the current price!");
+        }
     } catch (error) {
-      console.error("Error placing bid: ", error);
-      message.error("Failed to place bid.");
+        console.error("Error placing bid: ", error);
+        message.error("Failed to place bid.");
     }
-  };
+};
+
 
   // Hàm xử lý cho nút Buy Now
   const handleBuyNow = async () => {
@@ -116,11 +130,14 @@ const Detail = () => {
         }
       );
 
-      message.success("Item purchased successfully!");
+      // Hiển thị thông báo thành công sử dụng form của Ant Design
+      message.success("Mua ngay thành công!");
+
+      // Cập nhật chi tiết sản phẩm
       fetchProductDetail();
     } catch (error) {
-      console.error("Error purchasing item: ", error);
-      message.error("Failed to purchase item.");
+      console.error("Lỗi khi mua item: ", error);
+      message.error("Mua ngay không thành công.");
     }
   };
 
