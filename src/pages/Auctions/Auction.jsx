@@ -135,10 +135,11 @@ const Auction = () => {
   }, []);
 
   const handlePageChange = (pageNumber) => {
-    if (pageNumber > 0 && pageNumber <= totalPages) {
+    if (pageNumber >= 0 && pageNumber < totalPages) {
       setCurrentPage(pageNumber); // Cập nhật trang hiện tại
     }
   };
+  
 
   return (
     <div className="auction-form-container">
@@ -166,32 +167,34 @@ const Auction = () => {
         ))}
       </div>
       <div className="pagination">
-        <Button
-          className="pagination-button"
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          {"<"}
-        </Button>
-        {Array.from({ length: totalPages }, (_, index) => (
-          <Button
-            key={index}
-            className={`pagination-button ${
-              currentPage === index + 1 ? "active" : ""
-            }`}
-            onClick={() => handlePageChange(index)}
-          >
-            {index}
-          </Button>
-        ))}
-        <Button
-          className="pagination-button"
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          {">"}
-        </Button>
-      </div>
+  <Button
+    className="pagination-button"
+    onClick={() => handlePageChange(currentPage - 1)}
+    disabled={currentPage === 0} // Chỉ vô hiệu hóa khi đang ở trang đầu tiên
+  >
+    {"<"}
+  </Button>
+
+  {Array.from({ length: totalPages }, (_, index) => (
+    <Button
+      key={index}
+      className={`pagination-button ${currentPage === index ? "active" : ""}`}
+      onClick={() => handlePageChange(index)}
+    >
+      {index + 1} {/* Hiển thị số trang bắt đầu từ 1 */}
+    </Button>
+  ))}
+
+  <Button
+    className="pagination-button"
+    onClick={() => handlePageChange(currentPage + 1)}
+    disabled={currentPage === totalPages - 1} // Chỉ vô hiệu hóa khi ở trang cuối
+  >
+    {">"}
+  </Button>
+</div>
+
+
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Input } from "antd"; // Nhập các thành phần từ Ant Design
+import { Button, Input } from "antd";
 import "./index.css";
 
 const BidForm = ({ currentPrice, bidIncrement, handleBid }) => {
@@ -28,9 +28,9 @@ const BidForm = ({ currentPrice, bidIncrement, handleBid }) => {
           value={bidValue.toLocaleString("en-US")} // Định dạng giá trị cho đẹp
           readOnly // Làm cho ô input không thể chỉnh sửa
         />
-        <Button type="primary" onClick={increaseBid}>+</Button> {/* Sử dụng nút Ant Design */}
-        <Button type="primary" onClick={decreaseBid}>-</Button> {/* Sử dụng nút Ant Design */}
-        <Button type="primary" onClick={placeBid}>Bid</Button> {/* Nút để đặt bid */}
+        <Button type="primary" onClick={increaseBid}>+</Button>
+        <Button type="primary" onClick={decreaseBid}>-</Button>
+        <Button type="primary" onClick={placeBid}>Bid</Button>
       </div>
     </div>
   );

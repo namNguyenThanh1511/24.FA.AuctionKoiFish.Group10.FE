@@ -9,35 +9,37 @@ const Detail = () => {
   const { auctionSessionId } = useParams();
   const [productDetail, setProductDetail] = useState(null);
   const [countdown, setCountdown] = useState("");
-  const [currentBid, setCurrentBid] = useState(productDetail?.currentPrice || 0); // State cho giá trị hiện tại của bid
+  const [currentBid, setCurrentBid] = useState(0); // Khởi tạo với 0
 
-  useEffect(() => {
-    const fetchProductDetail = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await api.get(`auctionSession/${auctionSessionId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  // Hàm để lấy thông tin sản phẩm
+  const fetchProductDetail = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.get(`auctionSession/${auctionSessionId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        console.log("Product detail from API: ", response.data);
-        setProductDetail(response.data);
-        setCurrentBid(response.data.currentPrice); // Thiết lập giá trị bid ban đầu
+      console.log("Product detail from API: ", response.data);
+      setProductDetail(response.data);
+      setCurrentBid(response.data.currentPrice); // Thiết lập giá trị bid ban đầu
 
-        if (response.data.auctionStatus === "COMPLETED") {
-          setCountdown("Auction ended");
-        } else {
-          const startDate = new Date(response.data.startDate);
-          const endDate = new Date(response.data.endDate);
-          const countdown = getCountdown(startDate, endDate);
-          setCountdown(countdown);
-        }
-      } catch (error) {
-        console.error("Error fetching product detail: ", error);
+      if (response.data.auctionStatus === "COMPLETED") {
+        setCountdown("Auction ended");
+      } else {
+        const startDate = new Date(response.data.startDate);
+        const endDate = new Date(response.data.endDate);
+        const countdown = getCountdown(startDate, endDate);
+        setCountdown(countdown);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching product detail: ", error);
+    }
+  };
 
+  // Gọi hàm fetchProductDetail khi component mount
+  useEffect(() => {
     fetchProductDetail();
   }, [auctionSessionId]);
 
@@ -70,23 +72,39 @@ const Detail = () => {
     return () => clearInterval(intervalId);
   }, [productDetail]);
 
-  const handleBid = async () => {
+  const handleBid = async (bidValue) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await api.post(`bid`, {
-        auctionSessionId,  // ID phiên đấu giá
-        bidAmount: currentBid, // Giá trị bid hiện tại
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
 
-      message.success("Bid placed successfully!"); // Thông báo thành công
-      console.log("Bid response: ", response.data);
+      // Tính toán số chênh lệch giữa bidValue và currentPrice từ productDetail
+      const bidDifference = bidValue - productDetail.currentPrice;
+
+      // Kiểm tra nếu chênh lệch là hợp lệ (chênh lệch lớn hơn 0)
+      if (bidDifference > 0) {
+        const response = await api.post(
+          `bid`,
+          {
+            auctionSessionId, // ID phiên đấu giá
+            bidAmount: bidDifference, // Giá trị chênh lệch giữa bidValue và currentPrice
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        message.success("Bid placed successfully!");
+        console.log("Bid response: ", response.data);
+
+        // Tải lại thông tin sản phẩm sau khi đặt bid thành công
+        fetchProductDetail();
+      } else {
+        message.error("Bid amount must be higher than the current price!");
+      }
     } catch (error) {
       console.error("Error placing bid: ", error);
-      message.error("Failed to place bid."); // Thông báo thất bại
+      message.error("Failed to place bid.");
     }
   };
 
@@ -180,12 +198,11 @@ const Detail = () => {
 
       {/* Phần bid và lịch sử đấu giá nằm dưới */}
       <div className="bid-container">
-      <BidForm 
-  currentPrice={currentBid} 
-  bidIncrement={productDetail.bidIncrement}
-  handleBid={handleBid} // Truyền hàm handleBid
-/>
-
+        <BidForm
+          currentPrice={currentBid}
+          bidIncrement={productDetail.bidIncrement}
+          handleBid={handleBid} // Truyền hàm handleBid
+        />
       </div>
 
       <div className="additional-info-container">
