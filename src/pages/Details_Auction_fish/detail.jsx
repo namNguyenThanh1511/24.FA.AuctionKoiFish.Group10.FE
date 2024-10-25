@@ -1,104 +1,236 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Nhập useParams
+import { useParams } from "react-router-dom";
 import "./detail.css";
-import api from "../../config/axios"; // Đảm bảo bạn đã nhập axios
-import { Table } from "antd"; // Nếu bạn đang sử dụng Ant Design
+import api from "../../config/axios";
+import { Table, message } from "antd";
+import BidForm from "../../components/bid-section/bid-ascending";
 
 const Detail = () => {
-  const { auctionSessionId } = useParams(); // Lấy auctionSessionId từ URL
-  const [productDetail, setProductDetail] = useState(null); // State cho thông tin sản phẩm
-  const [countdown, setCountdown] = useState(""); // State cho countdown
+  const { auctionSessionId } = useParams();
+  const [productDetail, setProductDetail] = useState(null);
+  const [countdown, setCountdown] = useState("");
+  const [currentBid, setCurrentBid] = useState(0);
+  const [bidHistory, setBidHistory] = useState([]);
 
-  useEffect(() => {
-    const fetchProductDetail = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await api.get(`auctionSession/${auctionSessionId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  const fetchProductDetail = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.get(`auctionSession/${auctionSessionId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-        console.log("Product detail from API: ", response.data); // In ra thông tin từ API
+      console.log("Product detail from API: ", response.data);
+      setProductDetail(response.data);
+      setCurrentBid(response.data.currentPrice);
 
-        setProductDetail(response.data); // Lưu thông tin phiên đấu giá
+      const historyData = response.data.bids.map((bid) => ({
+        date: new Date(bid.bidAt).toLocaleString(),
+        bid: bid.bidAmount,
+        name: bid.member.fullName,
+      }));
+      setBidHistory(historyData);
 
-        // Tính toán countdown khi nhận được thông tin chi tiết
+      if (response.data.auctionStatus === "COMPLETED") {
+        setCountdown("Auction ended");
+      } else {
         const startDate = new Date(response.data.startDate);
         const endDate = new Date(response.data.endDate);
         const countdown = getCountdown(startDate, endDate);
         setCountdown(countdown);
-      } catch (error) {
-        console.error("Error fetching product detail: ", error);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching product detail: ", error);
+    }
+  };
 
+  useEffect(() => {
     fetchProductDetail();
   }, [auctionSessionId]);
 
   const getCountdown = (startDate, endDate) => {
-    const totalSeconds = Math.floor((endDate - new Date()) / 1000); // Sử dụng thời gian hiện tại
-    const hours = Math.floor(totalSeconds / 3600);
+    const totalSeconds = Math.floor((endDate - new Date()) / 1000);
+    const days = Math.floor(totalSeconds / (3600 * 24));
+    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
 
     return totalSeconds > 0
-      ? `${hours}h ${minutes}m ${seconds}s`
-      : "Auction ended"; // Chuỗi countdown
+      ? `${days}d ${hours}h ${minutes}m ${seconds}s`
+      : "Auction ended";
   };
 
-  
+  const handleBid = async (bidValue) => {
+    try {
+      const token = localStorage.getItem("token");
+      const bidDifference = bidValue - currentBid;
 
-  // Thiết lập interval cho countdown
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (productDetail) {
-        const startDate = new Date(productDetail.startDate);
-        const endDate = new Date(productDetail.endDate);
-        const countdown = getCountdown(startDate, endDate);
-        setCountdown(countdown);
+      // Kiểm tra xem bidValue có lớn hơn Buy Now Price không
+      if (bidValue > productDetail.buyNowPrice) {
+        message.error("Bid amount cannot exceed Buy Now price!");
+        return;
       }
-    }, 1000);
 
-    return () => clearInterval(intervalId); // Dọn dẹp interval khi component bị hủy
-  }, [productDetail]);
+      // Kiểm tra nếu bidValue bằng với Buy Now Price
+      if (bidValue === productDetail.buyNowPrice) {
+        await handleBuyNow(); // Gọi hàm mua ngay
+        return;
+      }
 
-  // Kiểm tra nếu thông tin sản phẩm chưa được tải
+      // Kiểm tra xem bidValue có lớn hơn currentBid không
+      if (bidDifference > 0) {
+        const response = await api.post(
+          `bid`,
+          {
+            auctionSessionId,
+            bidAmount: bidDifference,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        message.success("Bid placed successfully!");
+        fetchProductDetail();
+      } else {
+        message.error("Bid amount must be higher than the current price!");
+      }
+    } catch (error) {
+      console.error("Error placing bid: ", error);
+      message.error("Failed to place bid.");
+    }
+  };
+
+  const handleBuyNow = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await api.post(
+        `bid/buyNow`,
+        {
+          auctionSessionId,
+          amount: productDetail.buyNowPrice,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      message.success("Mua ngay thành công!");
+      fetchProductDetail();
+    } catch (error) {
+      console.error("Lỗi khi mua item: ", error);
+      message.error("Mua ngay không thành công.");
+    }
+  };
+
   if (!productDetail) return <div>Loading...</div>;
 
-  const { koi, auctionStatus, auctionType } = productDetail; // Lấy thông tin cá Koi
+  const { koi, auctionStatus, auctionType, buyNowPrice } = productDetail;
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "COMPLETED":
+        return "red";
+      case "UPCOMING":
+        return "yellow";
+      case "ONGOING":
+        return "green";
+      default:
+        return "black";
+    }
+  };
 
   return (
-
-
-    <div className="container">
-  
-      <div className="product-detail">
+    <div>
+      <div className="container">
         <div className="product-image">
-          <img src={koi.image_url} alt={koi.name} /> {/* Hiển thị hình ảnh */}
+          <img src={koi.image_url} alt={koi.name} />
         </div>
-        <div className="product-info-container">
+        <div className="product-detail">
           <h1>{productDetail.title}</h1>
-          <h2>{koi.name}</h2>
-          <p>Breeder: {koi.breeder.username}</p>
-          <p>Length: {koi.sizeCm} cm</p>
-          <p>Sex: {koi.sex}</p>
-          <p>
-            Age: {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()}{" "}
-            years
-          </p>
-          <p>Price: {productDetail.currentPrice.toLocaleString("en-US")}₫</p>
-          <p>Likes: {/* Cần có thông tin về likes ở đây nếu có */}</p>
-          <p>Variety: {/* Thay thế bằng tên variety cụ thể nếu có */}</p>
-          <p>Auction Status: {auctionStatus}</p>
-          <p>Auction Type: {auctionType}</p>
-          <p>Time Remaining: {countdown}</p> {/* Hiển thị countdown */}
+          <div className="time">
+            <span style={{ color: "black" }}>Time Remaining:</span>
+            <span style={{ color: "red" }}> {countdown}</span>
+          </div>
+          <div className="product-info-container">
+            {/* Product info */}
+            <div className="info-box">
+              <p>
+                <strong>Name:</strong> {koi.name}
+              </p>
+            </div>
+            <div className="info-box">
+              <p>
+                <strong>Breeder:</strong> {koi.breeder.username}
+              </p>
+            </div>
+            <div className="info-box">
+              <p>
+                <strong>Auction Status:</strong>{" "}
+                <span style={{ color: getStatusColor(auctionStatus) }}>
+                  {auctionStatus}
+                </span>
+              </p>
+            </div>
+            <div className="info-box">
+              <p>
+                <strong>Auction Type:</strong> {auctionType}
+              </p>
+            </div>
+            <div className="info-box">
+              <p>
+                <strong>Length:</strong> {koi.sizeCm} cm
+              </p>
+            </div>
+            <div className="info-box">
+              <p>
+                <strong>Sex:</strong> {koi.sex}
+              </p>
+            </div>
+            <div className="info-box">
+              <p>
+                <strong>Age:</strong>{" "}
+                {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()}{" "}
+                years
+              </p>
+            </div>
+            <div className="info-box">
+              <p>
+                <strong>Variety:</strong>{" "}
+                {koi.varieties && koi.varieties.length > 0
+                  ? koi.varieties.map((variety) => variety.name).join(", ")
+                  : "No variety available"}
+              </p>
+            </div>
+            <div className="info-box">
+              <p>
+                <strong>Price:</strong>{" "}
+                {productDetail.currentPrice.toLocaleString("en-US")}₫
+              </p>
+            </div>
+          </div>
         </div>
       </div>
+
+      <div className="bid-container">
+        <BidForm
+          currentPrice={currentBid}
+          bidIncrement={productDetail.bidIncrement}
+          buyNowPrice={productDetail.buyNowPrice}
+          handleBid={handleBid}
+          handleBuyNow={handleBuyNow}
+        />
+      </div>
+
       <div className="additional-info-container">
         <h2>Lịch sử đấu giá</h2>
         <Table
-          dataSource={[]} // Dữ liệu mẫu hoặc dữ liệu thực tế nếu có
+          dataSource={bidHistory}
           columns={[
             { title: "Date", dataIndex: "date", key: "date" },
             { title: "Bid", dataIndex: "bid", key: "bid" },
@@ -107,7 +239,6 @@ const Detail = () => {
           rowKey="date"
         />
       </div>
-
     </div>
   );
 };

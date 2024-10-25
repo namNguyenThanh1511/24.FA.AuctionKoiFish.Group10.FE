@@ -1,6 +1,6 @@
 .footer {
-  background-color: #e4d4c0; /* Màu nền giống với ảnh */
-  color: #333; /* Màu chữ tối */
+  background-color: #000000; /* Màu nền giống với ảnh */
+  color: #ffffff; /* Màu chữ tối */
   font-family: 'Fredoka', sans-serif; /* Đổi font chữ thành Fredoka */
   margin: 0; /* Đảm bảo không có margin */
   width: 100%; /* Đảm bảo chiều rộng đầy đủ cho footer */
@@ -16,6 +16,8 @@
   max-width: 1200px; /* Giới hạn chiều rộng tối đa để footer không quá rộng */
   margin: 0 auto; /* Căn giữa footer-content */
   padding: 0 20px; /* Thêm padding để tạo khoảng cách giữa các phần tử */
+  padding-bottom: 120px;
+
 }
 
 .footer-logo {
@@ -81,16 +83,8 @@
   margin: 0 5px; /* Thêm khoảng cách giữa các hình ảnh */
 }
 
+
+
 .footer-bottom {
-  display: flex; /* Sử dụng flex để căn giữa nội dung */
-  justify-content: center; /* Căn giữa nội dung trong footer */
-  align-items: center; /* Căn giữa theo chiều dọc */
-  margin: 0; /* Đảm bảo không có margin */
-  padding: 10px 0; /* Tăng padding để tạo không gian nhiều hơn */
-  font-size: 14px;
-  background-color: #000000; /* Màu nền */
-  width: 100%; /* Chiều rộng đầy đủ */
-  position: relative; /* Đặt position để kiểm soát tốt hơn */
-  color: rgb(255, 255, 255);
-  clear: both; /* Đảm bảo không bị ảnh hưởng bởi các phần tử khác */
+  background-color: #000000 I !important;
 }

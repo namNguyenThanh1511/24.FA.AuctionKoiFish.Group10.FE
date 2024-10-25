@@ -1,6 +1,7 @@
 import React from "react";
 import "./Card.css";
-import { Button } from "antd"; // Nhập Button từ Ant Design
+import { Button } from "antd";
+import { ArrowRightOutlined } from "@ant-design/icons"; // Import biểu tượng mũi tên
 
 const Card = ({
   image,
@@ -12,61 +13,64 @@ const Card = ({
   age,
   countdown,
   price,
-  likes,
   variety,
   auctionStatus,
   auctionType,
-  onViewClick, // Thêm prop cho nút View
-  auctionSessionId, // Thêm prop auctionSessionId nếu cần
+  onViewClick,
 }) => {
   return (
     <div className="card-container">
       <div className="card-header">
         <img src={image} alt="koi fish" className="card-image" />
-        <div className="card-likes">
-          <span>{likes}</span>
+        <div className="card-info">
+          <h3 className="card-title">{title}</h3>
+          <h4 className="card-name">{name}</h4>
+          <div className="card-details">
+            <p>
+              <strong>Breeder: </strong>
+              {breeder}
+            </p>
+            <p>
+              <strong>Variety: </strong>
+              {variety}
+            </p>
+            <p>
+              <strong>Age: </strong>
+              {age}
+            </p>
+            <p>
+              <strong>Sex: </strong>
+              {sex}
+            </p>
+            <p>
+              <strong>Length: </strong>
+              {length} cm
+            </p>
+          </div>
         </div>
       </div>
-      <div className="card-body">
-        <h3 className="card-title">{title}</h3>
+      <div className="card-footer">
+        <h4>Time left</h4>
         <div className="card-countdown">{countdown}</div>
-        <div className="card-price">${price}</div>
-        <h4 className="card-name">{name}</h4>
-        <div className="card-info">
-          <p>
-            <strong>Breeder: </strong>
-            {breeder}
-          </p>
-          <p>
-            <strong>Length: </strong>
-            {length}cm
-          </p>
-          <p>
-            <strong>Sex: </strong>
-            {sex}
-          </p>
-          <p>
-            <strong>Age: </strong>
-            {age}
-          </p>
-          <p>
-            <strong>Variety: </strong>
-            {variety}
-          </p>
-        </div>
+        {/* Định dạng VNĐ cho giá */}
+        <div className="card-price">{price.toLocaleString("vi-VN")}₫</div>
+
         <div className="card-status-type">
-          <p className="card-status">
+          <p className={`card-status ${auctionStatus.toLowerCase()}`}>
             <strong>Status: </strong>
-            {auctionStatus}
+            <span>{auctionStatus}</span>
           </p>
-          <p className="card-type">
+
+          <p className={`card-type ${auctionType.toLowerCase()}`}>
             <strong>Type: </strong>
             {auctionType}
           </p>
         </div>
-        <Button className="view-button" onClick={onViewClick}>
-          View
-        </Button>
+        <Button
+          className="view-button"
+          onClick={onViewClick}
+          icon={<ArrowRightOutlined />} // Giữ biểu tượng mũi tên
+        />
       </div>
     </div>
   );

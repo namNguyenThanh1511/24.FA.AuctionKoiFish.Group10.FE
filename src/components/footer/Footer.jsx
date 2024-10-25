@@ -67,7 +67,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="footer-bottom">
-        <p>&copy; 2024 Koi Auction Legend</p>
+        
       </div>
     </footer>
   );

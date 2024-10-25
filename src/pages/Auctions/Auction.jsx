@@ -6,11 +6,14 @@ import Card from "../../components/Card/Card";
 import Koi from "../../images/Koi1.jpg";
 import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
+
 const Auction = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [cardsData, setCardsData] = useState([]);
-  const cardsPerPage = 12;
+  const [totalPages, setTotalPages] = useState(0); // Thêm trạng thái tổng số trang
+  const cardsPerPage = 8;
   const navigate = useNavigate(); // Khởi tạo useNavigate
+
   // Hàm tính toán tuổi theo định dạng "x years y months"
   const calculateAge = (dateOfBirth) => {
     const now = new Date();
@@ -29,63 +32,85 @@ const Auction = () => {
   };
 
   // Lấy dữ liệu từ API
-  useEffect(() => {
-    const fetchKoiFish = async () => {
-      try {
-        const response = await api.get("/auctionSession");
+  const fetchKoiFish = async (page) => {
+    try {
+      const response = await api.get(
+        `/auctionSession/auction-sessions-pagination`,
+        {
+          params: {
+            page: page,
+            size: cardsPerPage,
+          },
+        }
+      );
 
-        const data = response.data;
+      console.log("Response from API:", response.data); // Log phản hồi từ API
 
-        // In thông tin từ API ra console
-        console.log("Data fetched from API:", data);
+      const data = response.data.auctionSessionResponses;
+      const totalPages = response.data.totalPages;
 
-        const transformedData = data.map((item) => {
-          const age = calculateAge(item.koi.bornIn); // Tính toán tuổi
+      // Kiểm tra dữ liệu
+      console.log("Data fetched from API:", data);
+      console.log("Total Pages:", totalPages);
 
-          const startDate = new Date(item.startDate);
-          const endDate = new Date(item.endDate);
-          const countdown = getCountdown(startDate, endDate); // Tính toán countdown
-
-          return {
-            auctionSessionId: item.auctionSessionId,
-            name: item.koi.name || "Unknown", // Lấy name từ API
-            title: item.title || "Unknown", // Lấy title từ API
-            breeder: item.koi.breeder.username || "Unknown",
-            length: item.koi.sizeCm || "Unknown",
-            sex: item.koi.sex || "Unknown",
-            bornIn: item.koi.bornIn || "Unknown",
-            age: age || "0 years 0 months", // Đặt giá trị mặc định cho tuổi
-            price: item.currentPrice || 0,
-            likes: 0,
-            variety:
-              item.koi.varieties.map((v) => v.name).join(", ") || "Unknown",
-            image: item.koi.image_url || "",
-            startDate: startDate, // Thêm startDate vào đối tượng
-            endDate: endDate, // Thêm endDate vào đối tượng
-            countdown: countdown, // Thêm countdown vào đối tượng
-            auctionStatus: item.auctionStatus || "Unknown", // Thêm auctionStatus
-            auctionType: item.auctionType || "Unknown", // Thêm auctionType
-          };
-        });
-
-        setCardsData(transformedData);
-      } catch (error) {
-        console.error("Error fetching data: ", error);
+      // Nếu dữ liệu rỗng, thông báo
+      if (data.length === 0) {
+        console.warn(`No data found for page ${page}`);
       }
-    };
 
-    fetchKoiFish();
-  }, []);
+      const transformedData = data.map((item) => {
+        const age = calculateAge(item.koi.bornIn);
+        const startDate = new Date(item.startDate);
+        const endDate = new Date(item.endDate);
+        const countdown = getCountdown(startDate, endDate, item.auctionStatus);
 
-  const getCountdown = (startDate, endDate) => {
-    const totalSeconds = Math.floor((endDate - new Date()) / 1000); // Sử dụng thời gian hiện tại
-    const hours = Math.floor(totalSeconds / 3600);
+        return {
+          auctionSessionId: item.auctionSessionId,
+          name: item.koi.name || "Unknown",
+          title: item.title || "Unknown",
+          breeder: item.koi.breeder.username || "Unknown",
+          length: item.koi.sizeCm || "Unknown",
+          sex: item.koi.sex || "Unknown",
+          bornIn: item.koi.bornIn || "Unknown",
+          age: age || "0 years 0 months",
+          price: item.currentPrice || 0,
+          variety:
+            item.koi.varieties.map((v) => v.name).join(", ") || "Unknown",
+          image: item.koi.image_url || "",
+          startDate: startDate,
+          endDate: endDate,
+          countdown: countdown,
+          auctionStatus: item.auctionStatus || "Unknown",
+          auctionType: item.auctionType || "Unknown",
+        };
+      });
+
+      setCardsData(transformedData);
+      setTotalPages(totalPages);
+    } catch (error) {
+      console.error("Error fetching data: ", error);
+      alert("There was an error fetching data. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    fetchKoiFish(currentPage); // Gọi hàm với trang hiện tại
+  }, [currentPage]); // Thay đổi trang hiện tại sẽ gọi lại useEffect
+
+  const getCountdown = (startDate, endDate, auctionStatus) => {
+    if (auctionStatus === "COMPLETED") {
+      return "Auction ended";
+    }
+
+    const totalSeconds = Math.floor((endDate - new Date()) / 1000);
+    const days = Math.floor(totalSeconds / (3600 * 24));
+    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
 
     return totalSeconds > 0
-      ? `${hours}h ${minutes}m ${seconds}s`
-      : "Auction ended"; // Chuỗi countdown
+      ? `${days}d ${hours}h ${minutes}m ${seconds}s`
+      : "Auction ended";
   };
 
   // Thiết lập interval cho đếm ngược
@@ -93,7 +118,11 @@ const Auction = () => {
     const intervalId = setInterval(() => {
       setCardsData((prevData) =>
         prevData.map((card) => {
-          const countdown = getCountdown(card.startDate, card.endDate); // Cập nhật countdown
+          const countdown = getCountdown(
+            card.startDate,
+            card.endDate,
+            card.auctionStatus
+          ); // Cập nhật countdown với auctionStatus
           return {
             ...card,
             countdown: countdown,
@@ -105,21 +134,17 @@ const Auction = () => {
     return () => clearInterval(intervalId); // Dọn dẹp interval khi component bị hủy
   }, []);
 
-  // Tính toán các thẻ sẽ hiển thị trên trang hiện tại
-  const indexOfLastCard = currentPage * cardsPerPage;
-  const indexOfFirstCard = indexOfLastCard - cardsPerPage;
-  const currentCards = cardsData.slice(indexOfFirstCard, indexOfLastCard);
-
-  const totalPages = Math.ceil(cardsData.length / cardsPerPage);
-
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    if (pageNumber >= 0 && pageNumber < totalPages) {
+      setCurrentPage(pageNumber); // Cập nhật trang hiện tại
+    }
   };
+  
 
   return (
     <div className="auction-form-container">
       <div className="card-grid">
-        {currentCards.map((card) => (
+        {cardsData.map((card) => (
           <Card
             key={card.auctionSessionId}
             image={card.image || Koi}
@@ -131,48 +156,45 @@ const Auction = () => {
             age={card.age}
             countdown={card.countdown}
             price={card.price.toLocaleString("en-US")}
-            likes={card.likes}
             variety={card.variety}
             auctionStatus={card.auctionStatus}
             auctionType={card.auctionType}
             auctionSessionId={card.auctionSessionId}
             onViewClick={() => {
-              console.log(card);
-
               navigate(`${card.auctionSessionId}`, { replace: true });
-            }} // Điều hướng khi nhấn nút View
+            }}
           />
         ))}
       </div>
       <div className="pagination">
-        {" "}
-        {/* Thêm class cho pagination */}
-        <Button
-          className="pagination-button"
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          {"<"} {/* Nút Quay lại */}
-        </Button>
-        {Array.from({ length: totalPages }, (_, index) => (
-          <Button
-            key={index + 1}
-            className={`pagination-button ${
-              currentPage === index + 1 ? "active" : ""
-            }`}
-            onClick={() => handlePageChange(index + 1)}
-          >
-            {index + 1}
-          </Button>
-        ))}
-        <Button
-          className="pagination-button"
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          {">"} {/* Nút Tiến */}
-        </Button>
-      </div>
+  <Button
+    className="pagination-button"
+    onClick={() => handlePageChange(currentPage - 1)}
+    disabled={currentPage === 0} // Chỉ vô hiệu hóa khi đang ở trang đầu tiên
+  >
+    {"<"}
+  </Button>
+
+  {Array.from({ length: totalPages }, (_, index) => (
+    <Button
+      key={index}
+      className={`pagination-button ${currentPage === index ? "active" : ""}`}
+      onClick={() => handlePageChange(index)}
+    >
+      {index + 1} {/* Hiển thị số trang bắt đầu từ 1 */}
+    </Button>
+  ))}
+
+  <Button
+    className="pagination-button"
+    onClick={() => handlePageChange(currentPage + 1)}
+    disabled={currentPage === totalPages - 1} // Chỉ vô hiệu hóa khi ở trang cuối
+  >
+    {">"}
+  </Button>
+</div>
+
+
     </div>
   );
 };
