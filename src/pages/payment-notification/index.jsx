@@ -21,9 +21,9 @@ const PaymentSuccess = () => {
     const responseCode = queryParams.get("vnp_ResponseCode");
 
     if (responseCode === "00") {
-      setIsSuccess(true); // Set success status if response code is 0
+      setIsSuccess(true);
     } else {
-      setIsSuccess(false); // Set error status if response code is not 0
+      setIsSuccess(false);
     }
     if (transactionId) {
       const completeTransaction = async () => {
