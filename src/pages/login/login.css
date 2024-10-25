@@ -17,8 +17,9 @@ body {
 
 /* Form đăng nhập */
 .login-form {
+  font-family:  'Fredoka', sans-serif;
   opacity: 0.9;
-  background-color: rgba(255, 255, 255, 0.9); /* Màu nền cho form */
+  background-color: rgba(255, 255, 255, 0.9); 
   padding: 50px;
   border-radius: 20px;
   width: 300px;
@@ -38,6 +39,7 @@ body {
 }
 
 .login-form input {
+  font-family:  'Fredoka', sans-serif;
   width: 94%;
   padding: 10px;
   margin: 10px 0;
@@ -51,7 +53,7 @@ body {
 }
 
 .forgot-password {
-  text-align: right;
+   text-align: right;
   margin-bottom: 10px;
 }
 
