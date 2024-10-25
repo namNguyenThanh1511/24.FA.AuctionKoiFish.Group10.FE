@@ -28,7 +28,7 @@ const BidForm = ({
   };
 
   return (
-    <div className="bid-form-container">
+    <div className="bid-form-container"> {/* Thêm class bid-form */}
       <div className="bid-section">
         <div className="group-button">
           <Input.Group compact>
@@ -38,7 +38,7 @@ const BidForm = ({
             <Input
               type="text"
               className="bid-input"
-              value={bidValue.toLocaleString("en-US")}
+              value={bidValue.toLocaleString("vi-VN")}
               readOnly
               style={{ width: "100px", textAlign: "center" }}
             />
@@ -72,6 +72,7 @@ const BidForm = ({
       </div>
     </div>
   );
+  
 };
 
 export default BidForm;

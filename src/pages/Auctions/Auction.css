@@ -11,7 +11,7 @@ body {
   padding: 20px;
   /* Xóa thuộc tính background-color để bỏ nền */
   border-radius: 8px;
-  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  
   margin-top: 130px;
 }
 

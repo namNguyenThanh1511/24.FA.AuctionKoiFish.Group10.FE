@@ -68,14 +68,16 @@
   display: flex;
   flex-direction: column; /* Sắp xếp các phần theo chiều dọc */
   align-items: center; /* Giữa các phần tử trong footer */
-  background-color: #ffffff; /* Thay đổi màu nền thành xám */
-  border-top: 1px solid #ccc; /* Thêm viền trên nếu cần */
+  background-color: #000000; /* Thay đổi màu nền thành đen */
+  color: #ffffff; /* Đổi màu chữ thành trắng */
   position: relative; /* Thêm thuộc tính này để sử dụng cho nút bên phải */
 }
 
 .card-footer h4 {
   margin-top: 10px;
+  color: #ffffff; /* Đổi màu chữ h4 thành trắng */
 }
+
 
 .card-countdown {
   font-size: 14px; /* Giảm kích thước chữ cho countdown */
@@ -86,12 +88,11 @@
 }
 
 .card-price {
-  background-color: #d2d0d0; /* Đổi màu nền thành màu sáng cho price */
   padding: 4px;
   text-align: center;
   font-size: 16px; /* Giảm kích thước chữ cho price */
   margin: 8px 0; /* Thay đổi margin để tạo khoảng cách với countdown */
-  color: #333; /* Đổi màu chữ thành tối hơn */
+  color:#00FF00; /* Đổi màu chữ thành tối hơn */
   width: 100%; /* Đảm bảo màu nền chiếm toàn bộ chiều ngang */
   box-sizing: border-box; /* Đảm bảo padding không làm thay đổi chiều rộng */
 }
@@ -99,10 +100,11 @@
 .card-status-type {
   margin: 6px 0; /* Giảm khoảng cách giữa status và type */
   text-align: center; /* Giữa các phần tử trong status và type */
+
 }
 
 .card-status {
-  color: #666; /* Đổi màu chữ "Status" thành tối hơn */
+  color: white; /* Đổi màu chữ "Status" thành tối hơn */
   font-size: 12px; /* Giảm kích thước chữ */
   margin: 2px 0; /* Giảm khoảng cách giữa các dòng */
 }

@@ -16,8 +16,6 @@
   gap: 5px; /* Điều chỉnh khoảng cách giữa ô nhập giá và nút Bid */
 }
 
-
-
 .buy-now-section {
   width: 48%;
   display: flex;
@@ -27,6 +25,7 @@
 
 .bid-input {
   width: 100px;
+  height: 45px;
   padding: 8px;
   font-size: 16px;
   text-align: center;
@@ -51,7 +50,8 @@
   color: #333;
 }
 
-.ant-btn {
+/* Các quy tắc CSS mới cho .ant-btn chỉ trong .bid-form */
+.bid-form .ant-btn {
   width: 40px;
   height: 40px;
   display: flex;
@@ -66,7 +66,7 @@
   transition: background-color 0.3s ease;
 }
 
-.ant-btn:hover {
+.bid-form .ant-btn:hover {
   background-color: #8c8c8c; /* Màu xám đậm hơn khi hover */
 }
 
@@ -80,8 +80,6 @@
   background-color: #8c8c8c;
 }
 
-
-
 .button-buy-now {
   width: 70px;
   font-size: 13px;
@@ -93,3 +91,4 @@
 .button-buy-now:hover {
   background-color: #cf1322;
 }
+

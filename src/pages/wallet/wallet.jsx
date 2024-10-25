@@ -25,7 +25,6 @@ const Wallet = () => {
 
   const handleDeposit = async (values) => {
     setLoading(true);
-    const fAmount = parseFloat(values.amount);
     try {
       const response = await api.post("paymentURL/vn-pay", { amount: values.amount }); // API nạp tiền
       toast.success("Deposit successful");

@@ -70,19 +70,12 @@ const KoibreederProfileLayout = ({ children, collapsed, setCollapsed }) => {
           }}
         >
           {!collapsed && (
-            <span
-              style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}
-            >
+            <span style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}>
               <UserOutlined /> My Account
             </span>
           )}
         </div>
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["personal"]}
-          mode="inline"
-          items={items}
-        />
+        <Menu theme="dark" defaultSelectedKeys={["personal"]} mode="inline" items={items} />
       </Sider>
 
       {/* Main Layout */}

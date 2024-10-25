@@ -52,7 +52,8 @@ const Card = ({
       <div className="card-footer">
         <h4>Time left</h4>
         <div className="card-countdown">{countdown}</div>
-        <div className="card-price">${price}</div>
+        {/* Định dạng VNĐ cho giá */}
+        <div className="card-price">{price.toLocaleString("vi-VN")}₫</div>
 
         <div className="card-status-type">
           <p className={`card-status ${auctionStatus.toLowerCase()}`}>
@@ -69,7 +70,6 @@ const Card = ({
           className="view-button"
           onClick={onViewClick}
           icon={<ArrowRightOutlined />} // Giữ biểu tượng mũi tên
-          iconPosition="right" // Đặt biểu tượng bên phải
         />
       </div>
     </div>
