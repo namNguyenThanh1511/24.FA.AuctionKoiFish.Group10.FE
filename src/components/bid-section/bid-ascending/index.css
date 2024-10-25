@@ -1,25 +1,95 @@
 .bid-form-container {
-  background-color: white;
   padding: 20px;
-  border-radius: 5px;
-  max-width: 300px;
+  border-radius: 8px;
+  max-width: 900px; 
   margin: 0 auto;
+  display: flex; 
+  justify-content: space-between;
+  flex-wrap: wrap;
 }
 
 .bid-section {
+  width: 48%;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 5px; /* Điều chỉnh khoảng cách giữa ô nhập giá và nút Bid */
+}
+
+
+
+.buy-now-section {
+  width: 48%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 
 .bid-input {
-  width: 70%;
-  padding: 10px;
+  width: 100px;
+  padding: 8px;
   font-size: 16px;
-  border: 1px solid #ccc;
+  text-align: center;
+  border: 2px solid #40a9ff;
   border-radius: 4px;
+  background-color: #fff;
+}
+
+.buy-now-price-box {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+}
+
+.buy-now-price {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
 }
 
 .ant-btn {
-  margin-left: 10px; /* Thêm khoảng cách giữa các nút */
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  padding: 0;
+  border-radius: 4px;
+  background-color: #bfbfbf; /* Đổi màu nút sang xám */
+  border: none;
+  color: white;
+  transition: background-color 0.3s ease;
+}
+
+.ant-btn:hover {
+  background-color: #8c8c8c; /* Màu xám đậm hơn khi hover */
+}
+
+.button-bid {
+  margin-left: 5px; /* Đặt khoảng cách nhỏ giữa ô Bid và nút Bid */
+  background-color: #4d4d4d;
+  font-size: 13px;
+}
+
+.button-bid:hover {
+  background-color: #8c8c8c;
+}
+
+
+
+.button-buy-now {
+  width: 70px;
+  font-size: 13px;
+  padding: 0 20px;
+  background-color: #f5222d;
+  margin-left: 10px;
+}
+
+.button-buy-now:hover {
+  background-color: #cf1322;
 }

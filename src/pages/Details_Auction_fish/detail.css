@@ -19,9 +19,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden; /* Ẩn các phần dư thừa nếu cần */
-    background-color: #fff; /* Đảm bảo nền trắng nếu ảnh không chiếm đủ diện tích */
+    overflow: hidden;
+    background-color: #fff;
+    width: 400px; /* Đặt kích thước cố định cho khung ảnh */
+    height: 439px; /* Đặt chiều cao cố định cho khung ảnh */
 }
+
 
 .product-image img {
     width: 100%;

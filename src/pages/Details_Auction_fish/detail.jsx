@@ -25,10 +25,10 @@ const Detail = () => {
       setProductDetail(response.data);
       setCurrentBid(response.data.currentPrice);
 
-      const historyData = response.data.bids.map(bid => ({
+      const historyData = response.data.bids.map((bid) => ({
         date: new Date(bid.bidAt).toLocaleString(),
         bid: bid.bidAmount,
-        name: bid.member.fullName
+        name: bid.member.fullName,
       }));
       setBidHistory(historyData);
 
@@ -61,59 +61,49 @@ const Detail = () => {
       : "Auction ended";
   };
 
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      fetchProductDetail();
-    }, 1000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
   const handleBid = async (bidValue) => {
     try {
-        const token = localStorage.getItem("token");
-        const bidDifference = bidValue - currentBid;
+      const token = localStorage.getItem("token");
+      const bidDifference = bidValue - currentBid;
 
-        // Kiểm tra xem bidValue có lớn hơn Buy Now Price không
-        if (bidValue > productDetail.buyNowPrice) {
-            message.error("Bid amount cannot exceed Buy Now price!");
-            return;
-        }
+      // Kiểm tra xem bidValue có lớn hơn Buy Now Price không
+      if (bidValue > productDetail.buyNowPrice) {
+        message.error("Bid amount cannot exceed Buy Now price!");
+        return;
+      }
 
-        // Kiểm tra nếu bidValue bằng với Buy Now Price
-        if (bidValue === productDetail.buyNowPrice) {
-            await handleBuyNow(); // Gọi hàm mua ngay
-            return;
-        }
+      // Kiểm tra nếu bidValue bằng với Buy Now Price
+      if (bidValue === productDetail.buyNowPrice) {
+        await handleBuyNow(); // Gọi hàm mua ngay
+        return;
+      }
 
-        // Kiểm tra xem bidValue có lớn hơn currentBid không
-        if (bidDifference > 0) {
-            const response = await api.post(
-                `bid`,
-                {
-                    auctionSessionId,
-                    bidAmount: bidDifference,
-                },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+      // Kiểm tra xem bidValue có lớn hơn currentBid không
+      if (bidDifference > 0) {
+        const response = await api.post(
+          `bid`,
+          {
+            auctionSessionId,
+            bidAmount: bidDifference,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-            message.success("Bid placed successfully!");
-            fetchProductDetail();
-        } else {
-            message.error("Bid amount must be higher than the current price!");
-        }
+        message.success("Bid placed successfully!");
+        fetchProductDetail();
+      } else {
+        message.error("Bid amount must be higher than the current price!");
+      }
     } catch (error) {
-        console.error("Error placing bid: ", error);
-        message.error("Failed to place bid.");
+      console.error("Error placing bid: ", error);
+      message.error("Failed to place bid.");
     }
-};
+  };
 
-
-  // Hàm xử lý cho nút Buy Now
   const handleBuyNow = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -130,10 +120,7 @@ const Detail = () => {
         }
       );
 
-      // Hiển thị thông báo thành công sử dụng form của Ant Design
       message.success("Mua ngay thành công!");
-
-      // Cập nhật chi tiết sản phẩm
       fetchProductDetail();
     } catch (error) {
       console.error("Lỗi khi mua item: ", error);
@@ -171,11 +158,16 @@ const Detail = () => {
             <span style={{ color: "red" }}> {countdown}</span>
           </div>
           <div className="product-info-container">
+            {/* Product info */}
             <div className="info-box">
-              <p><strong>Name:</strong> {koi.name}</p>
+              <p>
+                <strong>Name:</strong> {koi.name}
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Breeder:</strong> {koi.breeder.username}</p>
+              <p>
+                <strong>Breeder:</strong> {koi.breeder.username}
+              </p>
             </div>
             <div className="info-box">
               <p>
@@ -186,18 +178,25 @@ const Detail = () => {
               </p>
             </div>
             <div className="info-box">
-              <p><strong>Auction Type:</strong> {auctionType}</p>
+              <p>
+                <strong>Auction Type:</strong> {auctionType}
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Length:</strong> {koi.sizeCm} cm</p>
+              <p>
+                <strong>Length:</strong> {koi.sizeCm} cm
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Sex:</strong> {koi.sex}</p>
+              <p>
+                <strong>Sex:</strong> {koi.sex}
+              </p>
             </div>
             <div className="info-box">
               <p>
                 <strong>Age:</strong>{" "}
-                {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()}{" "} years
+                {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()}{" "}
+                years
               </p>
             </div>
             <div className="info-box">

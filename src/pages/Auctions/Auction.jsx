@@ -11,7 +11,7 @@ const Auction = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [cardsData, setCardsData] = useState([]);
   const [totalPages, setTotalPages] = useState(0); // Thêm trạng thái tổng số trang
-  const cardsPerPage = 4;
+  const cardsPerPage = 8;
   const navigate = useNavigate(); // Khởi tạo useNavigate
 
   // Hàm tính toán tuổi theo định dạng "x years y months"
