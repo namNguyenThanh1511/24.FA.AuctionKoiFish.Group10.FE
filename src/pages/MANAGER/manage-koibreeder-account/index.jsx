@@ -20,10 +20,12 @@ const ManageKoiBreederAccount = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1, // Start from the first page
-    pageSize: 5, // Items per page
-    total: 0, // Total items count, initialized to 0
+    pageSize: 4, // Items per page
+    total: 0,
   });
+
   const [form] = Form.useForm();
+
   const fetchAccounts = async (
     page = pagination.current,
     pageSize = pagination.pageSize
@@ -37,12 +39,18 @@ const ManageKoiBreederAccount = () => {
         },
       });
       console.log("API Response:", response.data);
-      const { accountResponseList, totalElements, totalPages } = response.data;
+      const {
+        accountResponseList,
+        totalElements,
+        totalPages,
+        pageNumber,
+        numberOfElements,
+      } = response.data;
       setAccounts(accountResponseList);
       setPagination({
-        current: page, // Set the current page
-        pageSize: pageSize, // Items per page
-        total: totalPages, // Total elements
+        current: pageNumber + 1, // Adjust for zero-based index
+        pageSize: pageSize, // Use the requested page size
+        total: totalElements,
       });
     } catch (error) {
       message.error("Error fetching account data.");
@@ -53,14 +61,14 @@ const ManageKoiBreederAccount = () => {
   };
 
   useEffect(() => {
-    fetchAccounts(); 
+    fetchAccounts();
   }, []);
 
   const handleBanKoibreederAccount = async (user_id) => {
     try {
       await api.delete(`/account/${user_id}`);
       message.success("Account deleted successfully");
-      fetchAccounts(); 
+      fetchAccounts();
     } catch (error) {
       message.error("Failed to disable account.");
     }
@@ -83,16 +91,16 @@ const ManageKoiBreederAccount = () => {
       await api.post("/manager/create-breeder-account", values);
       setIsModalVisible(false);
       form.resetFields();
-      fetchAccounts(); 
+      fetchAccounts();
     } catch (error) {
       message.error("Failed to create account.");
     }
   };
 
-  const handleTableChange = (paginationn) => {
-    console.log(paginationn);
-    // This will fetch the accounts based on the new page number and page size
-    fetchAccounts(paginationn, pagination.pageSize);
+  const handleTableChange = (pagination) => {
+    // Fetch accounts with the new page and page size
+    console.log(pagination);
+    fetchAccounts(pagination, pagination.pageSize);
   };
 
   const columns = [
@@ -193,9 +201,9 @@ const ManageKoiBreederAccount = () => {
         loading={loading}
         rowKey={(record) => record.user_id}
         pagination={{
-          current: pagination.current, // Keep current page as is
-          pageSize: pagination.pageSize,
-          total: pagination.total, // Total elements
+          current: pagination.current, // Current page
+          pageSize: pagination.pageSize, // Items per page
+          total: pagination.total, // Total number of elements
           onChange: handleTableChange, // Handle page change
           showSizeChanger: false, // Optional: hide size changer
         }}
@@ -203,7 +211,7 @@ const ManageKoiBreederAccount = () => {
 
       <Modal
         title="Create KoiBreeder Account"
-        visible={isModalVisible}
+        open={isModalVisible} // Replaced 'visible' with 'open' for Modal
         onCancel={() => setIsModalVisible(false)}
         footer={null}
       >

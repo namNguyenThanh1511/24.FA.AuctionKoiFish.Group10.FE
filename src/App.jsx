@@ -136,7 +136,7 @@ function App() {
         },
         {
           path: "manage-member-account",
-          element: <ManageMemberAccount/>,
+          element: <ManageMemberAccount />,
         },
       ],
     },

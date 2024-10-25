@@ -260,7 +260,6 @@ function ManagerManageAuctionRequest() {
   return (
     <div style={{ margin: "100px auto" }}>
       <DashboardManageRequestTemplateForManager
-        // isRerender={hongthinh}
         apiUriPOST="auctionRequest"
         // formItems={formItems}
         title={title}
