@@ -6,10 +6,10 @@ body {
 
 .login-container {
   display: flex;
-  justify-content: flex-start; /* Canh giữa nửa bên trái */
+  justify-content: center; /* Canh giữa nửa bên trái */
   align-items: center;
   height: 100vh;
-  background-image: url("../../images/Logincode.jpg"); /* Đường dẫn ảnh nền */
+  background-image: url("../../images/koi-fish--LOGIN1868779_1280.jpg"); /* Đường dẫn ảnh nền */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center; /* Đặt ảnh nền ở giữa */
@@ -17,12 +17,13 @@ body {
 
 /* Form đăng nhập */
 .login-form {
+  opacity: 0.9;
   background-color: rgba(255, 255, 255, 0.9); /* Màu nền cho form */
   padding: 50px;
   border-radius: 20px;
   width: 300px;
   box-shadow: 50px 50px 50px rgba(0, 0, 0, 0.2);
-  margin-left: 10%; /* Đặt form cách mép trái 10% */
+   /* Đặt form cách mép trái 10% */
 }
 
 .login-form h2 {

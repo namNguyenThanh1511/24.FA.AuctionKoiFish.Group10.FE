@@ -13,38 +13,67 @@ import api from "../../../config/axios";
 import { DeleteOutlined } from "@ant-design/icons";
 import "./index.css";
 import dayjs from "dayjs";
+
 const ManageKoiBreederAccount = () => {
-  const [accounts, setAccounts] = useState([]); // Dữ liệu các tài khoản
-  const [loading, setLoading] = useState(false); // Trạng thái tải dữ liệu
+  const [accounts, setAccounts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [pagination, setPagination] = useState({
+    current: 1, // Start from the first page
+    pageSize: 4, // Items per page
+    total: 0,
+  });
+
   const [form] = Form.useForm();
-  // Lấy dữ liệu từ API và đổ vào state
-  const fetchAccounts = async () => {
+
+  const fetchAccounts = async (
+    page = pagination.current,
+    pageSize = pagination.pageSize
+  ) => {
     setLoading(true);
     try {
-      const response = await api.get("/breeders");
-      const accountsData = response.data;
-      setAccounts(accountsData); // Gán dữ liệu tài khoản vào state
+      const response = await api.get("/breeders-pagination", {
+        params: {
+          page: page - 1, // Adjusting for zero-based index
+          size: pageSize,
+        },
+      });
+      console.log("API Response:", response.data);
+      const {
+        accountResponseList,
+        totalElements,
+        totalPages,
+        pageNumber,
+        numberOfElements,
+      } = response.data;
+      setAccounts(accountResponseList);
+      setPagination({
+        current: pageNumber + 1, // Adjust for zero-based index
+        pageSize: pageSize, // Use the requested page size
+        total: totalElements,
+      });
     } catch (error) {
       message.error("Error fetching account data.");
+      console.error("Fetch Error:", error);
     } finally {
-      setLoading(false); // Tắt trạng thái loading sau khi dữ liệu được load
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAccounts(); // Gọi hàm fetchAccounts khi component được render lần đầu
+    fetchAccounts();
   }, []);
 
   const handleBanKoibreederAccount = async (user_id) => {
     try {
       await api.delete(`/account/${user_id}`);
       message.success("Account deleted successfully");
-      fetchAccounts(); // Tải lại danh sách tài khoản sau khi xóa
+      fetchAccounts();
     } catch (error) {
       message.error("Failed to disable account.");
     }
   };
+
   const validatePhoneNumber = (_, value) => {
     const phonePattern = /^0\d{9}$/;
     if (!value || phonePattern.test(value)) {
@@ -56,6 +85,7 @@ const ManageKoiBreederAccount = () => {
       )
     );
   };
+
   const handleCreateKoiBreederAccount = async (values) => {
     try {
       await api.post("/manager/create-breeder-account", values);
@@ -63,8 +93,14 @@ const ManageKoiBreederAccount = () => {
       form.resetFields();
       fetchAccounts();
     } catch (error) {
-      message.error("Failed to create account. ");
+      message.error("Failed to create account.");
     }
+  };
+
+  const handleTableChange = (pagination) => {
+    // Fetch accounts with the new page and page size
+    console.log(pagination);
+    fetchAccounts(pagination, pagination.pageSize);
   };
 
   const columns = [
@@ -164,11 +200,18 @@ const ManageKoiBreederAccount = () => {
         dataSource={accounts}
         loading={loading}
         rowKey={(record) => record.user_id}
-        pagination={{ pageSize: 10 }}
+        pagination={{
+          current: pagination.current, // Current page
+          pageSize: pagination.pageSize, // Items per page
+          total: pagination.total, // Total number of elements
+          onChange: handleTableChange, // Handle page change
+          showSizeChanger: false, // Optional: hide size changer
+        }}
       />
+
       <Modal
         title="Create KoiBreeder Account"
-        visible={isModalVisible}
+        open={isModalVisible} // Replaced 'visible' with 'open' for Modal
         onCancel={() => setIsModalVisible(false)}
         footer={null}
       >
@@ -213,7 +256,7 @@ const ManageKoiBreederAccount = () => {
             name="phoneNumber"
             rules={[
               { required: true, message: "Please enter phone number" },
-              { validator: validatePhoneNumber }, // Thêm hàm kiểm tra số điện thoại
+              { validator: validatePhoneNumber },
             ]}
           >
             <Input />

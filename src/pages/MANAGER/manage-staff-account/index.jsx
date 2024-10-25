@@ -1,9 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Space, Popconfirm, message, Form, Modal, Input } from "antd";
-import api from "../../../config/axios";
 import {
-  DeleteOutlined,
-} from "@ant-design/icons";
+  Table,
+  Button,
+  Space,
+  Popconfirm,
+  message,
+  Form,
+  Modal,
+  Input,
+} from "antd";
+import api from "../../../config/axios";
+import { DeleteOutlined } from "@ant-design/icons";
 import "./index.css";
 import dayjs from "dayjs";
 
@@ -11,16 +18,43 @@ const ManageStaffAccount = () => {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 4,
+    total: 0,
+  });
   const [form] = Form.useForm();
 
-  const fetchAccounts = async () => {
+  const fetchAccounts = async (
+    page = pagination.current,
+    pageSize = pagination.pageSize
+  ) => {
     setLoading(true);
     try {
-      const response = await api.get("/staffs");
-      const accountsData = response.data;
-      setAccounts(accountsData);
+      const response = await api.get("/staffs-pagination", {
+        params: {
+          page: page - 1,
+          size: pageSize,
+        },
+      });
+      console.log("API Response:", response.data);
+      const {
+        accountResponseList,
+        totalElements,
+        totalPages,
+        pageNumber,
+        numberOfElements,
+      } = response.data;
+      setAccounts(accountResponseList);
+      setPagination({
+        current: page + 1,
+        pageSize: pageSize,
+        total: totalElements,
+      });
     } catch (error) {
       message.error("Error fetching account data.");
+      console.error("Fetch Error:", error);
     } finally {
       setLoading(false);
     }
@@ -31,7 +65,7 @@ const ManageStaffAccount = () => {
   }, []);
 
   const validatePhoneNumber = (_, value) => {
-    const phonePattern = /^0\d{9}$/; // Kiểm tra số bắt đầu bằng 0 và có 10 chữ số
+    const phonePattern = /^0\d{9}$/;
     if (!value || phonePattern.test(value)) {
       return Promise.resolve();
     }
@@ -61,6 +95,11 @@ const ManageStaffAccount = () => {
     } catch (error) {
       message.error("Failed to disable account.");
     }
+  };
+
+  const handleTableChange = (pagination) => {
+    console.log(paginationn);
+    fetchAccounts(paginationn, pagination.pageSize);
   };
 
   const columns = [
@@ -154,11 +193,17 @@ const ManageStaffAccount = () => {
         dataSource={accounts}
         loading={loading}
         rowKey={(record) => record.user_id}
-        pagination={{ pageSize: 10 }}
+        pagination={{
+          current: pagination.current, // Keep current page as is
+          pageSize: pagination.pageSize,
+          total: pagination.total, // Total elements
+          onChange: handleTableChange, // Handle page change
+          showSizeChanger: false, // Optional: hide size changer
+        }}
       />
       <Modal
         title="Create Staff Account"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => setIsModalVisible(false)} // Đóng modal khi nhấn Cancel
         footer={null} // Tùy chỉnh footer của modal
       >
