@@ -377,6 +377,7 @@ function ManageAuctionRequestOfKoiBreeder() {
         isShownCardKoiFish={true}
         isCreateNew={true}
         selectedFish={selectedFish}
+        setSelectedFish={setSelectedFish}
       />
     </div>
   );
