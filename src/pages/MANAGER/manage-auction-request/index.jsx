@@ -88,12 +88,18 @@ function ManagerManageAuctionRequest() {
       dataIndex: "status",
       key: "status",
       render: (s) => {
-        const checkStatus =
-          s === "ACCEPTED_BY_STAFF" || s === "APPROVED_BY_MANAGER"
-            ? "green"
-            : s === "PENDING"
-            ? "yellow"
-            : "red";
+        // Create a map for statuses and their corresponding colors
+        const statusColorMap = {
+          ACCEPTED_BY_STAFF: "blue",
+          APPROVED_BY_MANAGER: "green",
+          PENDING: "yellow",
+          REJECTED: "red",
+          CANCELLED: "pink", // Add more statuses if necessary
+        };
+
+        // Get the color for the current status, or fallback to a default color
+        const checkStatus = statusColorMap[s] || "gray";
+
         return (
           <Tag
             color={checkStatus}

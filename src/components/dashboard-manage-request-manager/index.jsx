@@ -20,7 +20,10 @@ import dayjs from "dayjs";
 import CardKoiFish from "../card-koi-fish";
 import moment from "moment";
 import { CheckOutlined, DeleteOutlined, EyeOutlined, CloseOutlined } from "@ant-design/icons";
-
+import timezone from "dayjs/plugin/timezone"; // Import timezone plugin
+import utc from "dayjs/plugin/utc";
+dayjs.extend(utc);
+dayjs.extend(timezone);
 function DashboardManageRequestTemplateForManager({
   columns,
   title,
@@ -178,7 +181,6 @@ function DashboardManageRequestTemplateForManager({
   };
   const handleCloseModal = () => {
     setIsOpenModal(false);
-    form.resetFields();
   };
   const handleCloseViewModal = () => {
     setIsViewModalOpen(false);
@@ -193,6 +195,7 @@ function DashboardManageRequestTemplateForManager({
 
   const handleSubmitForm = async (values) => {
     setLoading(true);
+
     try {
       await api.put(`${actions}/${values[keyField]}`, values);
       toast.success("Successfully updated");
@@ -207,11 +210,23 @@ function DashboardManageRequestTemplateForManager({
 
   const handleSubmitAuctionSessionForm = async (values) => {
     setLoading(true);
+    const startDate = values.startDate;
+    const endDate = values.endDate;
+
+    const timezoneName = "Asia/Ho_Chi_Minh"; // Vietnam timezone
+
+    const startDateTime = dayjs(startDate).tz(timezoneName).format("YYYY-MM-DDTHH:mm:ss");
+    const endDateTime = dayjs(endDate).tz(timezoneName).format("YYYY-MM-DDTHH:mm:ss");
     try {
+      const payload = {
+        ...values,
+        startDate: startDateTime,
+        endDate: endDateTime,
+      };
       await api.put(`auctionRequest/approve/${values[keyField]}`, {
         responseNote: "",
       });
-      await api.post(`auctionSession`, values);
+      await api.post(`auctionSession`, payload);
       toast.success("Successfully created auction session");
       formCreateAuctionSession.resetFields();
       handleCloseAuctionModal();
