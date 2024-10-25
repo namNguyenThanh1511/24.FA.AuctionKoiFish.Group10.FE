@@ -18,13 +18,14 @@ const ManageStaffAccount = () => {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [form] = Form.useForm();
+
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 5,
+    pageSize: 4,
     total: 0,
   });
-  
+  const [form] = Form.useForm();
+
   const fetchAccounts = async (
     page = pagination.current,
     pageSize = pagination.pageSize
@@ -38,12 +39,18 @@ const ManageStaffAccount = () => {
         },
       });
       console.log("API Response:", response.data);
-      const { accountResponseList, totalElements, totalPages } = response.data;
+      const {
+        accountResponseList,
+        totalElements,
+        totalPages,
+        pageNumber,
+        numberOfElements,
+      } = response.data;
       setAccounts(accountResponseList);
       setPagination({
-        current: page,
+        current: page + 1,
         pageSize: pageSize,
-        total: totalPages,
+        total: totalElements,
       });
     } catch (error) {
       message.error("Error fetching account data.");
@@ -58,7 +65,7 @@ const ManageStaffAccount = () => {
   }, []);
 
   const validatePhoneNumber = (_, value) => {
-    const phonePattern = /^0\d{9}$/; 
+    const phonePattern = /^0\d{9}$/;
     if (!value || phonePattern.test(value)) {
       return Promise.resolve();
     }
@@ -89,10 +96,12 @@ const ManageStaffAccount = () => {
       message.error("Failed to disable account.");
     }
   };
-  const handleTableChange = (paginationn) => {
+
+  const handleTableChange = (pagination) => {
     console.log(paginationn);
     fetchAccounts(paginationn, pagination.pageSize);
   };
+
   const columns = [
     {
       title: "ID",
@@ -194,7 +203,7 @@ const ManageStaffAccount = () => {
       />
       <Modal
         title="Create Staff Account"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => setIsModalVisible(false)} // Đóng modal khi nhấn Cancel
         footer={null} // Tùy chỉnh footer của modal
       >
