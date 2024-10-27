@@ -40,9 +40,7 @@ const MemberProfileLayout = ({ collapsed, setCollapsed }) => {
 
   const items = [
     getItem("Personal", "personal", <TeamOutlined />),
-    getItem("Notification", "notification", <NotificationOutlined />),
     getItem("My Auction", "my-auction", <FileOutlined />),
-    getItem("Payment Resquest", "payment-request", <TransactionOutlined />),
     getItem("Wallet", "wallet", <WalletOutlined />),
     getItem("Logout", "logout", <LogoutOutlined />, handleLogout),
   ];
