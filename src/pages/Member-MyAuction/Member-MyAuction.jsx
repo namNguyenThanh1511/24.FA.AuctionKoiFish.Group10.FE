@@ -1,113 +1,150 @@
-import React from "react";
-import { Card, Row, Col, Tag, Badge, Button } from "antd";
-import {
-  HeartOutlined,
-  StarOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-} from "@ant-design/icons";
-import "../../pages/Member-MyAuction/Member-MyAuction.css"; 
-
-const auctionData = [
-  {
-    name: "Koi Koi Koi",
-    id: "#Aa33639",
-    breeder: "NND",
-    length: 18,
-    sex: "Unknown",
-    age: 2,
-    stars: 4,
-    price: 420000000,
-    time: "October 15, 2024 10:00 AM",
-    likes: 150,
-    variety: "Kōhaku",
-    paymentStatus: "Pending Payment", 
-  },
-  {
-    name: "Golden Koi",
-    id: "#Bb22412",
-    breeder: "AAA",
-    length: 22,
-    sex: "Male",
-    age: 3,
-    stars: 5,
-    price: 520000000,
-    time: "September 20, 2024 02:30 PM",
-    likes: 200,
-    variety: "Showa",
-    paymentStatus: "Paid", 
-  },
-  {
-    name: "Koi Koi Koi",
-    id: "#Aa33639",
-    breeder: "NND",
-    length: 18,
-    sex: "Unknown",
-    age: 2,
-    stars: 4,
-    price: 420000000,
-    time: "October 15, 2024 10:00 AM",
-    likes: 150,
-    variety: "Kōhaku",
-    paymentStatus: "Pending Payment", 
-  },
-];
+import React, { useEffect, useState } from "react";
+import { Card, Row, Col, Pagination, message } from "antd";
+import api from "../../config/axios";
+import dayjs from "dayjs";
 
 const MyAuction = () => {
+  const [auctions, setAuctions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 3,
+    total: 0,
+  });
+
+  const fetchAuctions = async (
+    page = pagination.current,
+    pageSize = pagination.pageSize
+  ) => {
+    setLoading(true);
+    try {
+      const response = await api.get("/auctionSession/my-auctions", {
+        params: {
+          page: page - 1,
+          size: pageSize,
+        },
+      });
+      console.log("API Response:", response.data);
+
+      const { auctionSessionResponses, totalElements, pageNumber } =
+        response.data;
+      setAuctions(auctionSessionResponses);
+      setPagination({
+        current: pageNumber + 1,
+        pageSize,
+        total: totalElements,
+      });
+    } catch (error) {
+      console.error(
+        "Fetch Error:",
+        error.response ? error.response.data : error
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAuctions();
+  }, []);
+
+  const handlePageChange = (page, pageSize) => {
+    fetchAuctions(page, pageSize);
+  };
+
   return (
-    <div className="my-auction-container">
+    <div
+      style={{
+        margin: "50px auto",
+        padding: "0 20px",
+        maxWidth: "1200px",
+        textAlign: "center",
+      }}
+    >
+      <h2 style={{ fontSize: "28px", fontWeight: "bold", color: "#333" }}>
+        My Auctions List
+      </h2>
       <Row gutter={[16, 16]}>
-        {auctionData.map((auction, index) => (
-          <Col key={index} xs={24} sm={12} md={8}>
+        {auctions.map((auction) => (
+          <Col key={auction.auctionSessionId} xs={24} sm={12} md={8}>
             <Card
-              title={`${auction.name} (${auction.variety})`}
-              extra={<Tag color="blue">{auction.id}</Tag>}
+              title={auction.title}
+              loading={loading}
               hoverable
-              actions={[
-                <Badge count={auction.likes} showZero>
-                  <HeartOutlined style={{ color: "#f5222d" }} />
-                </Badge>,
-                <Button type="link" icon={<StarOutlined />} disabled>
-                  {auction.stars} Stars
-                </Button>,
-              ]}
+              bordered={true}
+              style={{
+                borderRadius: "10px",
+                border: "1px solid #1890ff",
+                overflow: "hidden",
+                transition: "transform 0.3s ease",
+              }}
+              bodyStyle={{
+                fontSize: "16px",
+                color: "#555",
+              }}
+              headStyle={{
+                fontSize: "18px",
+                fontWeight: "bold",
+                textAlign: "center",
+                borderBottom: "1px solid 1890ff",
+              }}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.transform = "scale(1.05)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.transform = "scale(1)")
+              }
             >
               <p>
-                <strong>Breeder:</strong> {auction.breeder}
+                <strong>Auction ID:</strong> {auction.auctionSessionId}
               </p>
               <p>
-                <strong>Length:</strong> {auction.length} cm
+                <strong>Starting Price:</strong> {auction.startingPrice} VND
               </p>
               <p>
-                <strong>Sex:</strong> {auction.sex}
+                <strong>Current Price:</strong> {auction.currentPrice} VND
               </p>
               <p>
-                <strong>Age:</strong> {auction.age} years
+                <strong>Buy Now Price</strong> {auction.buyNowPrice} VND
               </p>
               <p>
-                <strong>Price:</strong> {auction.price.toLocaleString()} VND
+                <strong>Bid Increment:</strong> {auction.bidIncrement} VND
               </p>
               <p>
-                <strong>Auction Time:</strong> {auction.time}
+                <strong>Start Date:</strong>{" "}
+                {auction.startDate
+                  ? dayjs(auction.startDate).format("DD-MM-YYYY HH:mm:ss")
+                  : "N/A"}
               </p>
-
-              {/* Trạng thái thanh toán */}
               <p>
-                <strong>Payment Status:</strong>{" "}
-                {auction.paymentStatus === "Paid" ? (
-                  <Tag icon={<CheckCircleOutlined />} color="success">
-                    Paid
-                  </Tag>
-                ) : (
-                  <Tag icon={<ClockCircleOutlined />} color="warning">
-                    Pending Payment
-                  </Tag>
-                )}
+                <strong>End Date:</strong>{" "}
+                {auction.endDate
+                  ? dayjs(auction.endDate).format("DD-MM-YYYY HH:mm:ss")
+                  : "N/A"}
+              </p>
+              <p>
+                <strong>Status:</strong>{" "}
+                <span
+                  style={{
+                    color:
+                      auction.auctionStatus === "COMPLETED" ? "green" : "red",
+                  }}
+                >
+                  {auction.auctionStatus}
+                </span>
               </p>
             </Card>
           </Col>
         ))}
       </Row>
+      <Pagination
+        style={{ marginTop: "20px" }}
+        current={pagination.current}
+        pageSize={pagination.pageSize}
+        total={pagination.total}
+        onChange={handlePageChange}
+        showSizeChanger={false}
+      />
     </div>
   );
 };
