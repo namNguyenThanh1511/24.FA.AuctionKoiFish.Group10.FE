@@ -6,26 +6,26 @@ import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
 import "./profile.css";
+import { useSelector } from "react-redux";
 
 const Personal = () => {
   const [form] = Form.useForm();
   const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const currentUser = useSelector((state) => state.user);
 
   // Fetch dữ liệu người dùng từ API và đổ vào form
   const fetchUserProfile = async () => {
     try {
-      const response = await api.get(`account/profile`);
-      const userData = response.data;
       form.setFieldsValue({
-        username: userData.username,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        address: userData.address,
-        phoneNumber: userData.phoneNumber,
-        email: userData.email,
-        user_id: userData.user_id,
+        username: currentUser.username,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        address: currentUser.address,
+        phoneNumber: currentUser.phoneNumber,
+        email: currentUser.email,
+        user_id: currentUser.user_id,
       });
     } catch (error) {
       toast.error(error.response.data);
