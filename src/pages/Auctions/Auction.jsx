@@ -102,9 +102,14 @@ const Auction = () => {
       return "Auction ended";
     }
 
-    // Trừ thêm 7 tiếng (tính bằng mili giây)
-    const offset = 7 * 3600 * 1000;
-    const totalSeconds = Math.floor((endDate - Date.now() - offset) / 1000);
+    const offset = 7 * 3600 * 1000; // Điều chỉnh múi giờ
+    let totalSeconds;
+
+    if (auctionStatus === "UPCOMING") {
+      totalSeconds = Math.floor((startDate - Date.now() - offset) / 1000); // Đếm ngược đến startDate
+    } else {
+      totalSeconds = Math.floor((endDate - Date.now() - offset) / 1000); // Đếm ngược đến endDate
+    }
 
     const days = Math.floor(totalSeconds / (3600 * 24));
     const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
@@ -125,7 +130,7 @@ const Auction = () => {
             card.startDate,
             card.endDate,
             card.auctionStatus
-          ); // Cập nhật countdown với auctionStatus
+          );
           return {
             ...card,
             countdown: countdown,
