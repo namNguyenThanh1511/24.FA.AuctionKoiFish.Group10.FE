@@ -86,7 +86,7 @@ const MyAuction = () => {
                 fontSize: "18px",
                 fontWeight: "bold",
                 textAlign: "center",
-                borderBottom: "1px solid 1890ff",
+                borderBottom: "1px solid black",
               }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.transform = "scale(1.05)")

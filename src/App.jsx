@@ -29,6 +29,7 @@ import ManageStaffAccount from "./pages/MANAGER/manage-staff-account";
 import PaymentSuccess from "./pages/payment-notification";
 import Detail from "./pages/Details_Auction_fish/detail";
 import ManageMemberAccount from "./pages/STAFF/manage-member-account";
+import IncomeOverview from "./pages/MANAGER/imcome-overview";
 function App() {
   const router = createBrowserRouter([
     {
@@ -163,6 +164,10 @@ function App() {
         {
           path: "manage-koibreeder-account",
           element: <ManageKoiBreederAccount />,
+        },
+        {
+          path: "imcome-overview",
+          element: <IncomeOverview />,
         },
       ],
     },
