@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./detail.css";
 import api from "../../config/axios";
-import { Table, message } from "antd";
+import { Table, message, Modal } from "antd";
 import BidForm from "../../components/bid-section/bid-ascending";
 
 const Detail = () => {
@@ -11,6 +11,9 @@ const Detail = () => {
   const [countdown, setCountdown] = useState("");
   const [currentBid, setCurrentBid] = useState(0);
   const [bidHistory, setBidHistory] = useState([]);
+  const [isWinnerModalVisible, setIsWinnerModalVisible] = useState(false);
+  const [winnerName, setWinnerName] = useState("");
+  const [intervalId, setIntervalId] = useState(null);
 
   const fetchProductDetail = async () => {
     try {
@@ -32,13 +35,30 @@ const Detail = () => {
       }));
       setBidHistory(historyData);
 
+      const startDate = new Date(response.data.startDate);
+      const endDate = new Date(response.data.endDate);
+
       if (response.data.auctionStatus === "COMPLETED") {
         setCountdown("Auction ended");
+        if (response.data.winner) {
+          setWinnerName(response.data.winner.fullName);
+          setIsWinnerModalVisible(true);
+        }
+      } else if (response.data.auctionStatus === "UPCOMING") {
+        const initialCountdown = getCountdown(new Date(), startDate);
+        setCountdown(initialCountdown);
+
+        const id = setInterval(() => {
+          const updatedCountdown = getCountdown(new Date(), startDate);
+          setCountdown(updatedCountdown);
+          if (updatedCountdown === "Auction starting soon") {
+            clearInterval(id);
+            startOngoingCountdown(startDate, endDate);
+          }
+        }, 1000);
+        setIntervalId(id);
       } else {
-        const startDate = new Date(response.data.startDate);
-        const endDate = new Date(response.data.endDate);
-        const countdown = getCountdown(startDate, endDate);
-        setCountdown(countdown);
+        startOngoingCountdown(startDate, endDate);
       }
     } catch (error) {
       console.error("Error fetching product detail: ", error);
@@ -47,10 +67,17 @@ const Detail = () => {
 
   useEffect(() => {
     fetchProductDetail();
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, [auctionSessionId]);
 
-  const getCountdown = (startDate, endDate) => {
-    const totalSeconds = Math.floor((endDate - new Date()) / 1000);
+  const getCountdown = (fromDate, toDate) => {
+    const offset = 7 * 3600 * 1000; // 7 tiếng tính bằng mili giây
+    const totalSeconds = Math.floor((toDate.getTime() - fromDate.getTime() - offset) / 1000);
+
     const days = Math.floor(totalSeconds / (3600 * 24));
     const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -58,7 +85,21 @@ const Detail = () => {
 
     return totalSeconds > 0
       ? `${days}d ${hours}h ${minutes}m ${seconds}s`
-      : "Auction ended";
+      : "Auction starting soon";
+  };
+
+  const startOngoingCountdown = (startDate, endDate) => {
+    const countdown = getCountdown(startDate, endDate);
+    setCountdown(countdown);
+
+    const id = setInterval(() => {
+      const updatedCountdown = getCountdown(new Date(), endDate);
+      setCountdown(updatedCountdown);
+      if (updatedCountdown === "Auction ended") {
+        clearInterval(id);
+      }
+    }, 1000);
+    setIntervalId(id);
   };
 
   const handleBid = async (bidValue) => {
@@ -66,19 +107,16 @@ const Detail = () => {
       const token = localStorage.getItem("token");
       const bidDifference = bidValue - currentBid;
 
-      // Kiểm tra xem bidValue có lớn hơn Buy Now Price không
       if (bidValue > productDetail.buyNowPrice) {
         message.error("Bid amount cannot exceed Buy Now price!");
         return;
       }
 
-      // Kiểm tra nếu bidValue bằng với Buy Now Price
       if (bidValue === productDetail.buyNowPrice) {
-        await handleBuyNow(); // Gọi hàm mua ngay
+        await handleBuyNow();
         return;
       }
 
-      // Kiểm tra xem bidValue có lớn hơn currentBid không
       if (bidDifference > 0) {
         const response = await api.post(
           `bid`,
@@ -120,11 +158,16 @@ const Detail = () => {
         }
       );
 
-      message.success("Mua ngay thành công!");
-      fetchProductDetail();
+      if (response.status === 200) {
+        message.success("Mua ngay thành công!");
+        setWinnerName(response.data.winner.fullName);
+        setIsWinnerModalVisible(true);
+        fetchProductDetail();
+      } else {
+        message.error("Mua ngay không thành công.");
+      }
     } catch (error) {
       console.error("Lỗi khi mua item: ", error);
-      message.error("Mua ngay không thành công.");
     }
   };
 
@@ -158,60 +201,32 @@ const Detail = () => {
             <span style={{ color: "red" }}> {countdown}</span>
           </div>
           <div className="product-info-container">
-            {/* Product info */}
             <div className="info-box">
-              <p>
-                <strong>Name:</strong> {koi.name}
-              </p>
+              <p><strong>Name:</strong> {koi.name}</p>
             </div>
             <div className="info-box">
-              <p>
-                <strong>Breeder:</strong> {koi.breeder.username}
-              </p>
+              <p><strong>Breeder:</strong> {koi.breeder.username}</p>
             </div>
             <div className="info-box">
-              <p>
-                <strong>Auction Status:</strong>{" "}
-                <span style={{ color: getStatusColor(auctionStatus) }}>
-                  {auctionStatus}
-                </span>
-              </p>
+              <p><strong>Auction Status:</strong> <span style={{ color: getStatusColor(auctionStatus) }}>{auctionStatus}</span></p>
             </div>
             <div className="info-box">
-              <p>
-                <strong>Auction Type:</strong> {auctionType}
-              </p>
+              <p><strong>Auction Type:</strong> {auctionType}</p>
             </div>
             <div className="info-box">
-              <p>
-                <strong>Length:</strong> {koi.sizeCm} cm
-              </p>
+              <p><strong>Length:</strong> {koi.sizeCm} cm</p>
             </div>
             <div className="info-box">
-              <p>
-                <strong>Sex:</strong> {koi.sex}
-              </p>
+              <p><strong>Sex:</strong> {koi.sex}</p>
             </div>
             <div className="info-box">
-              <p>
-                <strong>Age:</strong>{" "}
-                {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()}{" "}
-                years
-              </p>
+              <p><strong>Age:</strong> {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()} years</p>
             </div>
             <div className="info-box">
-              <p>
-                <strong>Variety:</strong>{" "}
-                {koi.varieties && koi.varieties.length > 0
-                  ? koi.varieties.map((variety) => variety.name).join(", ")
-                  : "No variety available"}
-              </p>
+              <p><strong>Variety:</strong> {koi.varieties && koi.varieties.length > 0 ? koi.varieties.map((variety) => variety.name).join(", ") : "No variety available"}</p>
             </div>
             <div className="info-box">
-              <p>
-                <strong>Price:</strong>{" "}
-                {productDetail.currentPrice.toLocaleString("en-US")}₫
-              </p>
+              <p><strong>Price:</strong> {productDetail.currentPrice.toLocaleString("en-US")}₫</p>
             </div>
           </div>
         </div>
@@ -236,9 +251,17 @@ const Detail = () => {
             { title: "Bid", dataIndex: "bid", key: "bid" },
             { title: "Name", dataIndex: "name", key: "name" },
           ]}
-          rowKey="date"
         />
       </div>
+
+      <Modal
+        title="Thông báo"
+        visible={isWinnerModalVisible}
+        onCancel={() => setIsWinnerModalVisible(false)}
+        footer={null}
+      >
+        <p>Chúc mừng! {winnerName} đã trở thành người thắng cuộc trong cuộc đấu giá này.</p>
+      </Modal>
     </div>
   );
 };
