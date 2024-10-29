@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import "./detail.css";
 import api from "../../config/axios";
-import { Table, message } from "antd";
+import { Table, message, Modal } from "antd";
 import BidForm from "../../components/bid-section/bid-ascending";
 
 const Detail = () => {
@@ -11,6 +11,8 @@ const Detail = () => {
   const [countdown, setCountdown] = useState("");
   const [currentBid, setCurrentBid] = useState(0);
   const [bidHistory, setBidHistory] = useState([]);
+  const [isWinnerModalVisible, setIsWinnerModalVisible] = useState(false);
+  const [winnerName, setWinnerName] = useState("");
 
   const fetchProductDetail = async () => {
     try {
@@ -34,6 +36,10 @@ const Detail = () => {
 
       if (response.data.auctionStatus === "COMPLETED") {
         setCountdown("Auction ended");
+        if (response.data.winner) {
+          setWinnerName(response.data.winner.fullName);
+          setIsWinnerModalVisible(true);
+        }
       } else {
         const startDate = new Date(response.data.startDate);
         const endDate = new Date(response.data.endDate);
@@ -66,19 +72,16 @@ const Detail = () => {
       const token = localStorage.getItem("token");
       const bidDifference = bidValue - currentBid;
 
-      // Kiểm tra xem bidValue có lớn hơn Buy Now Price không
       if (bidValue > productDetail.buyNowPrice) {
         message.error("Bid amount cannot exceed Buy Now price!");
         return;
       }
 
-      // Kiểm tra nếu bidValue bằng với Buy Now Price
       if (bidValue === productDetail.buyNowPrice) {
-        await handleBuyNow(); // Gọi hàm mua ngay
+        await handleBuyNow();
         return;
       }
 
-      // Kiểm tra xem bidValue có lớn hơn currentBid không
       if (bidDifference > 0) {
         const response = await api.post(
           `bid`,
@@ -119,14 +122,23 @@ const Detail = () => {
           },
         }
       );
-
-      message.success("Mua ngay thành công!");
-      fetchProductDetail();
+  
+      // Kiểm tra mã phản hồi để xác định thành công
+      if (response.status === 200) {
+        message.success("Mua ngay thành công!");
+        setWinnerName(response.data.winner.fullName); // Cập nhật tên người mua
+        setIsWinnerModalVisible(true); // Hiển thị modal
+        fetchProductDetail(); // Cập nhật thông tin sản phẩm
+      } else {
+        // Hiển thị thông báo thất bại chỉ nếu có lỗi
+        message.error("Mua ngay không thành công.");
+      }
     } catch (error) {
       console.error("Lỗi khi mua item: ", error);
-      message.error("Mua ngay không thành công.");
+
     }
   };
+  
 
   if (!productDetail) return <div>Loading...</div>;
 
@@ -158,7 +170,6 @@ const Detail = () => {
             <span style={{ color: "red" }}> {countdown}</span>
           </div>
           <div className="product-info-container">
-            {/* Product info */}
             <div className="info-box">
               <p>
                 <strong>Name:</strong> {koi.name}
@@ -239,6 +250,15 @@ const Detail = () => {
           rowKey="date"
         />
       </div>
+
+      <Modal
+        title="Kết quả Đấu Giá"
+        visible={isWinnerModalVisible}
+        onCancel={() => setIsWinnerModalVisible(false)}
+        onOk={() => setIsWinnerModalVisible(false)}
+      >
+        <p>Người chiến thắng: {winnerName}</p>
+      </Modal>
     </div>
   );
 };
