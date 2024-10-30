@@ -1,62 +1,63 @@
 import React, { useState, useEffect } from "react";
 import HeaderLogin from "../../components/header-logged-in";
-import "./Auction.css"; // Đảm bảo bạn đã nhập file CSS
-import { Button } from "antd";
+import "./Auction.css";
+import { Button, Modal, Input, Select, InputNumber } from "antd";
 import Card from "../../components/Card/Card";
 import Koi from "../../images/Koi1.jpg";
 import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
 
+const { Option } = Select;
+
 const Auction = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [cardsData, setCardsData] = useState([]);
-  const [totalPages, setTotalPages] = useState(0); // Thêm trạng thái tổng số trang
+  const [totalPages, setTotalPages] = useState(0);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [searchParams, setSearchParams] = useState({
+    breederName: "",
+    varieties: [],
+    minSizeCm: null,
+    maxSizeCm: null,
+    minWeightKg: null,
+    maxWeightKg: null,
+  });
   const cardsPerPage = 8;
-  const navigate = useNavigate(); // Khởi tạo useNavigate
+  const navigate = useNavigate();
 
-  // Hàm tính toán tuổi theo định dạng "x years y months"
   const calculateAge = (dateOfBirth) => {
     const now = new Date();
     const birthDate = new Date(dateOfBirth);
-
     let years = now.getFullYear() - birthDate.getFullYear();
     let months = now.getMonth() - birthDate.getMonth();
-
-    // Nếu tháng hiện tại nhỏ hơn tháng sinh nhật, trừ một năm và điều chỉnh tháng
     if (months < 0) {
       years--;
       months += 12;
     }
-
     return `${years} years ${months} months`;
   };
 
-  // Lấy dữ liệu từ API
-  const fetchKoiFish = async (page) => {
+  const fetchKoiFish = async (page, params = {}) => {
     try {
       const response = await api.get(
         `/auctionSession/auction-sessions-pagination`,
         {
           params: {
+            ...params,
             page: page,
             size: cardsPerPage,
           },
         }
       );
 
-      console.log("Response from API:", response.data); // Log phản hồi từ API
+      const searchResponse = await api.get(`/auctionSession/search`, {
+        params: {
+          ...params,
+        },
+      });
 
       const data = response.data.auctionSessionResponses;
       const totalPages = response.data.totalPages;
-
-      // Kiểm tra dữ liệu
-      console.log("Data fetched from API:", data);
-      console.log("Total Pages:", totalPages);
-
-      // Nếu dữ liệu rỗng, thông báo
-      if (data.length === 0) {
-        console.warn(`No data found for page ${page}`);
-      }
 
       const transformedData = data.map((item) => {
         const age = calculateAge(item.koi.bornIn);
@@ -94,62 +95,104 @@ const Auction = () => {
   };
 
   useEffect(() => {
-    fetchKoiFish(currentPage); // Gọi hàm với trang hiện tại
-  }, [currentPage]); // Thay đổi trang hiện tại sẽ gọi lại useEffect
+    fetchKoiFish(currentPage, searchParams);
+  }, [currentPage, searchParams]);
 
   const getCountdown = (startDate, endDate, auctionStatus) => {
-    if (auctionStatus === "COMPLETED") {
-      return "Auction ended";
-    }
-
-    const offset = 7 * 3600 * 1000; // Điều chỉnh múi giờ
+    if (auctionStatus === "COMPLETED") return "Auction ended";
+    const offset = 7 * 3600 * 1000;
     let totalSeconds;
-
     if (auctionStatus === "UPCOMING") {
-      totalSeconds = Math.floor((startDate - Date.now() - offset) / 1000); // Đếm ngược đến startDate
+      totalSeconds = Math.floor((startDate - Date.now() - offset) / 1000);
     } else {
-      totalSeconds = Math.floor((endDate - Date.now() - offset) / 1000); // Đếm ngược đến endDate
+      totalSeconds = Math.floor((endDate - Date.now() - offset) / 1000);
     }
-
     const days = Math.floor(totalSeconds / (3600 * 24));
     const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-
     return totalSeconds > 0
       ? `${days}d ${hours}h ${minutes}m ${seconds}s`
       : "Auction ended";
   };
 
-  // Thiết lập interval cho đếm ngược
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setCardsData((prevData) =>
-        prevData.map((card) => {
-          const countdown = getCountdown(
-            card.startDate,
-            card.endDate,
-            card.auctionStatus
-          );
-          return {
-            ...card,
-            countdown: countdown,
-          };
-        })
-      );
-    }, 1000);
+  const handleSearchClick = () => {
+    setIsModalVisible(true);
+  };
 
-    return () => clearInterval(intervalId); // Dọn dẹp interval khi component bị hủy
-  }, []);
+  const handleModalOk = () => {
+    fetchKoiFish(0, searchParams);
+    setCurrentPage(0);
+    setIsModalVisible(false);
+  };
+
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleInputChange = (name, value) => {
+    setSearchParams((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 0 && pageNumber < totalPages) {
-      setCurrentPage(pageNumber); // Cập nhật trang hiện tại
+      setCurrentPage(pageNumber);
     }
   };
 
   return (
     <div className="auction-form-container">
+      <Button type="primary" onClick={handleSearchClick}>
+        Search
+      </Button>
+
+      <Modal
+        title="Search Filters"
+        visible={isModalVisible}
+        onOk={handleModalOk}
+        onCancel={handleModalCancel}
+      >
+        <Input
+          placeholder="Breeder Name"
+          value={searchParams.breederName}
+          onChange={(e) => handleInputChange("breederName", e.target.value)}
+        />
+        <Select
+          mode="multiple"
+          style={{ width: "100%", marginTop: 10 }}
+          placeholder="Varieties"
+          onChange={(values) => handleInputChange("varieties", values)}
+        >
+          <Option value="Kohaku">Kohaku</Option>
+          <Option value="Showa">Showa</Option>
+          <Option value="Sanke">Sanke</Option>
+        </Select>
+        <InputNumber
+          placeholder="Min Size (cm)"
+          value={searchParams.minSizeCm}
+          onChange={(value) => handleInputChange("minSizeCm", value)}
+          style={{ width: "100%", marginTop: 10 }}
+        />
+        <InputNumber
+          placeholder="Max Size (cm)"
+          value={searchParams.maxSizeCm}
+          onChange={(value) => handleInputChange("maxSizeCm", value)}
+          style={{ width: "100%", marginTop: 10 }}
+        />
+        <InputNumber
+          placeholder="Min Weight (kg)"
+          value={searchParams.minWeightKg}
+          onChange={(value) => handleInputChange("minWeightKg", value)}
+          style={{ width: "100%", marginTop: 10 }}
+        />
+        <InputNumber
+          placeholder="Max Weight (kg)"
+          value={searchParams.maxWeightKg}
+          onChange={(value) => handleInputChange("maxWeightKg", value)}
+          style={{ width: "100%", marginTop: 10 }}
+        />
+      </Modal>
+
       <div className="card-grid">
         {cardsData.map((card) => (
           <Card
@@ -177,11 +220,10 @@ const Auction = () => {
         <Button
           className="pagination-button"
           onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 0} // Chỉ vô hiệu hóa khi đang ở trang đầu tiên
+          disabled={currentPage === 0}
         >
           {"<"}
         </Button>
-
         {Array.from({ length: totalPages }, (_, index) => (
           <Button
             key={index}
@@ -190,14 +232,13 @@ const Auction = () => {
             }`}
             onClick={() => handlePageChange(index)}
           >
-            {index + 1} {/* Hiển thị số trang bắt đầu từ 1 */}
+            {index + 1}
           </Button>
         ))}
-
         <Button
           className="pagination-button"
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages - 1} // Chỉ vô hiệu hóa khi ở trang cuối
+          disabled={currentPage === totalPages - 1}
         >
           {">"}
         </Button>
