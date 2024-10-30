@@ -1,21 +1,17 @@
-// src/pages/Personal.js
 import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Row, Col, Breadcrumb } from "antd";
-import api from "../../../config/axios"; // Sử dụng api đã cấu hình
+import api from "../../../config/axios";
 import { toast } from "react-toastify";
-import { Link, useNavigate } from "react-router-dom";
-
-import "./profile.css";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import "./profile.css";
 
 const Personal = () => {
   const [form] = Form.useForm();
-  const [collapsed, setCollapsed] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.user);
 
-  // Fetch dữ liệu người dùng từ API và đổ vào form
   const fetchUserProfile = async () => {
     try {
       form.setFieldsValue({
@@ -36,16 +32,10 @@ const Personal = () => {
     fetchUserProfile();
   }, []);
 
-  // Hàm xử lý khi lưu thay đổi profile
   const handleSaveProfile = async (values) => {
     setLoading(true);
-    console.log(values);
     try {
-      const response = await api.put(
-        `account/update-profile-current-user`,
-        values
-      );
-
+      await api.put(`account/update-profile-current-user`, values);
       toast.success("Profile updated successfully");
     } catch (error) {
       toast.error(error.response.data);
@@ -54,22 +44,19 @@ const Personal = () => {
     }
   };
 
-  // Hàm xác thực số điện thoại
   const validatePhoneNumber = (_, value) => {
     const phonePattern = /^0\d{9}$/;
     if (!value || phonePattern.test(value)) {
       return Promise.resolve();
     }
     return Promise.reject(
-      new Error(
-        "Phone number must be 10 digits, start with 0, and not contain letters or special characters."
-      )
+      new Error("Phone number must be 10 digits, starting with 0.")
     );
   };
 
   return (
     <div className="profile-form">
-      <h2>My profile</h2>
+      <h2>My Profile</h2>
       <h4>Manage your profile information to keep your account secure</h4>
       <Form
         form={form}
@@ -82,12 +69,7 @@ const Personal = () => {
             <Col span={12}>
               <Form.Item
                 name="firstName"
-                rules={[
-                  {
-                    required: true,
-                    message: "Please enter your first name!",
-                  },
-                ]}
+                rules={[{ required: true, message: "Please enter your first name!" }]}
               >
                 <Input placeholder="First Name" />
               </Form.Item>
@@ -95,9 +77,7 @@ const Personal = () => {
             <Col span={12}>
               <Form.Item
                 name="lastName"
-                rules={[
-                  { required: true, message: "Please enter your last name!" },
-                ]}
+                rules={[{ required: true, message: "Please enter your last name!" }]}
               >
                 <Input placeholder="Last Name" />
               </Form.Item>
@@ -127,13 +107,7 @@ const Personal = () => {
         <Form.Item
           label="Email"
           name="email"
-          rules={[
-            {
-              required: true,
-              type: "email",
-              message: "Please enter a valid email!",
-            },
-          ]}
+          rules={[{ required: true, type: "email", message: "Please enter a valid email!" }]}
         >
           <Input type="email" placeholder="Enter Email" disabled />
         </Form.Item>
@@ -148,7 +122,7 @@ const Personal = () => {
 
         <Form.Item>
           <Button type="primary" htmlType="submit" block loading={loading}>
-            Save Change
+            Save Changes
           </Button>
         </Form.Item>
       </Form>
