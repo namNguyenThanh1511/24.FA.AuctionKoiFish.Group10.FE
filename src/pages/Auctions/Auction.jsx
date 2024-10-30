@@ -102,7 +102,15 @@ const Auction = () => {
       return "Auction ended";
     }
 
-    const totalSeconds = Math.floor((endDate - new Date()) / 1000);
+    const offset = 7 * 3600 * 1000; // Điều chỉnh múi giờ
+    let totalSeconds;
+
+    if (auctionStatus === "UPCOMING") {
+      totalSeconds = Math.floor((startDate - Date.now() - offset) / 1000); // Đếm ngược đến startDate
+    } else {
+      totalSeconds = Math.floor((endDate - Date.now() - offset) / 1000); // Đếm ngược đến endDate
+    }
+
     const days = Math.floor(totalSeconds / (3600 * 24));
     const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -122,7 +130,7 @@ const Auction = () => {
             card.startDate,
             card.endDate,
             card.auctionStatus
-          ); // Cập nhật countdown với auctionStatus
+          );
           return {
             ...card,
             countdown: countdown,
@@ -139,7 +147,6 @@ const Auction = () => {
       setCurrentPage(pageNumber); // Cập nhật trang hiện tại
     }
   };
-  
 
   return (
     <div className="auction-form-container">
@@ -167,34 +174,34 @@ const Auction = () => {
         ))}
       </div>
       <div className="pagination">
-  <Button
-    className="pagination-button"
-    onClick={() => handlePageChange(currentPage - 1)}
-    disabled={currentPage === 0} // Chỉ vô hiệu hóa khi đang ở trang đầu tiên
-  >
-    {"<"}
-  </Button>
+        <Button
+          className="pagination-button"
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 0} // Chỉ vô hiệu hóa khi đang ở trang đầu tiên
+        >
+          {"<"}
+        </Button>
 
-  {Array.from({ length: totalPages }, (_, index) => (
-    <Button
-      key={index}
-      className={`pagination-button ${currentPage === index ? "active" : ""}`}
-      onClick={() => handlePageChange(index)}
-    >
-      {index + 1} {/* Hiển thị số trang bắt đầu từ 1 */}
-    </Button>
-  ))}
+        {Array.from({ length: totalPages }, (_, index) => (
+          <Button
+            key={index}
+            className={`pagination-button ${
+              currentPage === index ? "active" : ""
+            }`}
+            onClick={() => handlePageChange(index)}
+          >
+            {index + 1} {/* Hiển thị số trang bắt đầu từ 1 */}
+          </Button>
+        ))}
 
-  <Button
-    className="pagination-button"
-    onClick={() => handlePageChange(currentPage + 1)}
-    disabled={currentPage === totalPages - 1} // Chỉ vô hiệu hóa khi ở trang cuối
-  >
-    {">"}
-  </Button>
-</div>
-
-
+        <Button
+          className="pagination-button"
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages - 1} // Chỉ vô hiệu hóa khi ở trang cuối
+        >
+          {">"}
+        </Button>
+      </div>
     </div>
   );
 };
