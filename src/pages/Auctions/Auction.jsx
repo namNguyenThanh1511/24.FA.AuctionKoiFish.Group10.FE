@@ -12,15 +12,17 @@ const { Option } = Select;
 const Auction = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [cardsData, setCardsData] = useState([]);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchParams, setSearchParams] = useState({
     breederName: "",
-    varieties: [],
+    varieties: null,
     minSizeCm: null,
     maxSizeCm: null,
     minWeightKg: null,
     maxWeightKg: null,
+    sex: null, // Thêm thuộc tính sex
+    auctionType: null, // Thêm thuộc tính auctionType
   });
   const cardsPerPage = 8;
   const navigate = useNavigate();
@@ -39,20 +41,16 @@ const Auction = () => {
 
   const fetchKoiFish = async (page, params = {}) => {
     try {
-      const response = await api.get(
-        `/auctionSession/auction-sessions-pagination`,
-        {
-          params: {
-            ...params,
-            page: page,
-            size: cardsPerPage,
-          },
-        }
-      );
+      const filteredParams = { ...params };
+      if (!filteredParams.breederName) {
+        delete filteredParams.breederName;
+      }
 
-      const searchResponse = await api.get(`/auctionSession/search`, {
+      const response = await api.get(`/auctionSession/search`, {
         params: {
-          ...params,
+          ...filteredParams,
+          page: page,
+          size: cardsPerPage,
         },
       });
 
@@ -89,7 +87,7 @@ const Auction = () => {
       setCardsData(transformedData);
       setTotalPages(totalPages);
     } catch (error) {
-      console.error("Error fetching data: ", error);
+      console.log("Detailed error information:", error);
       alert("There was an error fetching data. Please try again.");
     }
   };
@@ -131,10 +129,16 @@ const Auction = () => {
   };
 
   const handleInputChange = (name, value) => {
-    setSearchParams((prev) => ({ ...prev, [name]: value }));
+    if (name === "varieties") {
+      const varietiesString = value.join(", ");
+      setSearchParams((prev) => ({ ...prev, [name]: varietiesString }));
+    } else {
+      setSearchParams((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handlePageChange = (pageNumber) => {
+    console.log(pageNumber);
     if (pageNumber >= 0 && pageNumber < totalPages) {
       setCurrentPage(pageNumber);
     }
@@ -152,11 +156,16 @@ const Auction = () => {
         onOk={handleModalOk}
         onCancel={handleModalCancel}
       >
-        <Input
-          placeholder="Breeder Name"
-          value={searchParams.breederName}
-          onChange={(e) => handleInputChange("breederName", e.target.value)}
-        />
+        <Select
+          style={{ width: "100%", marginTop: 10 }}
+          placeholder="Select Breeder"
+          onChange={(value) => handleInputChange("breederName", value)}
+        >
+          <Option value="NND">NND</Option>
+          <Option value="Shakai">Shakai</Option>
+          <Option value="Isa">Isa</Option>
+          <Option value="koibreeder1">koibreeder1</Option>
+        </Select>
         <Select
           mode="multiple"
           style={{ width: "100%", marginTop: 10 }}
@@ -191,6 +200,26 @@ const Auction = () => {
           onChange={(value) => handleInputChange("maxWeightKg", value)}
           style={{ width: "100%", marginTop: 10 }}
         />
+
+        {/* Thêm Dropdown cho sex */}
+        <Select
+          style={{ width: "100%", marginTop: 10 }}
+          placeholder="Select Sex"
+          onChange={(value) => handleInputChange("sex", value)}
+        >
+          <Option value="MALE">Male</Option>
+          <Option value="FEMALE">Female</Option>
+        </Select>
+
+        {/* Thêm Dropdown cho auctionType */}
+        <Select
+          style={{ width: "100%", marginTop: 10 }}
+          placeholder="Select Auction Type"
+          onChange={(value) => handleInputChange("auctionType", value)}
+        >
+          <Option value="ASCENDING">Ascending</Option>
+          <Option value="DESCENDING">Descending</Option>
+        </Select>
       </Modal>
 
       <div className="card-grid">
@@ -227,10 +256,9 @@ const Auction = () => {
         {Array.from({ length: totalPages }, (_, index) => (
           <Button
             key={index}
-            className={`pagination-button ${
-              currentPage === index ? "active" : ""
-            }`}
+            className="pagination-button"
             onClick={() => handlePageChange(index)}
+            disabled={currentPage === index}
           >
             {index + 1}
           </Button>
