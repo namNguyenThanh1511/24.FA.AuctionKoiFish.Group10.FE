@@ -24,7 +24,7 @@ const Auction = () => {
     sex: null, // Thêm thuộc tính sex
     auctionType: null, // Thêm thuộc tính auctionType
   });
-  const cardsPerPage = 8;
+  const cardsPerPage = 5;
   const navigate = useNavigate();
 
   const calculateAge = (dateOfBirth) => {

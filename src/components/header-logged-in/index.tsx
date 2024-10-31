@@ -1,56 +1,29 @@
+// src/components/HeaderLogin.jsx
 import React from "react";
-import { Link, useNavigate } from "react-router-dom"; // Import Link từ react-router-dom
-import { Menu, Dropdown, Button } from "antd";
-import {
-  UserOutlined,
-  NotificationOutlined,
-  LogoutOutlined,
-  AppstoreOutlined,
-  WalletOutlined,
-  TransactionOutlined,
-} from "@ant-design/icons"; // Import các icon từ Ant Design
-import "./index.css"; // Import file CSS cho Header
-import avatar from "../../images/avata.jpg"; // Thêm đường dẫn avatar
-import { useDispatch } from "react-redux";
-import { logout } from "../../redux/feature/userSlice";
+import { Link } from "react-router-dom";
+import { Dropdown } from "antd";
+import { useSelector } from "react-redux";
+import "./index.css";
+import avatar from "../../images/avata.jpg";
+import DropdownMenuMember from "../header-avatar-dropdown/header-avatar-dropdown-member";
+import DropdownMenuStaff from "../header-avatar-dropdown/header-avatar-dropdown-staff";
+import DropdownMenuManager from "../header-avatar-dropdown/header-avatar-dropdown-manager";
+import DropdownMenuKoiBreeder from "../header-avatar-dropdown/header-avatar-dropdown-koibreeder";
 
 const HeaderLogin = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const roleEnum = useSelector((state) => state.user.roleEnum);
 
-  const role = "";
-  const base_URL = "";
-  const menu = (
-    <Menu>
-      <Menu.Item key="1" icon={<UserOutlined />}>
-        <Link to="/member-profile/personal">Personal</Link>
-      </Menu.Item>
-      <Menu.Item key="2" icon={<NotificationOutlined />}>
-        <Link to="/notification">Notification</Link>
-      </Menu.Item>
-      <Menu.Item key="3" icon={<AppstoreOutlined />}>
-        <Link to="/my-auction">My Auction</Link>
-      </Menu.Item>
-      <Menu.Item key="4" icon={<TransactionOutlined />}>
-        <Link to="/payment-request">Payment Request</Link>
-      </Menu.Item>
-      <Menu.Item key="5" icon={<WalletOutlined />}>
-        <Link to="/profile/wallet">Wallet</Link>
-      </Menu.Item>
-      <Menu.Item key="6" icon={<LogoutOutlined />} danger>
-        <div
-          onClick={() => {
-            localStorage.removeItem("token");
-            dispatch(logout());
-            navigate("/");
-            window.location.reload();
-          }}
-        >
-          Log out
-        </div>
-      </Menu.Item>
-    </Menu>
-  );
+  // Xác định component DropdownMenu dựa trên roleEnum
+  let DropdownMenuComponent;
+  if (roleEnum === "MEMBER") {
+    DropdownMenuComponent = <DropdownMenuMember />;
+  } else if (roleEnum === "STAFF") {
+    DropdownMenuComponent = <DropdownMenuStaff />;
+  } else if (roleEnum === "MANAGER") {
+    DropdownMenuComponent = <DropdownMenuManager />;
+  } else if (roleEnum === "KOI_BREEDER") {
+    DropdownMenuComponent = <DropdownMenuKoiBreeder />;
+  }
 
   return (
     <header className="header">
@@ -69,8 +42,7 @@ const HeaderLogin = () => {
             <Link to={"/about"}>About</Link>
           </li>
           <li>
-            {/* Thay thế Login và Register bằng avatar với menu dropdown */}
-            <Dropdown overlay={menu} trigger={["hover"]} placement="bottomRight">
+            <Dropdown overlay={DropdownMenuComponent} trigger={["hover"]} placement="bottomRight">
               <div className="avatar-wrapper">
                 <img src={avatar} alt="User Avatar" className="avatar" />
               </div>
