@@ -1,113 +1,184 @@
-import React from "react";
-import { Card, Row, Col, Tag, Badge, Button } from "antd";
-import {
-  HeartOutlined,
-  StarOutlined,
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-} from "@ant-design/icons";
-import "../../pages/Member-MyAuction/Member-MyAuction.css"; 
+import React, { useEffect, useState } from "react";
+import { Row, Col, Collapse, Pagination, Button } from "antd";
+import { RightOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import api from "../../config/axios";
+import dayjs from "dayjs";
 
-const auctionData = [
-  {
-    name: "Koi Koi Koi",
-    id: "#Aa33639",
-    breeder: "NND",
-    length: 18,
-    sex: "Unknown",
-    age: 2,
-    stars: 4,
-    price: 420000000,
-    time: "October 15, 2024 10:00 AM",
-    likes: 150,
-    variety: "Kōhaku",
-    paymentStatus: "Pending Payment", 
-  },
-  {
-    name: "Golden Koi",
-    id: "#Bb22412",
-    breeder: "AAA",
-    length: 22,
-    sex: "Male",
-    age: 3,
-    stars: 5,
-    price: 520000000,
-    time: "September 20, 2024 02:30 PM",
-    likes: 200,
-    variety: "Showa",
-    paymentStatus: "Paid", 
-  },
-  {
-    name: "Koi Koi Koi",
-    id: "#Aa33639",
-    breeder: "NND",
-    length: 18,
-    sex: "Unknown",
-    age: 2,
-    stars: 4,
-    price: 420000000,
-    time: "October 15, 2024 10:00 AM",
-    likes: 150,
-    variety: "Kōhaku",
-    paymentStatus: "Pending Payment", 
-  },
-];
+const { Panel } = Collapse;
 
 const MyAuction = () => {
-  return (
-    <div className="my-auction-container">
-      <Row gutter={[16, 16]}>
-        {auctionData.map((auction, index) => (
-          <Col key={index} xs={24} sm={12} md={8}>
-            <Card
-              title={`${auction.name} (${auction.variety})`}
-              extra={<Tag color="blue">{auction.id}</Tag>}
-              hoverable
-              actions={[
-                <Badge count={auction.likes} showZero>
-                  <HeartOutlined style={{ color: "#f5222d" }} />
-                </Badge>,
-                <Button type="link" icon={<StarOutlined />} disabled>
-                  {auction.stars} Stars
-                </Button>,
-              ]}
-            >
-              <p>
-                <strong>Breeder:</strong> {auction.breeder}
-              </p>
-              <p>
-                <strong>Length:</strong> {auction.length} cm
-              </p>
-              <p>
-                <strong>Sex:</strong> {auction.sex}
-              </p>
-              <p>
-                <strong>Age:</strong> {auction.age} years
-              </p>
-              <p>
-                <strong>Price:</strong> {auction.price.toLocaleString()} VND
-              </p>
-              <p>
-                <strong>Auction Time:</strong> {auction.time}
-              </p>
+  const [auctions, setAuctions] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 3,
+    total: 0,
+  });
 
-              {/* Trạng thái thanh toán */}
-              <p>
-                <strong>Payment Status:</strong>{" "}
-                {auction.paymentStatus === "Paid" ? (
-                  <Tag icon={<CheckCircleOutlined />} color="success">
-                    Paid
-                  </Tag>
-                ) : (
-                  <Tag icon={<ClockCircleOutlined />} color="warning">
-                    Pending Payment
-                  </Tag>
-                )}
-              </p>
-            </Card>
+  const navigate = useNavigate();
+
+  const fetchAuctions = async (
+    page = pagination.current,
+    pageSize = pagination.pageSize
+  ) => {
+    setLoading(true);
+    try {
+      const response = await api.get("/auctionSession/my-auctions", {
+        params: { page: page - 1, size: pageSize },
+      });
+      const { auctionSessionResponses, totalElements, pageNumber } =
+        response.data;
+      setAuctions(auctionSessionResponses);
+      setPagination({
+        current: pageNumber + 1,
+        pageSize,
+        total: totalElements,
+      });
+    } catch (error) {
+      console.error(
+        "Fetch Error:",
+        error.response ? error.response.data : error
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAuctions();
+  }, []);
+
+  const handlePageChange = (page, pageSize) => {
+    fetchAuctions(page, pageSize);
+  };
+
+  const getHeaderStyle = (status) => {
+    switch (status) {
+      case "COMPLETED":
+        return { backgroundColor: "#4CAF50", color: "white" }; // Green
+      case "UPCOMING":
+        return { backgroundColor: "#FF0000", color: "white" }; // Red
+      case "ONGOING":
+        return { backgroundColor: "#FFC107", color: "white" }; // Yellow
+      default:
+        return { backgroundColor: "#f0f0f0", color: "#333" }; // Default
+    }
+  };
+
+  const goToAuctionDetail = (auctionId) => {
+    navigate(`/auctions/${auctionId}`);
+  };
+
+  return (
+    <div
+      style={{
+        margin: "50px auto",
+        padding: "0 20px",
+        maxWidth: "1200px",
+        textAlign: "center",
+      }}
+    >
+      <h2 style={{ fontSize: "28px", fontWeight: "bold", color: "#333" }}>
+        My Auctions List
+      </h2>
+      <Row gutter={[16, 16]}>
+        {auctions.map((auction) => (
+          <Col key={auction.auctionSessionId} xs={24} sm={12} md={8}>
+            <Collapse>
+              <Panel
+                header={
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                    }}
+                  >
+                    <span>{auction.title}</span>
+                    <Button
+                      type="primary"
+                      shape="circle"
+                      icon={<RightOutlined />}
+                      size="medium"
+                      onClick={() =>
+                        goToAuctionDetail(auction.auctionSessionId)
+                      }
+                      style={{
+                        backgroundColor: "black", // Nút màu đen
+                        borderColor: "#1890ff",
+                        boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
+                        transition: "all 0.3s ease",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "32px",
+                        height: "32px",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#40a9ff")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = "black")
+                      }
+                    />
+                  </div>
+                }
+                key={auction.auctionSessionId}
+                style={{
+                  ...getHeaderStyle(auction.auctionStatus),
+                  border: "1px solid black", // Thêm viền đen cho các card
+                  borderRadius: "8px", // Bo góc card nếu cần
+                }}
+              >
+                <p>
+                  <strong>Auction ID:</strong> {auction.auctionSessionId}
+                </p>
+                <p>
+                  <strong>Starting Price:</strong> {auction.startingPrice} VND
+                </p>
+                <p>
+                  <strong>Current Price:</strong> {auction.currentPrice} VND
+                </p>
+                <p>
+                  <strong>Buy Now Price:</strong> {auction.buyNowPrice} VND
+                </p>
+                <p>
+                  <strong>Start Date:</strong>
+                  {auction.startDate
+                    ? dayjs(auction.startDate).format("DD-MM-YYYY HH:mm:ss")
+                    : "N/A"}
+                </p>
+                <p>
+                  <strong>End Date:</strong>
+                  {auction.endDate
+                    ? dayjs(auction.endDate).format("DD-MM-YYYY HH:mm:ss")
+                    : "N/A"}
+                </p>
+                <p>
+                  <strong>Status:</strong>
+                  <span
+                    style={{
+                      color:
+                        auction.auctionStatus === "COMPLETED" ? "green" : "red",
+                    }}
+                  >
+                    {auction.auctionStatus}
+                  </span>
+                </p>
+              </Panel>
+            </Collapse>
           </Col>
         ))}
       </Row>
+      <Pagination
+        style={{ marginTop: "20px" }}
+        current={pagination.current}
+        pageSize={pagination.pageSize}
+        total={pagination.total}
+        onChange={handlePageChange}
+        showSizeChanger={false}
+      />
     </div>
   );
 };

@@ -29,6 +29,10 @@ import ManageStaffAccount from "./pages/MANAGER/manage-staff-account";
 import PaymentSuccess from "./pages/payment-notification";
 import Detail from "./pages/Details_Auction_fish/detail";
 import ManageMemberAccount from "./pages/STAFF/manage-member-account";
+import IncomeOverview from "./pages/MANAGER/imcome-overview";
+import WithDraw from "./pages/withdraw";
+import WithdrawRequest from "./pages/STAFF/withdraw-request";
+import Transaction from "./pages/transaction";
 function App() {
   const router = createBrowserRouter([
     {
@@ -83,8 +87,16 @@ function App() {
           element: <MyAuction />,
         },
         {
+          path: "transaction",
+          element: <Transaction />,
+        },
+        {
           path: "wallet",
           element: <Wallet />,
+        },
+        {
+          path: "withdraw",
+          element: <WithDraw />,
         },
         {
           path: "wallet/success",
@@ -104,9 +116,14 @@ function App() {
           path: "koiFish",
           element: <ManageKoiFish />,
         },
+
         {
-          path: "wallet",
-          element: <Wallet />,
+          path: "transaction",
+          element: <Transaction />,
+        },
+        {
+          path: "withdraw",
+          element: <WithDraw />,
         },
         {
           path: "auctionRequest",
@@ -138,6 +155,10 @@ function App() {
           path: "manage-member-account",
           element: <ManageMemberAccount />,
         },
+        {
+          path: "withdraw-request",
+          element: <WithdrawRequest />,
+        },
       ],
     },
     {
@@ -163,6 +184,10 @@ function App() {
         {
           path: "manage-koibreeder-account",
           element: <ManageKoiBreederAccount />,
+        },
+        {
+          path: "imcome-overview",
+          element: <IncomeOverview />,
         },
       ],
     },

@@ -6,6 +6,8 @@ import {
   TeamOutlined,
   PullRequestOutlined,
   LogoutOutlined,
+  DollarOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
 
 import Footer from "../../footer/Footer";
@@ -47,7 +49,8 @@ const StaffProfileLayout = ({ children, collapsed, setCollapsed }) => {
       "manage-assigned-session",
       <PieChartOutlined />
     ),
-    getItem("Member Account", "manage-member-account", <PieChartOutlined />),
+    getItem("Member Account", "manage-member-account", <UserAddOutlined />),
+    getItem("Withdraw Request", "withdraw-request", <DollarOutlined />),
     getItem("Logout", "logout", <LogoutOutlined />, handleLogout),
   ];
 

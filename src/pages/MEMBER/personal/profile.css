@@ -1,24 +1,46 @@
 .profile-form {
   background-color: #fff;
-  padding: 30px;
-  border-radius: 8px;
+  padding: 40px;
+  border-radius: 10px;
   border: 2px solid #1890ff;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   max-width: 600px;
   margin: 100px auto;
+ 
 }
 
 .profile-form h2 {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   color: #333;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
 }
+
 .profile-form h4 {
   text-align: center;
   margin-bottom: 24px;
-  color: #333;
-  font-size: 15px;
-  font-weight: 600;
+  color: #666;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.ant-form-item {
+  margin-bottom: 16px;
+}
+
+.ant-input,
+.ant-input:focus,
+.ant-input:active {
+  border-color: #1890ff;
+}
+
+.ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.ant-btn-primary:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
 }

@@ -6,9 +6,9 @@ import {
   FileOutlined,
   LogoutOutlined,
   WalletOutlined,
-  TransactionOutlined,
   TeamOutlined,
-  PieChartOutlined,
+  DollarOutlined,
+  TransactionOutlined,
 } from "@ant-design/icons";
 
 import Footer from "../../footer/Footer";
@@ -42,7 +42,9 @@ const KoibreederProfileLayout = ({ children, collapsed, setCollapsed }) => {
     getItem("Personal", "personal", <TeamOutlined />),
     getItem("My Koi", "koiFish", <NotificationOutlined />),
     getItem("My Auction Request", "auctionRequest", <FileOutlined />),
+    getItem("Transaction", "transaction", <TransactionOutlined />),
     getItem("Wallet", "wallet", <WalletOutlined />),
+    getItem("Withdraw", "withdraw", <DollarOutlined />),
     getItem("Logout", "logout", <LogoutOutlined />, handleLogout),
   ];
   return (
@@ -63,12 +65,19 @@ const KoibreederProfileLayout = ({ children, collapsed, setCollapsed }) => {
           }}
         >
           {!collapsed && (
-            <span style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}>
+            <span
+              style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}
+            >
               <UserOutlined /> My Account
             </span>
           )}
         </div>
-        <Menu theme="dark" defaultSelectedKeys={["personal"]} mode="inline" items={items} />
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={["personal"]}
+          mode="inline"
+          items={items}
+        />
       </Sider>
 
       {/* Main Layout */}

@@ -7,6 +7,7 @@ import {
   LogoutOutlined,
   UserAddOutlined,
   TeamOutlined,
+  BarChartOutlined,
 } from "@ant-design/icons";
 
 import Footer from "../../footer/Footer";
@@ -51,6 +52,7 @@ const ManagerProfileLayout = ({ children, collapsed, setCollapsed }) => {
       "manage-koibreeder-account",
       <UserAddOutlined />
     ),
+    getItem("Income Overview", "imcome-overview", <BarChartOutlined /> ),
     getItem("Logout", "logout", <LogoutOutlined />, handleLogout),
   ];
   return (
