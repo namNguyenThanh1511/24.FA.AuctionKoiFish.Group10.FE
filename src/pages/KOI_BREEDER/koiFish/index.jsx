@@ -13,6 +13,9 @@ import {
   Switch,
   Tag,
   Tooltip,
+  Col,
+  Row,
+  InputNumber,
 } from "antd";
 import DashboardTemplate from "../../../components/dashboard-manage-template";
 import dayjs from "dayjs";
@@ -26,10 +29,11 @@ function ManageKoiFish() {
   const [varieties, setVarieties] = useState([]);
   const [health, setHealth] = useState();
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [hongthinh, setHongThinh] = useState(false);
+  const [render, setRender] = useState(false);
   const [formHealth] = useForm();
   const [form] = useForm();
   const [formViewDetails] = useForm();
+
   const columns = [
     {
       title: "Name",
@@ -101,8 +105,17 @@ function ManageKoiFish() {
           case "AVAILABLE":
             color = "green";
             break;
-          case "PENDING_AUCTION":
+          case "PENDING":
             color = "yellow";
+            break;
+          case "PENDING_AUCTION":
+            color = "orange";
+            break;
+          case "SOLD":
+            color = "blue";
+            break;
+          case "SELLING":
+            color = "purple";
             break;
           default:
             color = "red";
@@ -149,194 +162,190 @@ function ManageKoiFish() {
     },
   };
 
-  const handleSubmitForm = async (values) => {
-    try {
-      const response = await api.put(`koiFish/health/${values.koi_id}`, {
-        koi_status: values.koiStatus,
-        healthNote: values.healthNote,
-      });
-      toast.success("Updated!!!");
-      setHongThinh((prev) => !prev); //set isRenderer to make column in dashboard template re-rendered
-    } catch (error) {
-      console.log(error);
-    }
-    setIsOpenModal(false);
-    formHealth.resetFields();
-  };
-
   const formItems = (
-    <>
-      <Form.Item
-        label="Name"
-        name="name"
-        rules={[{ required: true, message: "Please enter the name!" }]}
-      >
-        <Input placeholder="Enter koi name" />
-      </Form.Item>
+    <Row gutter={16}>
+      <Col span={12}>
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: "Please enter the name!" }]}
+          style={{ height: "90px" }} // Set height
+        >
+          <Input placeholder="Enter koi name" />
+        </Form.Item>
 
-      {/* Sex */}
-      <Form.Item
-        label="Sex"
-        name="sex"
-        rules={[{ required: true, message: "Please select the sex!" }]}
-      >
-        <Select placeholder="Select sex">
-          <Select.Option value="MALE">Male</Select.Option>
-          <Select.Option value="FEMALE">Female</Select.Option>
-        </Select>
-      </Form.Item>
+        <Form.Item
+          label="Sex"
+          name="sex"
+          rules={[{ required: true, message: "Please select the sex!" }]}
+          style={{ height: "90px" }} // Set height
+        >
+          <Select placeholder="Select sex">
+            <Select.Option value="MALE">Male</Select.Option>
+            <Select.Option value="FEMALE">Female</Select.Option>
+          </Select>
+        </Form.Item>
 
-      {/* Size in cm */}
-      <Form.Item
-        label="Size (cm)"
-        name="sizeCm"
-        rules={[{ required: true, message: "Please enter the size!" }]}
-      >
-        <Input type="number" placeholder="Enter size in cm" />
-      </Form.Item>
+        <Form.Item
+          label="Size (cm)"
+          name="sizeCm"
+          rules={[{ required: true, message: "Please enter the size!" }]}
+          style={{ height: "90px" }} // Set height
+        >
+          <Input type="number" placeholder="Enter size in cm" />
+        </Form.Item>
 
-      {/* Weight in kg */}
-      <Form.Item
-        label="Weight (kg)"
-        name="weightKg"
-        rules={[{ required: true, message: "Please enter the weight!" }]}
-      >
-        <Input type="number" placeholder="Enter weight in kg" />
-      </Form.Item>
+        <Form.Item
+          label="Weight (kg)"
+          name="weightKg"
+          rules={[{ required: true, message: "Please enter the weight!" }]}
+          style={{ height: "90px" }} // Set height
+        >
+          <Input type="number" placeholder="Enter weight in kg" />
+        </Form.Item>
 
-      {/* Variety */}
-      <Form.Item
-        label="Variety"
-        name="varietiesID"
-        rules={[{ required: true, message: "Please select the variety!" }]}
-      >
-        <Select mode="multiple" placeholder="Select varieties">
-          {varieties.map((variety) => (
-            <Select.Option key={variety.id} value={variety.id}>
-              {variety.name}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
+        <Form.Item
+          label="Estimated Value"
+          name="estimatedValue"
+          rules={[{ required: true, message: "Please enter the estimated value!" }]}
+          style={{ height: "90px" }} // Set height
+        >
+          <InputNumber min={0} addonBefore="+" addonAfter="đ" style={{ width: "100%" }} />
+        </Form.Item>
 
-      {/* Estimated Value */}
-      <Form.Item
-        label="Estimated Value"
-        name="estimatedValue"
-        rules={[{ required: true, message: "Please enter the estimated value!" }]}
-      >
-        <Input type="number" placeholder="Enter estimated value" />
-      </Form.Item>
+        <Form.Item
+          label="Description"
+          name="description"
+          style={{ height: "90px" }} // Set height
+        >
+          <Input.TextArea placeholder="Enter a description" />
+        </Form.Item>
+      </Col>
 
-      {/* Born in */}
-      <Form.Item
-        label="Date of Birth"
-        name="bornIn"
-        rules={[{ required: true, message: "Please select the date of birth!" }]}
-      >
-        <DatePicker placeholder="Select date of birth" />
-      </Form.Item>
+      <Col span={12}>
+        <Form.Item
+          label="Variety"
+          name="varietiesID"
+          rules={[{ required: true, message: "Please select the variety!" }]}
+          style={{ height: "90px" }} // Set height
+        >
+          <Select mode="multiple" placeholder="Select varieties">
+            {varieties.map((variety) => (
+              <Select.Option key={variety.id} value={variety.id}>
+                {variety.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
 
-      {/* Description */}
-      <Form.Item label="Description" name="description">
-        <Input.TextArea placeholder="Enter a description" />
-      </Form.Item>
+        <Form.Item
+          label="Date of Birth"
+          name="bornIn"
+          rules={[{ required: true, message: "Please select the date of birth!" }]}
+          style={{ height: "90px" }} // Set height
+        >
+          <DatePicker placeholder="Select date of birth" />
+        </Form.Item>
 
-      {/* Image URL */}
-      <Form.Item
-        label="Image URL"
-        name="image_url"
-        rules={[
-          {
-            required: true,
-            message: "Please upload koi image",
-          },
-        ]}
-      >
-        <Upload {...props}>
-          <Button icon={<UploadOutlined />}>Click to Upload</Button>
-        </Upload>
-      </Form.Item>
+        <Form.Item
+          label="Image URL"
+          name="image_url"
+          rules={[
+            {
+              required: true,
+              message: "Please upload koi image",
+            },
+          ]}
+          style={{ height: "90px" }} // Set height
+        >
+          <Upload {...props}>
+            <Button icon={<UploadOutlined />}>Click to Upload</Button>
+          </Upload>
+        </Form.Item>
 
-      {/* Video URL */}
-      <Form.Item label="Video URL" name="video_url">
-        <Input placeholder="Enter video URL" />
-      </Form.Item>
-    </>
+        <Form.Item
+          label="Video URL"
+          name="video_url"
+          style={{ height: "90px" }} // Set height
+        >
+          <Input placeholder="Enter video URL" />
+        </Form.Item>
+      </Col>
+    </Row>
   );
   const formViewDetailsItems = (
-    <>
-      <Form.Item
-        label="Name"
-        name="name"
-        rules={[{ required: true, message: "Please enter the name!" }]}
-      >
-        <Input disabled placeholder="Enter koi name" />
-      </Form.Item>
+    <Row gutter={16}>
+      <Col span={12}>
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: "Please enter the name!" }]}
+        >
+          <Input disabled placeholder="Enter koi name" />
+        </Form.Item>
 
-      {/* Sex */}
-      <Form.Item
-        label="Sex"
-        name="sex"
-        rules={[{ required: true, message: "Please select the sex!" }]}
-      >
-        <Select disabled placeholder="Select sex">
-          <Select.Option value="MALE">Male</Select.Option>
-          <Select.Option value="FEMALE">Female</Select.Option>
-        </Select>
-      </Form.Item>
+        {/* Sex */}
+        <Form.Item
+          label="Sex"
+          name="sex"
+          rules={[{ required: true, message: "Please select the sex!" }]}
+        >
+          <Select disabled placeholder="Select sex">
+            <Select.Option value="MALE">Male</Select.Option>
+            <Select.Option value="FEMALE">Female</Select.Option>
+          </Select>
+        </Form.Item>
 
-      {/* Size in cm */}
-      <Form.Item label="Size (cm)" name="sizeCm">
-        <Input disabled type="number" placeholder="Enter size in cm" />
-      </Form.Item>
+        {/* Size in cm */}
+        <Form.Item label="Size (cm)" name="sizeCm">
+          <Input disabled type="number" placeholder="Enter size in cm" />
+        </Form.Item>
 
-      {/* Weight in kg */}
-      <Form.Item label="Weight (kg)" name="weightKg">
-        <Input disabled type="number" placeholder="Enter weight in kg" />
-      </Form.Item>
+        {/* Weight in kg */}
+        <Form.Item label="Weight (kg)" name="weightKg">
+          <Input disabled type="number" placeholder="Enter weight in kg" />
+        </Form.Item>
 
-      {/* Variety */}
-      <Form.Item label="Variety" name="varietiesID" disabled>
-        <Select disabled mode="multiple" placeholder="Select varieties">
-          {varieties.map((variety) => (
-            <Select.Option key={variety.id} value={variety.id}>
-              {variety.name}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
+        {/* Estimated Value */}
+        <Form.Item label="Estimated Value" name="estimatedValue">
+          <Input disabled type="number" placeholder="Enter estimated value" />
+        </Form.Item>
 
-      {/* Estimated Value */}
-      <Form.Item label="Estimated Value" name="estimatedValue">
-        <Input disabled type="number" placeholder="Enter estimated value" />
-      </Form.Item>
+        {/* Description */}
+        <Form.Item label="Description" name="description">
+          <Input.TextArea disabled placeholder="Enter a description" />
+        </Form.Item>
+      </Col>
 
-      {/* Born in */}
-      <Form.Item label="Date of Birth" name="bornIn">
-        <DatePicker disabled placeholder="Select date of birth" />
-      </Form.Item>
+      <Col span={12}>
+        {/* Variety */}
+        <Form.Item label="Variety" name="varieties" disabled>
+          <Select disabled mode="multiple" placeholder="Select varieties">
+            {varieties.map((variety) => (
+              <Select.Option key={variety.id} value={variety.id}>
+                {variety.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
 
-      {/* Description */}
-      <Form.Item label="Description" name="description">
-        <Input.TextArea disabled placeholder="Enter a description" />
-      </Form.Item>
+        {/* Born in */}
+        <Form.Item label="Date of Birth" name="bornIn">
+          <DatePicker disabled placeholder="Select date of birth" />
+        </Form.Item>
 
-      {/* Video URL */}
-      <Form.Item label="Video URL" name="video_url">
-        <Input disabled placeholder="Enter video URL" />
-      </Form.Item>
-
-      <Form.Item label="Health note : " name="healthNote">
-        <Input disabled placeholder="Enter video URL" />
-      </Form.Item>
-    </>
+        {/* Video URL */}
+        <Form.Item label="Video URL" name="video_url">
+          <Input disabled placeholder="Enter video URL" />
+        </Form.Item>
+      </Col>
+    </Row>
   );
   return (
     <div style={{ margin: "100px auto" }}>
       <DashboardTemplate
-        isRerender={hongthinh}
-        apiURI="koiFish/koiBreeder"
+        isRerender={render}
+        apiURI="koiFish/koiBreeder/pagination"
         apiUriPOST={"koiFish"}
         apiUriPUT={"koiFish"}
         apiUriDelete={"koiFish"}
@@ -351,6 +360,7 @@ function ManageKoiFish() {
         form={form}
         formViewDetails={formViewDetails}
         isCreateNew={true}
+        paginationTarget={"koiFishResponseList"}
       />
     </div>
   );

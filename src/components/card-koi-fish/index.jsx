@@ -9,6 +9,21 @@ function CardKoiFish({ id }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const varietyColorMap = {
+    Kohaku: "red",
+    Sowa: "lime",
+    Ochibashigure: "magenta",
+    Hirenaga: "gold",
+    Tancho: "purple",
+    Kiryuu: "orange",
+    Sanke: "volcano",
+    Showa: "green",
+    Utsurimono: "blue",
+    Bekko: "cyan",
+    Asagi: "geekblue",
+    Shusui: "purple",
+  };
+
   const fetch = async () => {
     if (!id) return; // Do not fetch if no id is passed
     setLoading(true);
@@ -58,7 +73,7 @@ function CardKoiFish({ id }) {
   };
 
   return (
-    <Card style={{ width: 300, marginTop: 16 }}>
+    <Card style={{ width: 300 }}>
       <div style={{ textAlign: "center" }}>
         <Image width={100} src={data?.image_url} />
         <div style={{ marginTop: 16 }}>
@@ -66,7 +81,7 @@ function CardKoiFish({ id }) {
           <Tag color="volcano">{data?.sex}</Tag>
         </div>
         <p style={{ marginTop: 8 }}>
-          <strong>Koi ID:</strong> {data?.koi_id}
+          <strong>Koi ID :</strong> {data?.name + "#" + data?.koi_id}
         </p>
         <p>
           <strong>Size:</strong> {data?.sizeCm} cm
@@ -87,6 +102,22 @@ function CardKoiFish({ id }) {
           <strong>Status:</strong>{" "}
           <Tag color={getStatusColor(data?.koiStatus)}>{data?.koiStatus}</Tag>
         </p>
+        <span>
+          <strong>Varieties :</strong>{" "}
+        </span>
+        {/* Display Koi Varieties as Tags */}
+        {data?.varieties?.map((variety, id) => {
+          // Define a color map or generate a color based on variety
+
+          const color = varietyColorMap[variety.name] || "gray";
+
+          return (
+            <Tag color={color} key={id} style={{ margin: "4px" }}>
+              {variety.name}
+            </Tag>
+          );
+        })}
+
         {data?.video_url && (
           <p>
             <strong>Video:</strong>{" "}

@@ -8,14 +8,12 @@ import {
   Image,
   Row,
   Col,
-  Alert,
   Space,
   Tooltip,
 } from "antd";
-import { DeleteOutlined, CheckOutlined, EyeOutlined } from "@ant-design/icons"; // Ant Design icons for action buttons
+import { DeleteOutlined, CheckOutlined, EyeOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { useForm } from "antd/es/form/Form";
 import api from "../../config/axios";
 import dayjs from "dayjs";
 import CardKoiFish from "../card-koi-fish";
@@ -38,6 +36,8 @@ function DashboardManageRequestTemplate({
   formViewDetails,
   isShownCardKoiFish,
   isCreateNew,
+  paginationTarget,
+  filterParams,
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -48,22 +48,23 @@ function DashboardManageRequestTemplate({
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
   const [actions, setActions] = useState();
-
-  // Define the statuses for which actions are not allowed
-  const disabledStatuses = [
-    "ACCEPTED BY STAFF",
-    "REJECTED BY STAFF",
-    "APPROVED BY MANAGER",
-    "REJECTED BY MANAGER",
-  ];
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+    total: 0,
+  });
 
   useEffect(() => {
-    fetchData();
+    fetchData(pagination.current, pagination.pageSize);
   }, [isRerender]);
 
   useEffect(() => {
-    fetchData();
+    fetchData(pagination.current, pagination.pageSize);
   }, []);
+
+  useEffect(() => {
+    fetchData(pagination.current, pagination.pageSize);
+  }, [filterParams]);
 
   useEffect(() => {
     const newColumns = [
@@ -149,12 +150,25 @@ function DashboardManageRequestTemplate({
     setTableColumns(newColumns);
   }, [columns]);
 
-  const fetchData = async () => {
+  const fetchData = async (current, pageSize) => {
+    const filterParamsAfterEncode = Object.entries(filterParams)
+      .filter(([key, value]) => value !== undefined && value !== "" && value != null) // Filter out empty strings and undefined values
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join("&");
+    console.log(filterParamsAfterEncode);
     try {
-      const response = await api.get(apiURI);
-      console.log("fetched");
+      const response = await api.get(
+        `${apiURI}?page=${current - 1}&size=${pageSize}${
+          filterParamsAfterEncode ? `&${filterParamsAfterEncode}` : ""
+        }`
+      );
       setIsFetching(false);
-      setDataSource(response.data);
+      setDataSource(response.data[paginationTarget]);
+      setPagination({
+        current,
+        pageSize,
+        total: response.data.totalElements,
+      });
     } catch (err) {
       console.log(err);
       toast.error(err.response.data);
@@ -182,7 +196,7 @@ function DashboardManageRequestTemplate({
       toast.success("Successfully updated");
       form.resetFields();
       handleCloseModal();
-      fetchData();
+      fetchData(pagination.current, pagination.pageSize);
     } catch (error) {
       toast.error(error.response.data);
     }
@@ -193,10 +207,15 @@ function DashboardManageRequestTemplate({
     try {
       await api.put(`${apiUriDelete}/${id}`);
       toast.success("Deleted successfully");
-      fetchData();
+      fetchData(pagination.current, pagination.pageSize);
     } catch (err) {
       toast.error(err.response.data);
     }
+  };
+
+  const handleTableChange = (pagination) => {
+    setPagination(pagination);
+    fetchData(pagination.current, pagination.pageSize);
   };
 
   return (
@@ -215,7 +234,13 @@ function DashboardManageRequestTemplate({
         []
       )}
 
-      <Table columns={tableColumns} dataSource={dataSource} loading={isFetching} />
+      <Table
+        pagination={pagination}
+        onChange={handleTableChange}
+        columns={tableColumns}
+        dataSource={dataSource}
+        loading={isFetching}
+      />
       <Modal
         open={isOpenModal}
         title={isUpdate === true ? `Edit ${title}` : `Create new ${title}`}
