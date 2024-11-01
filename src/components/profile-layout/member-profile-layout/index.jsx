@@ -3,10 +3,10 @@ import { Layout, Menu } from "antd";
 import {
   UserOutlined,
   TeamOutlined,
-  NotificationOutlined,
   FileOutlined,
   LogoutOutlined,
   WalletOutlined,
+  DollarOutlined,
   TransactionOutlined,
 } from "@ant-design/icons";
 
@@ -41,7 +41,9 @@ const MemberProfileLayout = ({ collapsed, setCollapsed }) => {
   const items = [
     getItem("Personal", "personal", <TeamOutlined />),
     getItem("My Auction", "my-auction", <FileOutlined />),
+    getItem("Transaction", "transaction", <TransactionOutlined />),
     getItem("Wallet", "wallet", <WalletOutlined />),
+    getItem("Withdraw", "withdraw", <DollarOutlined />),
     getItem("Logout", "logout", <LogoutOutlined />, handleLogout),
   ];
 
