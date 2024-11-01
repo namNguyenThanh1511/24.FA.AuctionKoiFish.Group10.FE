@@ -4,7 +4,7 @@ import api from "../../config/axios";
 import { toast } from "react-toastify";
 import "./wallet.css";
 import formatToVND from "../../utils/currency";
-import { useLocation } from "react-router-dom";
+
 const Wallet = () => {
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -26,7 +26,9 @@ const Wallet = () => {
   const handleDeposit = async (values) => {
     setLoading(true);
     try {
-      const response = await api.post("paymentURL/vn-pay", { amount: values.amount }); // API nạp tiền
+      const response = await api.post("paymentURL/vn-pay", {
+        amount: values.amount,
+      }); // API nạp tiền
       toast.success("Deposit successful");
       window.location.href = response.data;
       fetchBalance();
@@ -52,7 +54,12 @@ const Wallet = () => {
       {/* Form nạp tiền */}
       <div className="deposit-form">
         <h4>Deposit Money</h4>
-        <Form form={form} name="deposit" onFinish={handleDeposit} layout="vertical">
+        <Form
+          form={form}
+          name="deposit"
+          onFinish={handleDeposit}
+          layout="vertical"
+        >
           <Form.Item
             label="Amount"
             name="amount"
@@ -64,7 +71,12 @@ const Wallet = () => {
               },
             ]}
           >
-            <InputNumber min={0} addonBefore="+" addonAfter="đ" style={{ width: "100%" }} />
+            <InputNumber
+              min={0}
+              addonBefore="+"
+              addonAfter="đ"
+              style={{ width: "100%" }}
+            />
           </Form.Item>
 
           <Form.Item>

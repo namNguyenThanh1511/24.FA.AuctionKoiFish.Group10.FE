@@ -8,6 +8,7 @@ import {
   WalletOutlined,
   TeamOutlined,
   DollarOutlined,
+  TransactionOutlined,
 } from "@ant-design/icons";
 
 import Footer from "../../footer/Footer";
@@ -41,6 +42,7 @@ const KoibreederProfileLayout = ({ children, collapsed, setCollapsed }) => {
     getItem("Personal", "personal", <TeamOutlined />),
     getItem("My Koi", "koiFish", <NotificationOutlined />),
     getItem("My Auction Request", "auctionRequest", <FileOutlined />),
+    getItem("Transaction", "transaction", <TransactionOutlined />),
     getItem("Wallet", "wallet", <WalletOutlined />),
     getItem("Withdraw", "withdraw", <DollarOutlined />),
     getItem("Logout", "logout", <LogoutOutlined />, handleLogout),

@@ -1,60 +1,68 @@
 import React, { useEffect, useState } from "react";
-import {
-  Form,
-  Input,
-  Button,
-  message,
-  Table,
-  Tag,
-  Pagination,
-  Modal,
-  Tooltip,
-} from "antd";
-import api from "../../config/axios"; 
+import { Form, Input, Button, message, Table, Tag, Modal, Tooltip } from "antd";
+import api from "../../config/axios";
 import dayjs from "dayjs";
 
 const WithDraw = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [withdrawRequests, setWithdrawRequests] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalRequests, setTotalRequests] = useState(0);
-  const [pageSize] = useState(5); 
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+    total: 0,
+  });
   const [isAddRequestModalVisible, setIsAddRequestModalVisible] =
-    useState(false); // Modal cho việc thêm yêu cầu
-  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false); // Modal cho việc xem chi tiết
-  const [selectedRequest, setSelectedRequest] = useState(null); // Lưu thông tin của yêu cầu được chọn
+    useState(false);
+  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
 
-  // Fetch data  từ API
-  const fetchWithdrawData = async (page = currentPage) => {
+  const fetchWithdrawData = async (
+    page = pagination.current,
+    pageSize = pagination.pageSize
+  ) => {
+    setLoading(true);
     try {
       const response = await api.get(
-        `/withDrawRequest/currentUser/pagination?page=${
-          page - 1
-        }&size=${pageSize}`
+        "/withDrawRequest/currentUser/pagination",
+        {
+          params: {
+            page: page - 1,
+            size: pageSize,
+          },
+        }
       );
-      console.log("Withdrawal data fetched: ", response.data); 
-      setWithdrawRequests(response.data.withDrawRequestResponseDTOList);
-      setTotalRequests(response.data.totalElements);
+      console.log("Withdrawal data fetched: ", response.data);
+      const { withDrawRequestResponseDTOList, totalElements, pageNumber } =
+        response.data;
+
+      setWithdrawRequests(withDrawRequestResponseDTOList);
+      setPagination({
+        current: pageNumber + 1,
+        pageSize: pageSize,
+        total: totalElements,
+      });
     } catch (error) {
       message.error("Failed to load withdrawal data");
       console.error("Fetch Error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchWithdrawData(currentPage);
-  }, [currentPage]);
+    fetchWithdrawData();
+  }, []);
 
-  //hàm form rút tiền
+  // Hàm xử lý gửi yêu cầu rút tiền
   const handleWithdraw = async (values) => {
     setLoading(true);
     try {
       await api.post("/withDraw", values);
       message.success("Withdrawal request submitted successfully");
-      form.resetFields(); // Reset form sau khi gửi
-      setIsAddRequestModalVisible(false); // Đóng modal sau khi gửi
-      fetchWithdrawData(currentPage); // Tải lại danh sách yêu cầu rút tiền
+      form.resetFields();
+      setIsAddRequestModalVisible(false);
+      fetchWithdrawData(pagination.current, pagination.pageSize);
     } catch (error) {
       message.error("Failed to submit withdrawal request");
       console.error("Submit Error:", error);
@@ -63,13 +71,16 @@ const WithDraw = () => {
     }
   };
 
-  // Hàm mở  chi tiết
   const showDetails = (record) => {
-    setSelectedRequest(record); // Lưu yêu cầu được chọn để hiển thị
-    setIsDetailModalVisible(true); // Mở modal chi tiết
+    setSelectedRequest(record);
+    setIsDetailModalVisible(true);
   };
 
-  
+  const handleTableChange = (pagination) => {
+    console.log(pagination);
+    fetchWithdrawData(pagination, pagination.pageSize);
+  };
+
   const columns = [
     {
       title: "Request ID",
@@ -111,17 +122,13 @@ const WithDraw = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => {
-        let color =
+        const color =
           status === "APPROVED"
             ? "green"
             : status === "PENDING"
             ? "orange"
             : "volcano";
-        return (
-          <Tag color={color} key={status}>
-            {status}
-          </Tag>
-        );
+        return <Tag color={color}>{status}</Tag>;
       },
     },
     {
@@ -131,7 +138,7 @@ const WithDraw = () => {
         <Button
           type="link"
           onClick={() => showDetails(record)}
-          disabled={record.status === "PENDING"} 
+          disabled={record.status === "PENDING"}
         >
           View
         </Button>
@@ -140,14 +147,10 @@ const WithDraw = () => {
   ];
 
   return (
-    <div
-      style={{
-        padding: "50px",
-      }}
-    >
+    <div style={{ padding: "50px" }}>
       <Button
         type="primary"
-        onClick={() => setIsAddRequestModalVisible(true)} // Mở modal để thêm yêu cầu
+        onClick={() => setIsAddRequestModalVisible(true)}
         style={{ marginBottom: "20px" }}
       >
         + Add Withdraw Request
@@ -166,6 +169,7 @@ const WithDraw = () => {
           onFinish={handleWithdraw}
           layout="vertical"
         >
+          {/* Các trường nhập cho form */}
           <Form.Item
             label="Bank Account Number"
             name="bankAccountNumber"
@@ -178,7 +182,6 @@ const WithDraw = () => {
           >
             <Input placeholder="Enter Bank Account Number" />
           </Form.Item>
-
           <Form.Item
             label="Bank Name"
             name="bankName"
@@ -188,7 +191,6 @@ const WithDraw = () => {
           >
             <Input placeholder="Enter Bank Name" />
           </Form.Item>
-
           <Form.Item
             label="Account Holder Name"
             name="bankAccountName"
@@ -201,7 +203,6 @@ const WithDraw = () => {
           >
             <Input placeholder="Enter Account Holder Name" />
           </Form.Item>
-
           <Form.Item
             label="Amount"
             name="amount"
@@ -214,7 +215,6 @@ const WithDraw = () => {
           >
             <Input placeholder="Enter Amount" type="number" />
           </Form.Item>
-
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={loading} block>
               Submit Withdrawal
@@ -227,10 +227,7 @@ const WithDraw = () => {
       <Modal
         title="Withdraw Request Details"
         visible={isDetailModalVisible}
-        onCancel={() => {
-          setIsDetailModalVisible(false);
-          setSelectedRequest(null); // Reset yêu cầu đã chọn
-        }}
+        onCancel={() => setIsDetailModalVisible(false)}
         footer={null}
       >
         {selectedRequest ? (
@@ -240,7 +237,7 @@ const WithDraw = () => {
               {selectedRequest.responseNote || "N/A"}
             </p>
             <p>
-              <strong>Image :</strong>
+              <strong>Image:</strong>
             </p>
             {selectedRequest.image_url ? (
               <img
@@ -269,18 +266,18 @@ const WithDraw = () => {
       </Modal>
 
       <Table
-        dataSource={withdrawRequests}
-        columns={columns}
-        rowKey="id" // Sử dụng ID duy nhất cho mỗi yêu cầu rút tiền
         style={{ marginTop: "20px" }}
-      />
-      <Pagination
-        current={currentPage}
-        pageSize={pageSize}
-        total={totalRequests}
-        onChange={(page) => setCurrentPage(page)}
-        showSizeChanger={false} 
-        style={{ marginTop: "20px", textAlign: "center" }}
+        columns={columns}
+        dataSource={withdrawRequests}
+        loading={loading}
+        rowKey="id"
+        pagination={{
+          current: pagination.current,
+          pageSize: pagination.pageSize,
+          total: pagination.total,
+          onChange: handleTableChange,
+          showSizeChanger: false,
+        }}
       />
     </div>
   );

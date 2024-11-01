@@ -32,6 +32,7 @@ import ManageMemberAccount from "./pages/STAFF/manage-member-account";
 import IncomeOverview from "./pages/MANAGER/imcome-overview";
 import WithDraw from "./pages/withdraw";
 import WithdrawRequest from "./pages/STAFF/withdraw-request";
+import Transaction from "./pages/transaction";
 function App() {
   const router = createBrowserRouter([
     {
@@ -86,6 +87,10 @@ function App() {
           element: <MyAuction />,
         },
         {
+          path: "transaction",
+          element: <Transaction />,
+        },
+        {
           path: "wallet",
           element: <Wallet />,
         },
@@ -111,9 +116,10 @@ function App() {
           path: "koiFish",
           element: <ManageKoiFish />,
         },
+
         {
-          path: "wallet",
-          element: <Wallet />,
+          path: "transaction",
+          element: <Transaction />,
         },
         {
           path: "withdraw",
