@@ -251,6 +251,7 @@ const Detail = () => {
             { title: "Bid", dataIndex: "bid", key: "bid" },
             { title: "Name", dataIndex: "name", key: "name" },
           ]}
+          pagination={{ pageSize: 5 }} 
         />
       </div>
 
