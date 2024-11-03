@@ -24,6 +24,7 @@ const Auction = () => {
     maxWeightKg: null,
     sex: null,
     auctionType: null,
+    status: null,
   });
   const cardsPerPage = 8;
   const navigate = useNavigate();
@@ -191,6 +192,16 @@ const Auction = () => {
           <Option value="Marujyu">Marujyu</Option>
           <Option value="Shintaro">Shintaro</Option>
           <Option value="koibreeder1">koibreeder1</Option>
+        </Select>
+        <Select
+          style={{ width: "100%", marginTop: 10 }}
+          placeholder="Select Status"
+          onChange={(value) => handleInputChange("status", value)}
+        >
+          <Option value="ONGOING">Ongoing</Option>
+          <Option value="UPCOMING">Upcoming</Option>
+          <Option value="NO_WINNER">No Winner</Option>
+          <Option value="COMPLETED">Completed</Option>
         </Select>
         <Select
           mode="multiple"
