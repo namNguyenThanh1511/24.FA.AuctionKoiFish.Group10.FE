@@ -19,8 +19,8 @@ const ManageKoiBreederAccount = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [pagination, setPagination] = useState({
-    current: 1, // Start from the first page
-    pageSize: 4, // Items per page
+    current: 1, 
+    pageSize: 4, 
     total: 0,
   });
 
@@ -34,7 +34,7 @@ const ManageKoiBreederAccount = () => {
     try {
       const response = await api.get("/breeders-pagination", {
         params: {
-          page: page - 1, // Adjusting for zero-based index
+          page: page - 1, 
           size: pageSize,
         },
       });

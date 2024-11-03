@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Table, Tag, Button, Select, DatePicker, message } from "antd";
-import api from "../../config/axios"; // Đường dẫn tới API đã cấu hình
+import api from "../../config/axios";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
+import { RightOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -31,18 +33,18 @@ const Transaction = () => {
         transactionType,
         startDate,
         endDate,
-        page: page - 1, // API pagination thường bắt đầu từ 0
+        page: page - 1,
         size: pageSize,
       };
       const response = await api.get("/transaction/my-transactions", {
         params,
       });
-      console.log("API Response:", response.data);
-      const { transactionResponseList, totalElements } = response.data;
+      const { transactionResponseList, totalElements, pageNumber } =
+        response.data;
 
       setTransactions(transactionResponseList);
       setPagination({
-        current: page,
+        current: pageNumber + 1,
         pageSize: pageSize,
         total: totalElements,
       });
@@ -53,6 +55,10 @@ const Transaction = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
 
   const handleFilterChange = (value, field) => {
     setFilters({
@@ -72,6 +78,15 @@ const Transaction = () => {
 
   const handleTableChange = (pagination) => {
     fetchTransactions(pagination, pagination.pageSize);
+  };
+
+  const handleAllTransactions = () => {
+    setFilters({
+      transactionType: "",
+      startDate: null,
+      endDate: null,
+    });
+    fetchTransactions(1); // Load lại tất cả giao dịch
   };
 
   const columns = [
@@ -99,13 +114,34 @@ const Transaction = () => {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      render: (amount) => `${amount.toLocaleString()} VND`,
+      render: (amount, record) => {
+        const formattedAmount =
+          record.type === "BID"
+            ? `- ${amount.toLocaleString()} VND`
+            : `${amount.toLocaleString()} VND`;
+        return formattedAmount;
+      },
     },
     {
       title: "Description",
       dataIndex: "description",
       key: "description",
+      render: (description) => {
+        // Sử dụng regular expression để tìm giá trị số trong mô tả
+        const match = description.match(/[-+]?\d*\.?\d+/); // Tìm số
+        if (match) {
+          // Nếu tìm thấy số, thêm "VND" vào sau
+          const amount = parseFloat(match[0]); // Chuyển đổi thành số
+          return `${description.replace(
+            match[0],
+            amount.toLocaleString()
+          )} VND`; // Thay thế giá trị số trong mô tả và thêm "VND"
+        }
+        // Nếu không tìm thấy số, trả về giá trị gốc
+        return description;
+      },
     },
+
     {
       title: "From Account",
       dataIndex: "fromAccount",
@@ -123,11 +159,25 @@ const Transaction = () => {
         toAccount ? `${toAccount.fullName} (${toAccount.username})` : "N/A",
     },
     {
-      title: "Auction Session ID",
+      title: "Auction",
       dataIndex: "auctionSessionId",
       key: "auctionSessionId",
+      render: (auctionSessionId) => (
+        <Button
+          type="link"
+          onClick={() => goToAuctionDetail(auctionSessionId)}
+          style={{ padding: 0 }}
+        >
+          <RightOutlined style={{ fontSize: "16px", color: "#1890ff" }} />
+        </Button>
+      ),
     },
   ];
+  const navigate = useNavigate();
+
+  const goToAuctionDetail = (auctionSessionId) => {
+    navigate(`/auctions/${auctionSessionId}`);
+  };
 
   return (
     <div style={{ padding: "50px" }}>
@@ -136,18 +186,19 @@ const Transaction = () => {
           placeholder="Select Transaction Type"
           onChange={(value) => handleFilterChange(value, "transactionType")}
           style={{ width: 200, marginRight: 10 }}
+          allowClear
         >
           <Option value="DEPOSIT_FUNDS">DEPOSIT_FUNDS</Option>
           <Option value="TRANSFER_FUNDS">TRANSFER_FUNDS</Option>
-          <Option value="FAILED">FAILED</Option>
           <Option value="BID">BID</Option>
-          <Option value="WITHDRAW_PENDING">WITHDRAW_PENDING</Option>
-          <Option value="WITHDRAW_REJECT">WITHDRAW_REJECT</Option>
-          <Option value="WITHDRAW_SUCCESS">WITHDRAW_SUCCESS</Option>
+          <Option value="WITHDRAW_FUNDS">WITHDRAW_FUNDS</Option>
         </Select>
         <RangePicker onChange={handleDateChange} style={{ marginRight: 10 }} />
         <Button type="primary" onClick={() => fetchTransactions(1)}>
           Filter
+        </Button>
+        <Button onClick={handleAllTransactions} style={{ marginLeft: 10 }}>
+          All
         </Button>
       </div>
 

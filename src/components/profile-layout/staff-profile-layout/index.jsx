@@ -8,6 +8,7 @@ import {
   LogoutOutlined,
   DollarOutlined,
   UserAddOutlined,
+  EditOutlined,
 } from "@ant-design/icons";
 
 import Footer from "../../footer/Footer";
@@ -50,6 +51,7 @@ const StaffProfileLayout = ({ children, collapsed, setCollapsed }) => {
       <PieChartOutlined />
     ),
     getItem("Member Account", "manage-member-account", <UserAddOutlined />),
+    getItem("Edit Variety", "edit-variety", <EditOutlined />),
     getItem("Withdraw Request", "withdraw-request", <DollarOutlined />),
     getItem("Logout", "logout", <LogoutOutlined />, handleLogout),
   ];
