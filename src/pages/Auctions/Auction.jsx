@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import HeaderLogin from "../../components/header-logged-in";
 import "./Auction.css";
-import { Button, Modal, Input, Select, InputNumber } from "antd";
+import { Button, InputNumber, Select, Slider  } from "antd";
 import Card from "../../components/Card/Card";
 import Koi from "../../images/Koi1.jpg";
 import api from "../../config/axios";
@@ -14,14 +14,11 @@ const Auction = () => {
   const [cardsData, setCardsData] = useState([]);
   const [countdowns, setCountdowns] = useState({});
   const [totalPages, setTotalPages] = useState();
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchParams, setSearchParams] = useState({
     breederName: "",
     varieties: null,
     minSizeCm: null,
     maxSizeCm: null,
-    minWeightKg: null,
-    maxWeightKg: null,
     sex: null,
     auctionType: null,
     status: null,
@@ -114,7 +111,6 @@ const Auction = () => {
     fetchKoiFish(currentPage, searchParams);
   }, [currentPage, searchParams]);
 
-  // useEffect cho đếm ngược
   useEffect(() => {
     const intervalId = setInterval(() => {
       const newCountdowns = {};
@@ -131,129 +127,102 @@ const Auction = () => {
     return () => clearInterval(intervalId);
   }, [cardsData]);
 
-  const handleSearchClick = () => {
-    setIsModalVisible(true);
-  };
-
-  const handleModalOk = () => {
-    fetchKoiFish(0, searchParams);
-    setCurrentPage(0);
-    setIsModalVisible(false);
-  };
-
-  const handleModalCancel = () => {
-    setIsModalVisible(false);
-  };
-
   const handleInputChange = (name, value) => {
     if (name === "varieties") {
       const varietiesString = value.join(", ");
       setSearchParams((prev) => ({ ...prev, [name]: varietiesString }));
+    } else if (name === "sizeRange") {
+      setSearchParams((prev) => ({ ...prev, minSizeCm: value.minSizeCm, maxSizeCm: value.maxSizeCm }));
     } else {
       setSearchParams((prev) => ({ ...prev, [name]: value }));
     }
   };
+  
 
-  const handlePageChange = (pageNumber) => {
-    if (pageNumber >= 0 && pageNumber < totalPages) {
-      setCurrentPage(pageNumber);
-    }
+  const handleFilterSubmit = (event) => {
+    event.preventDefault();
+    fetchKoiFish(0, searchParams);
+    setCurrentPage(0);
   };
 
   return (
     <div className="auction-form-container">
-      <Button type="primary" onClick={handleSearchClick}>
-        Search
-      </Button>
+<form className="search-form" onSubmit={handleFilterSubmit}>
+  <div className="search-row">
+    <Select className="select-breeder"
+      placeholder="Select Breeder"
+      onChange={(value) => handleInputChange("breederName", value)}
+    >
+      <Option value="NND">NND</Option>
+      <Option value="Sakai">Sakai</Option>
+      <Option value="Marushin">Marushin</Option>
+      <Option value="Isa">Isa</Option>
+      <Option value="Maruhiro">Maruhiro</Option>
+      <Option value="Torazo">Torazo</Option>
+      <Option value="Shinoda">Shinoda</Option>
+      <Option value="Kanno">Kanno</Option>
+      <Option value="Dainichi">Dainichi</Option>
+      <Option value="Omosako">Omosako</Option>
+      <Option value="Izumiya">Izumiya</Option>
+      <Option value="Marudo">Marudo</Option>
+      <Option value="Marujyu">Marujyu</Option>
+      <Option value="Shintaro">Shintaro</Option>
+      <Option value="koibreeder1">koibreeder1</Option>
+    </Select>
 
-      <Modal
-        title="Search Filters"
-        visible={isModalVisible}
-        onOk={handleModalOk}
-        onCancel={handleModalCancel}
-      >
-        <Select
-          style={{ width: "100%", marginTop: 10 }}
-          placeholder="Select Breeder"
-          onChange={(value) => handleInputChange("breederName", value)}
-        >
-          <Option value="NND">NND</Option>
-          <Option value="Sakai">Sakai</Option>
-          <Option value="Marushin">Marushin</Option>
-          <Option value="Isa">Isa</Option>
-          <Option value="Maruhiro">Maruhiro</Option>
-          <Option value="Torazo">Torazo</Option>
-          <Option value="Shinoda">Shinoda</Option>
-          <Option value="Kanno">Kanno</Option>
-          <Option value="Dainichi">Dainichi</Option>
-          <Option value="Omosako">Omosako</Option>
-          <Option value="Izumiya">Izumiya</Option>
-          <Option value="Marudo">Marudo</Option>
-          <Option value="Marujyu">Marujyu</Option>
-          <Option value="Shintaro">Shintaro</Option>
-          <Option value="koibreeder1">koibreeder1</Option>
-        </Select>
-        <Select
-          style={{ width: "100%", marginTop: 10 }}
-          placeholder="Select Status"
-          onChange={(value) => handleInputChange("status", value)}
-        >
-          <Option value="ONGOING">Ongoing</Option>
-          <Option value="UPCOMING">Upcoming</Option>
-          <Option value="NO_WINNER">No Winner</Option>
-          <Option value="COMPLETED">Completed</Option>
-        </Select>
-        <Select
-          mode="multiple"
-          style={{ width: "100%", marginTop: 10 }}
-          placeholder="Varieties"
-          onChange={(values) => handleInputChange("varieties", values)}
-        >
-          <Option value="Kohaku">Kohaku</Option>
-          <Option value="Showa">Showa</Option>
-          <Option value="Tancho">Tancho</Option>
-        </Select>
-        <InputNumber
-          placeholder="Min Size (cm)"
-          value={searchParams.minSizeCm}
-          onChange={(value) => handleInputChange("minSizeCm", value)}
-          style={{ width: "100%", marginTop: 10 }}
-        />
-        <InputNumber
-          placeholder="Max Size (cm)"
-          value={searchParams.maxSizeCm}
-          onChange={(value) => handleInputChange("maxSizeCm", value)}
-          style={{ width: "100%", marginTop: 10 }}
-        />
-        <InputNumber
-          placeholder="Min Weight (kg)"
-          value={searchParams.minWeightKg}
-          onChange={(value) => handleInputChange("minWeightKg", value)}
-          style={{ width: "100%", marginTop: 10 }}
-        />
-        <InputNumber
-          placeholder="Max Weight (kg)"
-          value={searchParams.maxWeightKg}
-          onChange={(value) => handleInputChange("maxWeightKg", value)}
-          style={{ width: "100%", marginTop: 10 }}
-        />
-        <Select
-          style={{ width: "100%", marginTop: 10 }}
-          placeholder="Select Sex"
-          onChange={(value) => handleInputChange("sex", value)}
-        >
-          <Option value="MALE">Male</Option>
-          <Option value="FEMALE">Female</Option>
-        </Select>
-        <Select
-          style={{ width: "100%", marginTop: 10 }}
-          placeholder="Select Auction Type"
-          onChange={(value) => handleInputChange("auctionType", value)}
-        >
-          <Option value="ASCENDING">Ascending</Option>
-          <Option value="DESCENDING">Descending</Option>
-        </Select>
-      </Modal>
+    <Select className="select-varieties"
+      mode="multiple"
+      placeholder="Varieties"
+      onChange={(values) => handleInputChange("varieties", values)}
+    >
+      <Option value="Kohaku">Kohaku</Option>
+      <Option value="Showa">Showa</Option>
+      <Option value="Tancho">Tancho</Option>
+    </Select>
+    <Select className="select-type"
+      placeholder="Select Auction Type"
+      onChange={(value) => handleInputChange("auctionType", value)}
+    >
+      <Option value="ASCENDING">Ascending</Option>
+      <Option value="FIXED_PRICE">Fixed Price</Option>
+    </Select>
+  </div>
+
+  <div className="search-row">
+    <Select
+      placeholder="Select Sex"
+      onChange={(value) => handleInputChange("sex", value)}
+    >
+      <Option value="MALE">Male</Option>
+      <Option value="FEMALE">Female</Option>
+    </Select>
+    <Select
+      placeholder="Select Status"
+      onChange={(value) => handleInputChange("status", value)}
+    >
+      <Option value="ONGOING">Ongoing</Option>
+      <Option value="UPCOMING">Upcoming</Option>
+      <Option value="NO_WINNER">No Winner</Option>
+      <Option value="COMPLETED">Completed</Option>
+    </Select>
+    <Slider
+      range
+      min={10}
+      max={100}
+      onChange={(value) =>
+        handleInputChange("sizeRange", { minSizeCm: value[0], maxSizeCm: value[1] })
+      }
+      style={{ width: "200px" }}
+      tooltip={{ formatter: (value) => `${value} cm` }}
+    />
+<Button type="primary" htmlType="submit" className="custom-filter-button">
+  FILTER
+</Button>
+
+  </div>
+</form>
+
+
 
       <div className="card-grid">
         {cardsData.map((card) => (
@@ -278,6 +247,7 @@ const Auction = () => {
           />
         ))}
       </div>
+
       <div className="pagination">
         <Button
           className="pagination-button"
