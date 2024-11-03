@@ -228,7 +228,13 @@ function DashboardManageRequestTemplateForManager({
 
   const fetchData = async (current, pageSize) => {
     const filterParamsAfterEncode = Object.entries(filterParams)
-      .filter(([key, value]) => value !== undefined && value !== "" && value != null) // Filter out empty strings and undefined values
+      .filter(
+        ([key, value]) =>
+          value !== undefined &&
+          value !== "" &&
+          value != null &&
+          !(Array.isArray(value) && value.length === 0)
+      ) // Filter out empty strings and undefined values
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
       .join("&");
     console.log(filterParamsAfterEncode);

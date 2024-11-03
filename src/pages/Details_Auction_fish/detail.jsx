@@ -140,8 +140,8 @@ const Detail = () => {
         message.error("Failed to place bid.");
       }
     } catch (error) {
-      console.error("Error placing bid: ", error);
-      message.error("Failed to place bid.");
+      console.error("Error placing bid: " + error.response.data);
+      message.error("Failed to place bid." + error.response.data);
     }
   };
   
@@ -207,31 +207,54 @@ const Detail = () => {
           </div>
           <div className="product-info-container">
             <div className="info-box">
-              <p><strong>Name:</strong> {koi.name}</p>
+              <p>
+                <strong>Name:</strong> {koi.name}
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Breeder:</strong> {koi.breeder.username}</p>
+              <p>
+                <strong>Breeder:</strong> {koi.breeder.username}
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Auction Status:</strong> <span style={{ color: getStatusColor(auctionStatus) }}>{auctionStatus}</span></p>
+              <p>
+                <strong>Auction Status:</strong>{" "}
+                <span style={{ color: getStatusColor(auctionStatus) }}>{auctionStatus}</span>
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Auction Type:</strong> {auctionType}</p>
+              <p>
+                <strong>Auction Type:</strong> {auctionType}
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Length:</strong> {koi.sizeCm} cm</p>
+              <p>
+                <strong>Length:</strong> {koi.sizeCm} cm
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Sex:</strong> {koi.sex}</p>
+              <p>
+                <strong>Sex:</strong> {koi.sex}
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Age:</strong> {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()} years</p>
+              <p>
+                <strong>Age:</strong>{" "}
+                {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()} years
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Variety:</strong> {koi.varieties && koi.varieties.length > 0 ? koi.varieties.map((variety) => variety.name).join(", ") : "No variety available"}</p>
+              <p>
+                <strong>Variety:</strong>{" "}
+                {koi.varieties && koi.varieties.length > 0
+                  ? koi.varieties.map((variety) => variety.name).join(", ")
+                  : "No variety available"}
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Price:</strong> {productDetail.currentPrice.toLocaleString("en-US")}₫</p>
+              <p>
+                <strong>Price:</strong> {productDetail.currentPrice.toLocaleString("en-US")}₫
+              </p>
             </div>
           </div>
         </div>

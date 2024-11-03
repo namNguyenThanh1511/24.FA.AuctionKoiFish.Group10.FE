@@ -74,8 +74,7 @@ const Auction = () => {
           bornIn: item.koi.bornIn || "Unknown",
           age: age || "0 years 0 months",
           price: item.currentPrice || 0,
-          variety:
-            item.koi.varieties.map((v) => v.name).join(", ") || "Unknown",
+          variety: item.koi.varieties.map((v) => v.name).join(", ") || "Unknown",
           image: item.koi.image_url || "",
           startDate: startDate,
           endDate: endDate,
@@ -110,9 +109,7 @@ const Auction = () => {
     const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-    return totalSeconds > 0
-      ? `${days}d ${hours}h ${minutes}m ${seconds}s`
-      : "Auction ended";
+    return totalSeconds > 0 ? `${days}d ${hours}h ${minutes}m ${seconds}s` : "Auction ended";
   };
 
   const handleSearchClick = () => {

@@ -21,7 +21,12 @@ import {
 } from "antd";
 import DashboardTemplate from "../../../components/dashboard-manage-template";
 import dayjs from "dayjs";
-import { CheckCircleOutlined, CloseCircleOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  SearchOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
 import formatToVND from "../../../utils/currency";
@@ -30,6 +35,7 @@ import CardKoiFish from "../../../components/card-koi-fish";
 import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
 import TextArea from "antd/es/input/TextArea";
+import BasicFilter from "../../../components/basic-filter";
 
 function ManageAuctionRequestOfKoiBreeder() {
   const title = "Auction Request";
@@ -42,6 +48,11 @@ function ManageAuctionRequestOfKoiBreeder() {
 
   const [form] = useForm();
   const [formViewDetails] = useForm();
+  const [filters, setFilters] = useState({
+    status: null,
+    startDate: null,
+    endDate: null,
+  });
   const koiColumns = [
     {
       title: "Image",
@@ -449,9 +460,69 @@ function ManageAuctionRequestOfKoiBreeder() {
       {/* <CardKoiFish id={formViewDetails.getFieldValue("koi_id")} /> */}
     </Card>
   );
+  const onChangeFilter = (field, value) => {
+    const updatedFilters = { ...filters, [field]: value };
+    setFilters(updatedFilters);
+    console.log(updatedFilters);
+  };
+  const statusOptions = [
+    { value: "PENDING", color: "orange" },
+    { value: "ACCEPTED_BY_STAFF", color: "blue" },
+    { value: "APPROVED_BY_MANAGER", color: "green" },
+    { value: "REJECTED_BY_MANAGER", color: "red" },
+    { value: "REJECTED_BY_STAFF", color: "red" },
+  ];
+  const filterItems = (
+    <div
+      style={{
+        display: "flex",
+        gap: "16px",
+        marginBottom: "16px",
+        padding: "16px",
+        borderRadius: "8px",
+        backgroundColor: "#f0f2f5",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <Form.Item name="status" label="Status" style={{ flex: 1 }}>
+        <Select
+          onChange={(value) => onChangeFilter("status", value)}
+          placeholder="Select status"
+          allowClear
+          style={{ borderRadius: "4px" }}
+        >
+          {statusOptions.map(({ value, color }) => (
+            <Select.Option key={value} value={value}>
+              <Tag color={color} style={{ marginRight: "8px" }}>
+                {value}
+              </Tag>
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+      <Form.Item name="startDate" label="Start Date" style={{ flex: 1 }}>
+        <DatePicker
+          onChange={(date, dateString) => onChangeFilter("startDate", dateString)}
+          format="YYYY-MM-DD"
+          placeholder="Select start date"
+          style={{ width: "100%", borderRadius: "4px" }}
+        />
+      </Form.Item>
 
+      {/* End Date Filter */}
+      <Form.Item name="endDate" label="End Date" style={{ flex: 1 }}>
+        <DatePicker
+          onChange={(date, dateString) => onChangeFilter("endDate", dateString)}
+          format="YYYY-MM-DD"
+          placeholder="Select end date"
+          style={{ width: "100%", borderRadius: "4px" }}
+        />
+      </Form.Item>
+    </div>
+  );
   return (
     <div style={{ margin: "100px auto" }}>
+      <BasicFilter filterItems={filterItems} />
       <DashboardTemplate
         form={form}
         isRerender={render}
@@ -464,7 +535,7 @@ function ManageAuctionRequestOfKoiBreeder() {
         formViewDetailsItem={formViewDetailsItems}
         isBasicCRUD={false}
         isIncludeImage={false}
-        apiURI={"auctionRequest/koiBreeder/pagination"}
+        apiURI={"auctionRequest/koiBreeder/pagination/filter"}
         formViewDetails={formViewDetails}
         isShownCardKoiFish={true}
         isCreateNew={true}
@@ -472,6 +543,7 @@ function ManageAuctionRequestOfKoiBreeder() {
         setSelectedFish={setSelectedFish}
         paginationTarget={"auctionRequestResponseList"}
         setIsRender={setRender}
+        filterParams={filters}
       />
     </div>
   );

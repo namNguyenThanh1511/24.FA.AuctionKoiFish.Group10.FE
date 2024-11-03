@@ -16,16 +16,20 @@ import {
   Col,
   Row,
   InputNumber,
+  Slider,
 } from "antd";
 import DashboardTemplate from "../../../components/dashboard-manage-template";
 import dayjs from "dayjs";
-import { UploadOutlined } from "@ant-design/icons";
+import { SearchOutlined, UploadOutlined } from "@ant-design/icons";
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
 import formatToVND from "../../../utils/currency";
 import { useForm } from "antd/es/form/Form";
+import BasicFilter from "../../../components/basic-filter";
+import Title from "antd/es/skeleton/Title";
+import "./index.css";
 function ManageKoiFish() {
-  const title = "KoiFish";
+  const title = "Koi Fish";
   const [varieties, setVarieties] = useState([]);
   const [health, setHealth] = useState();
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -33,6 +37,17 @@ function ManageKoiFish() {
   const [formHealth] = useForm();
   const [form] = useForm();
   const [formViewDetails] = useForm();
+  const [filters, setFilters] = useState({
+    status: null,
+    sex: null,
+    minSizeCm: null,
+    maxSizeCm: null,
+    minWeightKg: null,
+    maxWeightKg: null,
+    upperEstimatedValue: null,
+    lowerEstimatedValue: null,
+    varietiesName: null,
+  });
 
   const columns = [
     {
@@ -78,6 +93,18 @@ function ManageKoiFish() {
         <Tooltip title={`Estimated value: ${formatToVND(value)}`}>
           <span>{formatToVND(value)}</span>
         </Tooltip>
+      ),
+    },
+    {
+      title: "Varieties",
+      dataIndex: "varieties",
+      key: "varieties",
+      render: (varieties) => (
+        <>
+          {varieties.map((variety) => (
+            <div key={variety.id}>{variety.name},</div>
+          ))}
+        </>
       ),
     },
     {
@@ -161,15 +188,17 @@ function ManageKoiFish() {
       }
     },
   };
-
   const formItems = (
     <Row gutter={16}>
       <Col span={12}>
         <Form.Item
           label="Name"
           name="name"
-          rules={[{ required: true, message: "Please enter the name!" }]}
-          style={{ height: "90px" }} // Set height
+          rules={[
+            { required: true, message: "Please enter the name!" },
+            { max: 100, message: "Name cannot exceed 100 characters!" },
+          ]}
+          style={{ height: "90px" }}
         >
           <Input placeholder="Enter koi name" />
         </Form.Item>
@@ -178,7 +207,7 @@ function ManageKoiFish() {
           label="Sex"
           name="sex"
           rules={[{ required: true, message: "Please select the sex!" }]}
-          style={{ height: "90px" }} // Set height
+          style={{ height: "90px" }}
         >
           <Select placeholder="Select sex">
             <Select.Option value="MALE">Male</Select.Option>
@@ -189,36 +218,46 @@ function ManageKoiFish() {
         <Form.Item
           label="Size (cm)"
           name="sizeCm"
-          rules={[{ required: true, message: "Please enter the size!" }]}
-          style={{ height: "90px" }} // Set height
+          rules={[
+            { required: true, message: "Please enter the size!" },
+            { type: "number", min: 1, message: "Size must be greater than 0!" },
+          ]}
+          style={{ height: "90px" }}
         >
-          <Input type="number" placeholder="Enter size in cm" />
+          <InputNumber type="number" placeholder="Enter size in cm" />
         </Form.Item>
 
         <Form.Item
           label="Weight (kg)"
           name="weightKg"
-          rules={[{ required: true, message: "Please enter the weight!" }]}
-          style={{ height: "90px" }} // Set height
+          rules={[
+            { required: true, message: "Please enter the weight!" },
+            { type: "number", min: 1, message: "Weight must be greater than 0!" },
+          ]}
+          style={{ height: "90px" }}
         >
-          <Input type="number" placeholder="Enter weight in kg" />
+          <InputNumber type="number" placeholder="Enter weight in kg" />
         </Form.Item>
 
         <Form.Item
           label="Estimated Value"
           name="estimatedValue"
-          rules={[{ required: true, message: "Please enter the estimated value!" }]}
-          style={{ height: "90px" }} // Set height
+          rules={[
+            { required: true, message: "Please enter the estimated value!" },
+            { type: "number", min: 0, message: "Value must be a positive number!" },
+          ]}
+          style={{ height: "90px" }}
         >
-          <InputNumber min={0} addonBefore="+" addonAfter="đ" style={{ width: "100%" }} />
+          <InputNumber min={0} addonAfter="đ" style={{ width: "100%" }} />
         </Form.Item>
 
         <Form.Item
           label="Description"
           name="description"
-          style={{ height: "90px" }} // Set height
+          rules={[{ max: 500, message: "Description cannot exceed 500 characters!" }]}
+          style={{ height: "90px" }}
         >
-          <Input.TextArea placeholder="Enter a description" />
+          <Input.TextArea placeholder="Enter a description" maxLength={500} />
         </Form.Item>
       </Col>
 
@@ -227,7 +266,7 @@ function ManageKoiFish() {
           label="Variety"
           name="varietiesID"
           rules={[{ required: true, message: "Please select the variety!" }]}
-          style={{ height: "90px" }} // Set height
+          style={{ height: "90px" }}
         >
           <Select mode="multiple" placeholder="Select varieties">
             {varieties.map((variety) => (
@@ -241,8 +280,18 @@ function ManageKoiFish() {
         <Form.Item
           label="Date of Birth"
           name="bornIn"
-          rules={[{ required: true, message: "Please select the date of birth!" }]}
-          style={{ height: "90px" }} // Set height
+          rules={[
+            { required: true, message: "Please select the date of birth!" },
+            () => ({
+              validator(_, value) {
+                if (value && value.isAfter(new Date())) {
+                  return Promise.reject(new Error("Date must be in the past!"));
+                }
+                return Promise.resolve();
+              },
+            }),
+          ]}
+          style={{ height: "90px" }}
         >
           <DatePicker placeholder="Select date of birth" />
         </Form.Item>
@@ -250,13 +299,8 @@ function ManageKoiFish() {
         <Form.Item
           label="Image URL"
           name="image_url"
-          rules={[
-            {
-              required: true,
-              message: "Please upload koi image",
-            },
-          ]}
-          style={{ height: "90px" }} // Set height
+          rules={[{ required: true, message: "Please upload koi image!" }]}
+          style={{ height: "90px" }}
         >
           <Upload {...props}>
             <Button icon={<UploadOutlined />}>Click to Upload</Button>
@@ -266,7 +310,13 @@ function ManageKoiFish() {
         <Form.Item
           label="Video URL"
           name="video_url"
-          style={{ height: "90px" }} // Set height
+          rules={[
+            {
+              type: "url",
+              message: "Please enter a valid URL!",
+            },
+          ]}
+          style={{ height: "90px" }}
         >
           <Input placeholder="Enter video URL" />
         </Form.Item>
@@ -341,11 +391,150 @@ function ManageKoiFish() {
       </Col>
     </Row>
   );
+  const statusOptions = [
+    { value: "AVAILABLE", color: "green" },
+    { value: "PENDING", color: "yellow" },
+    { value: "PENDING_AUCTION", color: "orange" },
+    { value: "SOLD", color: "blue" },
+    { value: "SELLING", color: "purple" },
+  ];
+  const onChangeFilter = (field, value) => {
+    const updatedFilters = { ...filters };
+
+    if (Array.isArray(value)) {
+      // If value is an array, assume it's a range and store min and max separately
+      updatedFilters[`min${field}`] = value[0];
+      updatedFilters[`max${field}`] = value[1];
+    } else {
+      // For single values, store directly
+      updatedFilters[field] = value;
+    }
+
+    setFilters(updatedFilters);
+    console.log(updatedFilters);
+  };
+  const filterItems = (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "24px",
+        marginBottom: "24px",
+        padding: "20px",
+        borderRadius: "12px",
+        backgroundColor: "#f9fafc",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      {/* Status Filter */}
+      <Form.Item name="status" label="Status" style={{ flex: "1 1 220px" }}>
+        <Select
+          onChange={(value) => onChangeFilter("status", value)}
+          placeholder="Select status"
+          allowClear
+          style={{ borderRadius: "6px", width: "100%" }}
+        >
+          {statusOptions.map(({ value, color }) => (
+            <Select.Option key={value} value={value}>
+              <Tag color={color} style={{ marginRight: "8px" }}>
+                {value}
+              </Tag>
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      {/* Sex Filter */}
+      <Form.Item name="sex" label="Sex" style={{ flex: "1 1 220px" }}>
+        <Select
+          onChange={(value) => onChangeFilter("sex", value)}
+          placeholder="Select sex"
+          allowClear
+          style={{ borderRadius: "6px", width: "100%" }}
+        >
+          <Select.Option value="MALE">Male</Select.Option>
+          <Select.Option value="FEMALE">Female</Select.Option>
+        </Select>
+      </Form.Item>
+
+      {/* Min Size (cm) Filter */}
+      <Form.Item name="sizeRangeCm" label="Size (cm)" style={{ flex: "1 1 220px" }}>
+        <div className="custom-slider-tooltip">
+          <Slider
+            range
+            min={0}
+            max={100} // Adjust max value as needed
+            step={1}
+            onChange={(value) => onChangeFilter("SizeCm", value)}
+            tooltip={{
+              open: true,
+              getPopupContainer: (trigger) => trigger.parentNode,
+            }}
+          />
+        </div>
+      </Form.Item>
+
+      {/* Weight Range (kg) Filter */}
+      <Form.Item name="weightRangeKg" label="Weight (kg)" style={{ flex: "1 1 220px" }}>
+        <div className="custom-slider-tooltip">
+          <Slider
+            range
+            min={0}
+            max={50} // Adjust max value as needed
+            step={0.1}
+            onChange={(value) => onChangeFilter("WeightKg", value)}
+            tooltip={{
+              open: true,
+              getPopupContainer: (trigger) => trigger.parentNode,
+            }}
+          />
+        </div>
+      </Form.Item>
+
+      {/* Min Estimated Value Filter */}
+      <Form.Item name="lowerEstimatedValue" label="Min Value" style={{ flex: "1 1 220px" }}>
+        <InputNumber
+          min={0}
+          placeholder="Min estimated value"
+          style={{ width: "100%", borderRadius: "6px" }}
+          onChange={(value) => onChangeFilter("lowerEstimatedValue", value)}
+        />
+      </Form.Item>
+
+      {/* Max Estimated Value Filter */}
+      <Form.Item name="upperEstimatedValue" label="Max Value" style={{ flex: "1 1 220px" }}>
+        <InputNumber
+          min={0}
+          placeholder="Max estimated value"
+          style={{ width: "100%", borderRadius: "6px" }}
+          onChange={(value) => onChangeFilter("upperEstimatedValue", value)}
+        />
+      </Form.Item>
+
+      {/* Variety Filter */}
+      <Form.Item name="varietiesName" label="Variety" style={{ flex: "1 1 220px" }}>
+        <Select
+          mode="multiple"
+          placeholder="Select varieties"
+          allowClear
+          style={{ width: "100%", borderRadius: "6px" }}
+          onChange={(value) => onChangeFilter("varietiesName", value)}
+        >
+          {varieties.map((variety) => (
+            <Select.Option key={variety.id} value={variety.name}>
+              {variety.name}
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </div>
+  );
   return (
     <div style={{ margin: "100px auto" }}>
+      <BasicFilter filterItems={filterItems} />
       <DashboardTemplate
         isRerender={render}
-        apiURI="koiFish/koiBreeder/pagination"
+        apiURI="koiFish/koiBreeder/pagination/filter"
         apiUriPOST={"koiFish"}
         apiUriPUT={"koiFish"}
         apiUriDelete={"koiFish"}
@@ -361,6 +550,7 @@ function ManageKoiFish() {
         formViewDetails={formViewDetails}
         isCreateNew={true}
         paginationTarget={"koiFishResponseList"}
+        filterParams={filters}
       />
     </div>
   );

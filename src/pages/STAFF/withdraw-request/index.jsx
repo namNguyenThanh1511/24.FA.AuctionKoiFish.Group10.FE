@@ -1,23 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-  Table,
-  Pagination,
-  Modal,
-  Input,
-  Button,
-  message,
-  Tooltip,
-  Tag,
-} from "antd";
-import api from "../../../config/axios"; 
+import { Table, Pagination, Modal, Input, Button, message, Tooltip, Tag } from "antd";
+import api from "../../../config/axios";
 import dayjs from "dayjs";
 
 const WithdrawRequest = () => {
- 
   const [withdrawRequests, setWithdrawRequests] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRequests, setTotalRequests] = useState(0);
-  const [pageSize] = useState(5); 
+  const [pageSize] = useState(5);
   const [isRejectModalVisible, setIsRejectModalVisible] = useState(false); // Modal reject
   const [isApproveModalVisible, setIsApproveModalVisible] = useState(false); // Modal approve
   const [selectedRequestId, setSelectedRequestId] = useState(null); // ID yêu cầu được chọn
@@ -27,7 +17,7 @@ const WithdrawRequest = () => {
   const [selectedDetail, setSelectedDetail] = useState({
     responseNote: "",
     image_url: "",
-  }); 
+  });
 
   // Fetch dữ liệu từ API
   const fetchWithdrawData = async (page = currentPage) => {
@@ -70,8 +60,7 @@ const WithdrawRequest = () => {
       setImageUrl("");
     } catch (error) {
       message.error(
-        "Failed to reject withdrawal request: " +
-          (error.response?.data || error.message)
+        "Failed to reject withdrawal request: " + (error.response?.data || error.message)
       );
       console.error("Reject Error:", error);
     }
@@ -91,14 +80,12 @@ const WithdrawRequest = () => {
       setImageUrl("");
     } catch (error) {
       message.error(
-        "Failed to approve withdrawal request: " +
-          (error.response?.data || error.message)
+        "Failed to approve withdrawal request: " + (error.response?.data || error.message)
       );
       console.error("Approve Error:", error);
     }
   };
 
-  
   const columns = [
     {
       title: "Request ID",
@@ -184,7 +171,7 @@ const WithdrawRequest = () => {
         <Button
           type="link"
           onClick={() => showDetails(record)}
-          disabled={record.status === "PENDING"} 
+          disabled={record.status === "PENDING"}
         >
           View
         </Button>
@@ -193,12 +180,11 @@ const WithdrawRequest = () => {
   ];
 
   return (
-    <div style={{ padding: "50px" }}>
+    <div style={{ margin: "100px auto" }}>
       <Table
         dataSource={withdrawRequests}
         columns={columns}
         rowKey="id" // Sử dụng ID duy nhất cho mỗi yêu cầu rút tiền
-        style={{ marginTop: "20px" }}
       />
       <Pagination
         current={currentPage}
@@ -276,11 +262,7 @@ const WithdrawRequest = () => {
           <strong>Image URL:</strong>
         </p>
         {selectedDetail.image_url ? (
-          <img
-            src={selectedDetail.image_url}
-            alt="Image"
-            style={{ width: "100%" }}
-          />
+          <img src={selectedDetail.image_url} alt="Image" style={{ width: "100%" }} />
         ) : (
           <span>No image available</span>
         )}
