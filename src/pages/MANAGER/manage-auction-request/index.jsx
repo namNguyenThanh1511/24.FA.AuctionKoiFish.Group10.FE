@@ -308,6 +308,7 @@ function ManagerManageAuctionRequest() {
         <Select placeholder="Select auction type">
           <Select.Option value="ASCENDING">Ascending</Select.Option>
           <Select.Option value="DESCENDING">Descending</Select.Option>
+          <Select.Option value="FIXED_PRICE">Fixed price</Select.Option>
         </Select>
       </Form.Item>
 

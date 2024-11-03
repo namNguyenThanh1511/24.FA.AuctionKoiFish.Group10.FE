@@ -12,29 +12,21 @@ const WithDraw = () => {
     pageSize: 5,
     total: 0,
   });
-  const [isAddRequestModalVisible, setIsAddRequestModalVisible] =
-    useState(false);
+  const [isAddRequestModalVisible, setIsAddRequestModalVisible] = useState(false);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
 
-  const fetchWithdrawData = async (
-    page = pagination.current,
-    pageSize = pagination.pageSize
-  ) => {
+  const fetchWithdrawData = async (page = pagination.current, pageSize = pagination.pageSize) => {
     setLoading(true);
     try {
-      const response = await api.get(
-        "/withDrawRequest/currentUser/pagination",
-        {
-          params: {
-            page: page - 1,
-            size: pageSize,
-          },
-        }
-      );
+      const response = await api.get("/withDrawRequest/currentUser/pagination", {
+        params: {
+          page: page - 1,
+          size: pageSize,
+        },
+      });
       console.log("Withdrawal data fetched: ", response.data);
-      const { withDrawRequestResponseDTOList, totalElements, pageNumber } =
-        response.data;
+      const { withDrawRequestResponseDTOList, totalElements, pageNumber } = response.data;
 
       setWithdrawRequests(withDrawRequestResponseDTOList);
       setPagination({
@@ -122,12 +114,7 @@ const WithDraw = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => {
-        const color =
-          status === "APPROVED"
-            ? "green"
-            : status === "PENDING"
-            ? "orange"
-            : "volcano";
+        const color = status === "APPROVED" ? "green" : status === "PENDING" ? "orange" : "volcano";
         return <Tag color={color}>{status}</Tag>;
       },
     },
@@ -147,7 +134,7 @@ const WithDraw = () => {
   ];
 
   return (
-    <div style={{ padding: "50px" }}>
+    <div style={{ margin: "100px auto" }}>
       <Button
         type="primary"
         onClick={() => setIsAddRequestModalVisible(true)}
@@ -163,12 +150,7 @@ const WithDraw = () => {
         onCancel={() => setIsAddRequestModalVisible(false)}
         footer={null}
       >
-        <Form
-          form={form}
-          name="withdraw"
-          onFinish={handleWithdraw}
-          layout="vertical"
-        >
+        <Form form={form} name="withdraw" onFinish={handleWithdraw} layout="vertical">
           {/* Các trường nhập cho form */}
           <Form.Item
             label="Bank Account Number"
@@ -185,9 +167,7 @@ const WithDraw = () => {
           <Form.Item
             label="Bank Name"
             name="bankName"
-            rules={[
-              { required: true, message: "Please enter your bank name!" },
-            ]}
+            rules={[{ required: true, message: "Please enter your bank name!" }]}
           >
             <Input placeholder="Enter Bank Name" />
           </Form.Item>
@@ -233,8 +213,7 @@ const WithDraw = () => {
         {selectedRequest ? (
           <>
             <p>
-              <strong>Response Note:</strong>{" "}
-              {selectedRequest.responseNote || "N/A"}
+              <strong>Response Note:</strong> {selectedRequest.responseNote || "N/A"}
             </p>
             <p>
               <strong>Image:</strong>
@@ -256,8 +235,7 @@ const WithDraw = () => {
               <strong>Staff ID:</strong> {selectedRequest.staff?.id || "N/A"}
             </p>
             <p>
-              <strong>Staff Username:</strong>{" "}
-              {selectedRequest.staff?.username || "N/A"}
+              <strong>Staff Username:</strong> {selectedRequest.staff?.username || "N/A"}
             </p>
           </>
         ) : (
@@ -266,7 +244,6 @@ const WithDraw = () => {
       </Modal>
 
       <Table
-        style={{ marginTop: "20px" }}
         columns={columns}
         dataSource={withdrawRequests}
         loading={loading}

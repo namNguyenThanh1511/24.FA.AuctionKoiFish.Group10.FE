@@ -20,10 +20,7 @@ const Transaction = () => {
     endDate: null,
   });
 
-  const fetchTransactions = async (
-    page = pagination.current,
-    pageSize = pagination.pageSize
-  ) => {
+  const fetchTransactions = async (page = pagination.current, pageSize = pagination.pageSize) => {
     setLoading(true);
     try {
       const { transactionType, startDate, endDate } = filters;
@@ -111,16 +108,13 @@ const Transaction = () => {
       dataIndex: "fromAccount",
       key: "fromAccount",
       render: (fromAccount) =>
-        fromAccount
-          ? `${fromAccount.fullName} (${fromAccount.username})`
-          : "N/A",
+        fromAccount ? `${fromAccount.fullName} (${fromAccount.username})` : "N/A",
     },
     {
       title: "To Account",
       dataIndex: "toAccount",
       key: "toAccount",
-      render: (toAccount) =>
-        toAccount ? `${toAccount.fullName} (${toAccount.username})` : "N/A",
+      render: (toAccount) => (toAccount ? `${toAccount.fullName} (${toAccount.username})` : "N/A"),
     },
     {
       title: "Auction Session ID",
@@ -130,7 +124,7 @@ const Transaction = () => {
   ];
 
   return (
-    <div style={{ padding: "50px" }}>
+    <div style={{ margin: "100px auto" }}>
       <div style={{ marginBottom: "20px" }}>
         <Select
           placeholder="Select Transaction Type"
