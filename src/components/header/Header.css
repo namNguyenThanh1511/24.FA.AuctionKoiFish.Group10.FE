@@ -43,16 +43,37 @@
 .nav ul li a:hover {
   text-decoration: underline; /* Hiệu ứng khi hover */
 }
+/* Bao quanh 2 nút trong một div để dễ quản lý */
 
-/* Thêm kiểu cho các nút Login và Register */
-.btn-login, .btn-register {
-  background-color: #3f87d3; /* Màu nền cho nút */
-  color: #fff; /* Màu chữ cho nút */
-  padding: 10px 15px; /* Padding cho nút */
-  border-radius: 5px; /* Bo tròn góc */
-  transition: background-color 0.3s; /* Hiệu ứng chuyển màu */
+
+/* Kiểu cho nút Login */
+/* Kiểu cho nút Login */
+.btn-login {
+  background-color: #000000;
+  color: #fff;
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: 1px solid #fff; /* Viền trắng */
+  transition: background-color 0.3s, border-color 0.3s;
 }
 
-.btn-login:hover, .btn-register:hover {
-  background-color: #218838; /* Màu nền khi hover */
+.btn-login:hover {
+  background-color: #b3b3b3;
+  border-color: #b3b3b3; /* Đổi màu viền khi hover */
+}
+
+/* Kiểu cho nút Register */
+.btn-register {
+  background-color: #ffffff;
+  color: #000000;
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: 1px solid #fff; /* Viền trắng */
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.btn-register:hover {
+  background-color: #b3b3b3;
+  border-color: #b3b3b3; /* Đổi màu viền khi hover */
+  color: white;
 }

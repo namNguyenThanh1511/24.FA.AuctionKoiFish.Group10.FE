@@ -23,6 +23,8 @@ const HeaderLogin = () => {
     DropdownMenuComponent = <DropdownMenuManager />;
   } else if (roleEnum === "KOI_BREEDER") {
     DropdownMenuComponent = <DropdownMenuKoiBreeder />;
+  } else {
+    DropdownMenuComponent = <DropdownMenuMember />; // Giá trị mặc định nếu roleEnum không khớp
   }
 
   return (

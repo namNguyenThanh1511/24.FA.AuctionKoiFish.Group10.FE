@@ -44,6 +44,8 @@ function DashboardManageRequestTemplateForManager({
   isCreateNew,
   formCreateAuctionSession,
   formItemsCreateAuctionSession,
+  paginationTarget,
+  filterParams,
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -55,14 +57,23 @@ function DashboardManageRequestTemplateForManager({
   const [currentRecord, setCurrentRecord] = useState(null);
   const [actions, setActions] = useState();
   const [isAuctionModalOpen, setIsAuctionModalOpen] = useState(false);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+    total: 0,
+  });
 
   useEffect(() => {
-    fetchData();
+    fetchData(pagination.current, pagination.pageSize);
   }, [isRerender]);
 
   useEffect(() => {
-    fetchData();
+    fetchData(pagination.current, pagination.pageSize);
   }, []);
+
+  useEffect(() => {
+    fetchData(pagination.current, pagination.pageSize);
+  }, [filterParams]);
 
   useEffect(() => {
     const newColumns = [
@@ -74,32 +85,83 @@ function DashboardManageRequestTemplateForManager({
         render: (id, record) => {
           if (record.status === "APPROVED_BY_MANAGER") {
             return (
-              <Alert
-                message="This request is approved"
-                type="success"
-                showIcon
-                icon={<CheckOutlined style={{ color: "green" }} />}
-                style={{
-                  marginBottom: 8,
-                  border: "1px solid green",
-                  borderRadius: 4,
-                }}
-              />
+              <Space>
+                <Tooltip title="Reject Request">
+                  <Button
+                    className="blur-button"
+                    type="primary"
+                    danger
+                    icon={<DeleteOutlined />}
+                    size="small"
+                  />
+                </Tooltip>
+                <Tooltip title="Approve Request">
+                  <Button
+                    className="blur-button"
+                    type="primary"
+                    style={{ backgroundColor: "green" }}
+                    icon={<CheckOutlined />}
+                    size="small"
+                  />
+                </Tooltip>
+                <Tooltip title="View Details">
+                  <Button
+                    icon={<EyeOutlined />}
+                    size="small"
+                    onClick={() => {
+                      const newRecord = { ...record };
+                      setCurrentRecord(newRecord);
+                      setIsViewModalOpen(true);
+                      for (var key of Object.keys(newRecord)) {
+                        const value = newRecord[key];
+                        if (dateFields.includes(key)) {
+                          newRecord[key] = dayjs(value);
+                        } else {
+                          newRecord[key] = record[key];
+                        }
+                      }
+                      formViewDetails.setFieldsValue(newRecord);
+                    }}
+                  />
+                </Tooltip>
+              </Space>
             );
           }
           if (record.status === "REJECTED_BY_MANAGER") {
             return (
-              <Alert
-                message="This request is rejected"
-                type="error"
-                showIcon
-                icon={<CloseOutlined style={{ color: "red" }} />}
-                style={{
-                  marginBottom: 8,
-                  border: "1px solid red",
-                  borderRadius: 4,
-                }}
-              />
+              <Space>
+                <Tooltip title="Reject Request">
+                  <Button type="primary" danger icon={<DeleteOutlined />} size="small" />
+                </Tooltip>
+                <Tooltip title="Approve Request">
+                  <Button
+                    type="primary"
+                    style={{ backgroundColor: "green" }}
+                    icon={<CheckOutlined />}
+                    size="small"
+                  />
+                </Tooltip>
+                <Tooltip title="View Details">
+                  <Button
+                    icon={<EyeOutlined />}
+                    size="small"
+                    onClick={() => {
+                      const newRecord = { ...record };
+                      setCurrentRecord(newRecord);
+                      setIsViewModalOpen(true);
+                      for (var key of Object.keys(newRecord)) {
+                        const value = newRecord[key];
+                        if (dateFields.includes(key)) {
+                          newRecord[key] = dayjs(value);
+                        } else {
+                          newRecord[key] = record[key];
+                        }
+                      }
+                      formViewDetails.setFieldsValue(newRecord);
+                    }}
+                  />
+                </Tooltip>
+              </Space>
             );
           }
 
@@ -164,12 +226,31 @@ function DashboardManageRequestTemplateForManager({
     setTableColumns(newColumns);
   }, [columns]);
 
-  const fetchData = async () => {
+  const fetchData = async (current, pageSize) => {
+    const filterParamsAfterEncode = Object.entries(filterParams)
+      .filter(
+        ([key, value]) =>
+          value !== undefined &&
+          value !== "" &&
+          value != null &&
+          !(Array.isArray(value) && value.length === 0)
+      ) // Filter out empty strings and undefined values
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join("&");
+    console.log(filterParamsAfterEncode);
     try {
-      const response = await api.get(apiURI);
-      console.log("fetched");
+      const response = await api.get(
+        `${apiURI}?page=${current - 1}&size=${pageSize}${
+          filterParamsAfterEncode ? `&${filterParamsAfterEncode}` : ""
+        }`
+      );
       setIsFetching(false);
-      setDataSource(response.data);
+      setDataSource(response.data[paginationTarget]);
+      setPagination({
+        current,
+        pageSize,
+        total: response.data.totalElements,
+      });
     } catch (err) {
       console.log(err);
       toast.error(err.response.data);
@@ -201,7 +282,7 @@ function DashboardManageRequestTemplateForManager({
       toast.success("Successfully updated");
       form.resetFields();
       handleCloseModal();
-      fetchData();
+      fetchData(pagination.current, pagination.pageSize);
     } catch (error) {
       toast.error(error.response.data);
     }
@@ -230,7 +311,7 @@ function DashboardManageRequestTemplateForManager({
       toast.success("Successfully created auction session");
       formCreateAuctionSession.resetFields();
       handleCloseAuctionModal();
-      fetchData();
+      fetchData(pagination.current, pagination.pageSize);
     } catch (error) {
       toast.error("Error during auction session creation. Attempting to rollback approval.");
       // toast.error(error.response.data);
@@ -248,10 +329,14 @@ function DashboardManageRequestTemplateForManager({
     try {
       await api.put(`${apiUriDelete}/${id}`);
       toast.success("Deleted successfully");
-      fetchData();
+      fetchData(pagination.current, pagination.pageSize);
     } catch (err) {
       toast.error(err.response.data);
     }
+  };
+  const handleTableChange = (pagination) => {
+    setPagination(pagination);
+    fetchData(pagination.current, pagination.pageSize);
   };
 
   return (
@@ -270,7 +355,13 @@ function DashboardManageRequestTemplateForManager({
         []
       )}
 
-      <Table columns={tableColumns} dataSource={dataSource} loading={isFetching} />
+      <Table
+        onChange={handleTableChange}
+        pagination={pagination}
+        columns={tableColumns}
+        dataSource={dataSource}
+        loading={isFetching}
+      />
       <Modal
         open={isOpenModal}
         title={isUpdate === true ? `Edit ${title}` : `Create new ${title}`}
@@ -358,6 +449,12 @@ function DashboardManageRequestTemplateForManager({
           {formItemsCreateAuctionSession}
         </Form>
       </Modal>
+      <style jsx>{`
+        .blur-button {
+          opacity: 0.5; /* Make the button appear faded */
+          pointer-events: none; /* Disable mouse events for blurred buttons */
+        }
+      `}</style>
     </div>
   );
 }

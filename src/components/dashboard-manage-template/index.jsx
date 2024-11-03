@@ -20,6 +20,8 @@ import CardKoiFish from "../card-koi-fish";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
+import "./customTable.css";
+import { current } from "@reduxjs/toolkit";
 function DashboardTemplate({
   columns,
   title,
@@ -39,6 +41,9 @@ function DashboardTemplate({
   isShownCardKoiFish,
   isCreateNew,
   setSelectedFish,
+  paginationTarget,
+  filterParams,
+  setIsRender,
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -48,11 +53,32 @@ function DashboardTemplate({
   const [tableColumns, setTableColumns] = useState([]);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [currentRecord, setCurrentRecord] = useState(null);
-
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 5,
+    total: 0,
+  });
   // Fetch data when component mounts or `isRerender` changes
   useEffect(() => {
-    fetchData();
+    fetchData(pagination.current, pagination.pageSize);
   }, [isRerender]);
+
+  useEffect(() => {
+    fetchData(pagination.current, pagination.pageSize);
+  }, []);
+
+  useEffect(() => {
+    fetchData(pagination.current, pagination.pageSize);
+  }, [filterParams]);
+
+  useEffect(() => {
+    if (currentRecord) {
+      // Reset fields and then set new values
+      // formViewDetails.resetFields();
+      formViewDetails.setFieldsValue(currentRecord);
+    }
+  }, [currentRecord, formViewDetails]);
+
   useEffect(() => {
     const newColumns = [
       ...columns,
@@ -85,6 +111,12 @@ function DashboardTemplate({
                               newRecord[key] = dayjs(value);
                             }
                           }
+                          if (newRecord.varieties) {
+                            newRecord.varietiesID = newRecord.varieties.map(
+                              (variety) => variety.id
+                            );
+                          }
+
                           form.setFieldsValue(newRecord);
                           handleOpenModal();
                         }}
@@ -113,15 +145,35 @@ function DashboardTemplate({
           <Button
             onClick={() => {
               const newRecord = { ...record };
-              setCurrentRecord(newRecord);
-              setIsViewModalOpen(true);
+
               for (var key of Object.keys(newRecord)) {
                 const value = newRecord[key];
                 if (dateFields.includes(key)) {
                   newRecord[key] = dayjs(value);
                 }
               }
+              if (newRecord.varieties) {
+                newRecord.varieties = newRecord.varieties.map((variety) => variety.id);
+              }
+              setCurrentRecord(newRecord);
+              setIsViewModalOpen(true);
+              console.log(newRecord);
+
+              formViewDetails.resetFields();
               formViewDetails.setFieldsValue(newRecord);
+              // setIsRender(true);
+              // const logTitle = formViewDetails.getFieldValue("title") || "No Title Available";
+              // const logcreatedDate = dayjs(formViewDetails.getFieldValue("createdDate"));
+              // const logdescription =
+              //   formViewDetails.getFieldValue("description") || "No description available.";
+              // const logresponseNote =
+              //   formViewDetails.getFieldValue("responseNote") || "No response note available.";
+              // const logkoiId = formViewDetails.getFieldValue("koi_id");
+              // console.log(logTitle);
+              // console.log(logcreatedDate);
+              // console.log(logdescription);
+              // console.log(logresponseNote);
+              // console.log(logkoiId);
             }}
           >
             View
@@ -132,11 +184,32 @@ function DashboardTemplate({
     setTableColumns(newColumns);
   }, [columns]);
 
-  const fetchData = async () => {
+  const fetchData = async (current, pageSize) => {
+    const filterParamsAfterEncode = Object.entries(filterParams)
+      .filter(
+        ([key, value]) =>
+          value !== undefined &&
+          value !== "" &&
+          value != null &&
+          !(Array.isArray(value) && value.length === 0) &&
+          value !== 0
+      )
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join("&");
+    console.log(filterParamsAfterEncode);
     try {
-      const response = await api.get(apiURI);
+      const response = await api.get(
+        `${apiURI}?page=${current - 1}&size=${pageSize}${
+          filterParamsAfterEncode ? `&${filterParamsAfterEncode}` : ""
+        }`
+      );
       setIsFetching(false);
-      setDataSource(response.data);
+      setDataSource(response.data[paginationTarget]);
+      setPagination({
+        current,
+        pageSize,
+        total: response.data.totalElements,
+      });
     } catch (err) {
       console.error(err);
     }
@@ -147,13 +220,16 @@ function DashboardTemplate({
   };
 
   const handleCloseModal = () => {
+    if (isUpdate) {
+      form.resetFields();
+    }
     setIsOpenModal(false);
-    form.resetFields();
     setSelectedFish(null);
   };
 
   const handleCloseViewModal = () => {
     setIsViewModalOpen(false);
+    formViewDetails.resetFields();
     setCurrentRecord(null);
   };
 
@@ -167,11 +243,11 @@ function DashboardTemplate({
     try {
       if (values[keyField]) {
         await api.put(`${apiUriPUT}/${values[keyField]}`, values);
-        fetchData();
+        fetchData(pagination.current, pagination.pageSize);
         notification.success({ message: `${title} updated successfully` });
       } else {
         const response = await api.post(`${apiUriPOST}`, values);
-        fetchData();
+        fetchData(pagination.current, pagination.pageSize);
         notification.success({ message: `${title} created successfully` });
       }
       form.resetFields();
@@ -180,19 +256,24 @@ function DashboardTemplate({
     } catch (error) {
       toast.error(error.response.data);
       console.error(error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleDelete = async (id) => {
     try {
       await api.delete(`${apiUriDelete}/${id}`);
-      fetchData();
+      fetchData(pagination.current, pagination.pageSize);
       notification.success({ message: `${title} deleted successfully` });
     } catch (err) {
       notification.error({ message: `Error while deleting ${title}` });
       console.error(err);
     }
+  };
+  const handleTableChange = (pagination) => {
+    setPagination(pagination);
+    fetchData(pagination.current, pagination.pageSize);
   };
 
   return (
@@ -219,7 +300,8 @@ function DashboardTemplate({
         rowClassName={(record) =>
           record.koiStatus === "AVAILABLE" ? "row-available" : "row-unavailable"
         }
-        pagination={{ pageSize: 10 }}
+        pagination={pagination}
+        onChange={handleTableChange}
       />
 
       {/* Modal for creating or editing a record */}
@@ -236,7 +318,7 @@ function DashboardTemplate({
           </>
         }
       >
-        <Form labelCol={{ span: 24 }} onFinish={handleSubmitForm} form={form}>
+        <Form layout="horizontal" labelCol={{ span: 24 }} onFinish={handleSubmitForm} form={form}>
           <Form.Item name={keyField} hidden>
             <Input />
           </Form.Item>

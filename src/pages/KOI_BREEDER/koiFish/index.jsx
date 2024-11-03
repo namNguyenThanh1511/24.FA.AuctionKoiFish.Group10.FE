@@ -13,23 +13,42 @@ import {
   Switch,
   Tag,
   Tooltip,
+  Col,
+  Row,
+  InputNumber,
+  Slider,
 } from "antd";
 import DashboardTemplate from "../../../components/dashboard-manage-template";
 import dayjs from "dayjs";
-import { UploadOutlined } from "@ant-design/icons";
+import { SearchOutlined, UploadOutlined } from "@ant-design/icons";
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
 import formatToVND from "../../../utils/currency";
 import { useForm } from "antd/es/form/Form";
+import BasicFilter from "../../../components/basic-filter";
+import Title from "antd/es/skeleton/Title";
+import "./index.css";
 function ManageKoiFish() {
-  const title = "KoiFish";
+  const title = "Koi Fish";
   const [varieties, setVarieties] = useState([]);
   const [health, setHealth] = useState();
   const [isOpenModal, setIsOpenModal] = useState(false);
-  const [hongthinh, setHongThinh] = useState(false);
+  const [render, setRender] = useState(false);
   const [formHealth] = useForm();
   const [form] = useForm();
   const [formViewDetails] = useForm();
+  const [filters, setFilters] = useState({
+    status: null,
+    sex: null,
+    minSizeCm: null,
+    maxSizeCm: null,
+    minWeightKg: null,
+    maxWeightKg: null,
+    upperEstimatedValue: null,
+    lowerEstimatedValue: null,
+    varietiesName: null,
+  });
+
   const columns = [
     {
       title: "Name",
@@ -77,6 +96,18 @@ function ManageKoiFish() {
       ),
     },
     {
+      title: "Varieties",
+      dataIndex: "varieties",
+      key: "varieties",
+      render: (varieties) => (
+        <>
+          {varieties.map((variety) => (
+            <div key={variety.id}>{variety.name},</div>
+          ))}
+        </>
+      ),
+    },
+    {
       title: "Image",
       dataIndex: "image_url",
       key: "image_url",
@@ -101,8 +132,17 @@ function ManageKoiFish() {
           case "AVAILABLE":
             color = "green";
             break;
-          case "PENDING_AUCTION":
+          case "PENDING":
             color = "yellow";
+            break;
+          case "PENDING_AUCTION":
+            color = "orange";
+            break;
+          case "SOLD":
+            color = "blue";
+            break;
+          case "SELLING":
+            color = "purple";
             break;
           default:
             color = "red";
@@ -148,195 +188,353 @@ function ManageKoiFish() {
       }
     },
   };
-
-  const handleSubmitForm = async (values) => {
-    try {
-      const response = await api.put(`koiFish/health/${values.koi_id}`, {
-        koi_status: values.koiStatus,
-        healthNote: values.healthNote,
-      });
-      toast.success("Updated!!!");
-      setHongThinh((prev) => !prev); //set isRenderer to make column in dashboard template re-rendered
-    } catch (error) {
-      console.log(error);
-    }
-    setIsOpenModal(false);
-    formHealth.resetFields();
-  };
-
   const formItems = (
-    <>
-      <Form.Item
-        label="Name"
-        name="name"
-        rules={[{ required: true, message: "Please enter the name!" }]}
-      >
-        <Input placeholder="Enter koi name" />
-      </Form.Item>
+    <Row gutter={16}>
+      <Col span={12}>
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[
+            { required: true, message: "Please enter the name!" },
+            { max: 100, message: "Name cannot exceed 100 characters!" },
+          ]}
+          style={{ height: "90px" }}
+        >
+          <Input placeholder="Enter koi name" />
+        </Form.Item>
 
-      {/* Sex */}
-      <Form.Item
-        label="Sex"
-        name="sex"
-        rules={[{ required: true, message: "Please select the sex!" }]}
-      >
-        <Select placeholder="Select sex">
-          <Select.Option value="MALE">Male</Select.Option>
-          <Select.Option value="FEMALE">Female</Select.Option>
-        </Select>
-      </Form.Item>
+        <Form.Item
+          label="Sex"
+          name="sex"
+          rules={[{ required: true, message: "Please select the sex!" }]}
+          style={{ height: "90px" }}
+        >
+          <Select placeholder="Select sex">
+            <Select.Option value="MALE">Male</Select.Option>
+            <Select.Option value="FEMALE">Female</Select.Option>
+          </Select>
+        </Form.Item>
 
-      {/* Size in cm */}
-      <Form.Item
-        label="Size (cm)"
-        name="sizeCm"
-        rules={[{ required: true, message: "Please enter the size!" }]}
-      >
-        <Input type="number" placeholder="Enter size in cm" />
-      </Form.Item>
+        <Form.Item
+          label="Size (cm)"
+          name="sizeCm"
+          rules={[
+            { required: true, message: "Please enter the size!" },
+            { type: "number", min: 1, message: "Size must be greater than 0!" },
+          ]}
+          style={{ height: "90px" }}
+        >
+          <InputNumber type="number" placeholder="Enter size in cm" />
+        </Form.Item>
 
-      {/* Weight in kg */}
-      <Form.Item
-        label="Weight (kg)"
-        name="weightKg"
-        rules={[{ required: true, message: "Please enter the weight!" }]}
-      >
-        <Input type="number" placeholder="Enter weight in kg" />
-      </Form.Item>
+        <Form.Item
+          label="Weight (kg)"
+          name="weightKg"
+          rules={[
+            { required: true, message: "Please enter the weight!" },
+            { type: "number", min: 1, message: "Weight must be greater than 0!" },
+          ]}
+          style={{ height: "90px" }}
+        >
+          <InputNumber type="number" placeholder="Enter weight in kg" />
+        </Form.Item>
 
-      {/* Variety */}
-      <Form.Item
-        label="Variety"
-        name="varietiesID"
-        rules={[{ required: true, message: "Please select the variety!" }]}
-      >
-        <Select mode="multiple" placeholder="Select varieties">
-          {varieties.map((variety) => (
-            <Select.Option key={variety.id} value={variety.id}>
-              {variety.name}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
+        <Form.Item
+          label="Estimated Value"
+          name="estimatedValue"
+          rules={[
+            { required: true, message: "Please enter the estimated value!" },
+            { type: "number", min: 0, message: "Value must be a positive number!" },
+          ]}
+          style={{ height: "90px" }}
+        >
+          <InputNumber min={0} addonAfter="đ" style={{ width: "100%" }} />
+        </Form.Item>
 
-      {/* Estimated Value */}
-      <Form.Item
-        label="Estimated Value"
-        name="estimatedValue"
-        rules={[{ required: true, message: "Please enter the estimated value!" }]}
-      >
-        <Input type="number" placeholder="Enter estimated value" />
-      </Form.Item>
+        <Form.Item
+          label="Description"
+          name="description"
+          rules={[{ max: 500, message: "Description cannot exceed 500 characters!" }]}
+          style={{ height: "90px" }}
+        >
+          <Input.TextArea placeholder="Enter a description" maxLength={500} />
+        </Form.Item>
+      </Col>
 
-      {/* Born in */}
-      <Form.Item
-        label="Date of Birth"
-        name="bornIn"
-        rules={[{ required: true, message: "Please select the date of birth!" }]}
-      >
-        <DatePicker placeholder="Select date of birth" />
-      </Form.Item>
+      <Col span={12}>
+        <Form.Item
+          label="Variety"
+          name="varietiesID"
+          rules={[{ required: true, message: "Please select the variety!" }]}
+          style={{ height: "90px" }}
+        >
+          <Select mode="multiple" placeholder="Select varieties">
+            {varieties.map((variety) => (
+              <Select.Option key={variety.id} value={variety.id}>
+                {variety.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
 
-      {/* Description */}
-      <Form.Item label="Description" name="description">
-        <Input.TextArea placeholder="Enter a description" />
-      </Form.Item>
+        <Form.Item
+          label="Date of Birth"
+          name="bornIn"
+          rules={[
+            { required: true, message: "Please select the date of birth!" },
+            () => ({
+              validator(_, value) {
+                if (value && value.isAfter(new Date())) {
+                  return Promise.reject(new Error("Date must be in the past!"));
+                }
+                return Promise.resolve();
+              },
+            }),
+          ]}
+          style={{ height: "90px" }}
+        >
+          <DatePicker placeholder="Select date of birth" />
+        </Form.Item>
 
-      {/* Image URL */}
-      <Form.Item
-        label="Image URL"
-        name="image_url"
-        rules={[
-          {
-            required: true,
-            message: "Please upload koi image",
-          },
-        ]}
-      >
-        <Upload {...props}>
-          <Button icon={<UploadOutlined />}>Click to Upload</Button>
-        </Upload>
-      </Form.Item>
+        <Form.Item
+          label="Image URL"
+          name="image_url"
+          rules={[{ required: true, message: "Please upload koi image!" }]}
+          style={{ height: "90px" }}
+        >
+          <Upload {...props}>
+            <Button icon={<UploadOutlined />}>Click to Upload</Button>
+          </Upload>
+        </Form.Item>
 
-      {/* Video URL */}
-      <Form.Item label="Video URL" name="video_url">
-        <Input placeholder="Enter video URL" />
-      </Form.Item>
-    </>
+        <Form.Item
+          label="Video URL"
+          name="video_url"
+          rules={[
+            {
+              type: "url",
+              message: "Please enter a valid URL!",
+            },
+          ]}
+          style={{ height: "90px" }}
+        >
+          <Input placeholder="Enter video URL" />
+        </Form.Item>
+      </Col>
+    </Row>
   );
   const formViewDetailsItems = (
-    <>
-      <Form.Item
-        label="Name"
-        name="name"
-        rules={[{ required: true, message: "Please enter the name!" }]}
-      >
-        <Input disabled placeholder="Enter koi name" />
-      </Form.Item>
+    <Row gutter={16}>
+      <Col span={12}>
+        <Form.Item
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: "Please enter the name!" }]}
+        >
+          <Input disabled placeholder="Enter koi name" />
+        </Form.Item>
 
-      {/* Sex */}
-      <Form.Item
-        label="Sex"
-        name="sex"
-        rules={[{ required: true, message: "Please select the sex!" }]}
-      >
-        <Select disabled placeholder="Select sex">
-          <Select.Option value="MALE">Male</Select.Option>
-          <Select.Option value="FEMALE">Female</Select.Option>
-        </Select>
-      </Form.Item>
+        {/* Sex */}
+        <Form.Item
+          label="Sex"
+          name="sex"
+          rules={[{ required: true, message: "Please select the sex!" }]}
+        >
+          <Select disabled placeholder="Select sex">
+            <Select.Option value="MALE">Male</Select.Option>
+            <Select.Option value="FEMALE">Female</Select.Option>
+          </Select>
+        </Form.Item>
 
-      {/* Size in cm */}
-      <Form.Item label="Size (cm)" name="sizeCm">
-        <Input disabled type="number" placeholder="Enter size in cm" />
-      </Form.Item>
+        {/* Size in cm */}
+        <Form.Item label="Size (cm)" name="sizeCm">
+          <Input disabled type="number" placeholder="Enter size in cm" />
+        </Form.Item>
 
-      {/* Weight in kg */}
-      <Form.Item label="Weight (kg)" name="weightKg">
-        <Input disabled type="number" placeholder="Enter weight in kg" />
-      </Form.Item>
+        {/* Weight in kg */}
+        <Form.Item label="Weight (kg)" name="weightKg">
+          <Input disabled type="number" placeholder="Enter weight in kg" />
+        </Form.Item>
 
-      {/* Variety */}
-      <Form.Item label="Variety" name="varietiesID" disabled>
-        <Select disabled mode="multiple" placeholder="Select varieties">
-          {varieties.map((variety) => (
-            <Select.Option key={variety.id} value={variety.id}>
-              {variety.name}
+        {/* Estimated Value */}
+        <Form.Item label="Estimated Value" name="estimatedValue">
+          <Input disabled type="number" placeholder="Enter estimated value" />
+        </Form.Item>
+
+        {/* Description */}
+        <Form.Item label="Description" name="description">
+          <Input.TextArea disabled placeholder="Enter a description" />
+        </Form.Item>
+      </Col>
+
+      <Col span={12}>
+        {/* Variety */}
+        <Form.Item label="Variety" name="varieties" disabled>
+          <Select disabled mode="multiple" placeholder="Select varieties">
+            {varieties.map((variety) => (
+              <Select.Option key={variety.id} value={variety.id}>
+                {variety.name}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+
+        {/* Born in */}
+        <Form.Item label="Date of Birth" name="bornIn">
+          <DatePicker disabled placeholder="Select date of birth" />
+        </Form.Item>
+
+        {/* Video URL */}
+        <Form.Item label="Video URL" name="video_url">
+          <Input disabled placeholder="Enter video URL" />
+        </Form.Item>
+      </Col>
+    </Row>
+  );
+  const statusOptions = [
+    { value: "AVAILABLE", color: "green" },
+    { value: "PENDING", color: "yellow" },
+    { value: "PENDING_AUCTION", color: "orange" },
+    { value: "SOLD", color: "blue" },
+    { value: "SELLING", color: "purple" },
+  ];
+  const onChangeFilter = (field, value) => {
+    const updatedFilters = { ...filters };
+
+    if (Array.isArray(value)) {
+      // If value is an array, assume it's a range and store min and max separately
+      updatedFilters[`min${field}`] = value[0];
+      updatedFilters[`max${field}`] = value[1];
+    } else {
+      // For single values, store directly
+      updatedFilters[field] = value;
+    }
+
+    setFilters(updatedFilters);
+    console.log(updatedFilters);
+  };
+  const filterItems = (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: "24px",
+        marginBottom: "24px",
+        padding: "20px",
+        borderRadius: "12px",
+        backgroundColor: "#f9fafc",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      {/* Status Filter */}
+      <Form.Item name="status" label="Status" style={{ flex: "1 1 220px" }}>
+        <Select
+          onChange={(value) => onChangeFilter("status", value)}
+          placeholder="Select status"
+          allowClear
+          style={{ borderRadius: "6px", width: "100%" }}
+        >
+          {statusOptions.map(({ value, color }) => (
+            <Select.Option key={value} value={value}>
+              <Tag color={color} style={{ marginRight: "8px" }}>
+                {value}
+              </Tag>
             </Select.Option>
           ))}
         </Select>
       </Form.Item>
 
-      {/* Estimated Value */}
-      <Form.Item label="Estimated Value" name="estimatedValue">
-        <Input disabled type="number" placeholder="Enter estimated value" />
+      {/* Sex Filter */}
+      <Form.Item name="sex" label="Sex" style={{ flex: "1 1 220px" }}>
+        <Select
+          onChange={(value) => onChangeFilter("sex", value)}
+          placeholder="Select sex"
+          allowClear
+          style={{ borderRadius: "6px", width: "100%" }}
+        >
+          <Select.Option value="MALE">Male</Select.Option>
+          <Select.Option value="FEMALE">Female</Select.Option>
+        </Select>
       </Form.Item>
 
-      {/* Born in */}
-      <Form.Item label="Date of Birth" name="bornIn">
-        <DatePicker disabled placeholder="Select date of birth" />
+      {/* Min Size (cm) Filter */}
+      <Form.Item name="sizeRangeCm" label="Size (cm)" style={{ flex: "1 1 220px" }}>
+        <div className="custom-slider-tooltip">
+          <Slider
+            range
+            min={0}
+            max={100} // Adjust max value as needed
+            step={1}
+            onChange={(value) => onChangeFilter("SizeCm", value)}
+            tooltip={{
+              open: true,
+              getPopupContainer: (trigger) => trigger.parentNode,
+            }}
+          />
+        </div>
       </Form.Item>
 
-      {/* Description */}
-      <Form.Item label="Description" name="description">
-        <Input.TextArea disabled placeholder="Enter a description" />
+      {/* Weight Range (kg) Filter */}
+      <Form.Item name="weightRangeKg" label="Weight (kg)" style={{ flex: "1 1 220px" }}>
+        <div className="custom-slider-tooltip">
+          <Slider
+            range
+            min={0}
+            max={50} // Adjust max value as needed
+            step={0.1}
+            onChange={(value) => onChangeFilter("WeightKg", value)}
+            tooltip={{
+              open: true,
+              getPopupContainer: (trigger) => trigger.parentNode,
+            }}
+          />
+        </div>
       </Form.Item>
 
-      {/* Video URL */}
-      <Form.Item label="Video URL" name="video_url">
-        <Input disabled placeholder="Enter video URL" />
+      {/* Min Estimated Value Filter */}
+      <Form.Item name="lowerEstimatedValue" label="Min Value" style={{ flex: "1 1 220px" }}>
+        <InputNumber
+          min={0}
+          placeholder="Min estimated value"
+          style={{ width: "100%", borderRadius: "6px" }}
+          onChange={(value) => onChangeFilter("lowerEstimatedValue", value)}
+        />
       </Form.Item>
 
-      <Form.Item label="Health note : " name="healthNote">
-        <Input disabled placeholder="Enter video URL" />
+      {/* Max Estimated Value Filter */}
+      <Form.Item name="upperEstimatedValue" label="Max Value" style={{ flex: "1 1 220px" }}>
+        <InputNumber
+          min={0}
+          placeholder="Max estimated value"
+          style={{ width: "100%", borderRadius: "6px" }}
+          onChange={(value) => onChangeFilter("upperEstimatedValue", value)}
+        />
       </Form.Item>
-    </>
+
+      {/* Variety Filter */}
+      <Form.Item name="varietiesName" label="Variety" style={{ flex: "1 1 220px" }}>
+        <Select
+          mode="multiple"
+          placeholder="Select varieties"
+          allowClear
+          style={{ width: "100%", borderRadius: "6px" }}
+          onChange={(value) => onChangeFilter("varietiesName", value)}
+        >
+          {varieties.map((variety) => (
+            <Select.Option key={variety.id} value={variety.name}>
+              {variety.name}
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+    </div>
   );
   return (
     <div style={{ margin: "100px auto" }}>
+      <BasicFilter filterItems={filterItems} />
       <DashboardTemplate
-        isRerender={hongthinh}
-        apiURI="koiFish/koiBreeder"
+        isRerender={render}
+        apiURI="koiFish/koiBreeder/pagination/filter"
         apiUriPOST={"koiFish"}
         apiUriPUT={"koiFish"}
         apiUriDelete={"koiFish"}
@@ -351,6 +549,8 @@ function ManageKoiFish() {
         form={form}
         formViewDetails={formViewDetails}
         isCreateNew={true}
+        paginationTarget={"koiFishResponseList"}
+        filterParams={filters}
       />
     </div>
   );
