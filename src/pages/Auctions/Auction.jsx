@@ -12,6 +12,7 @@ const { Option } = Select;
 const Auction = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [cardsData, setCardsData] = useState([]);
+  const [countdowns, setCountdowns] = useState({});
   const [totalPages, setTotalPages] = useState();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchParams, setSearchParams] = useState({
@@ -21,8 +22,8 @@ const Auction = () => {
     maxSizeCm: null,
     minWeightKg: null,
     maxWeightKg: null,
-    sex: null, // Thêm thuộc tính sex
-    auctionType: null, // Thêm thuộc tính auctionType
+    sex: null,
+    auctionType: null,
   });
   const cardsPerPage = 8;
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ const Auction = () => {
           size: cardsPerPage,
         },
       });
-      console.log("Data fetched from API:", response.data); // In dữ liệu ra console
+      console.log("Data fetched from API:", response.data);
 
       const data = response.data.auctionSessionResponses;
       const totalPages = response.data.totalPages;
@@ -62,8 +63,6 @@ const Auction = () => {
         const age = calculateAge(item.koi.bornIn);
         const startDate = new Date(item.startDate);
         const endDate = new Date(item.endDate);
-        const countdown = getCountdown(startDate, endDate, item.auctionStatus);
-
         return {
           auctionSessionId: item.auctionSessionId,
           name: item.koi.name || "Unknown",
@@ -79,7 +78,6 @@ const Auction = () => {
           image: item.koi.image_url || "",
           startDate: startDate,
           endDate: endDate,
-          countdown: countdown,
           auctionStatus: item.auctionStatus || "Unknown",
           auctionType: item.auctionType || "Unknown",
         };
@@ -92,10 +90,6 @@ const Auction = () => {
       alert("There was an error fetching data. Please try again.");
     }
   };
-
-  useEffect(() => {
-    fetchKoiFish(currentPage, searchParams);
-  }, [currentPage, searchParams]);
 
   const getCountdown = (startDate, endDate, auctionStatus) => {
     if (auctionStatus === "COMPLETED") return "Auction ended";
@@ -114,6 +108,27 @@ const Auction = () => {
       ? `${days}d ${hours}h ${minutes}m ${seconds}s`
       : "Auction ended";
   };
+
+  useEffect(() => {
+    fetchKoiFish(currentPage, searchParams);
+  }, [currentPage, searchParams]);
+
+  // useEffect cho đếm ngược
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const newCountdowns = {};
+      cardsData.forEach((card) => {
+        newCountdowns[card.auctionSessionId] = getCountdown(
+          card.startDate,
+          card.endDate,
+          card.auctionStatus
+        );
+      });
+      setCountdowns(newCountdowns);
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [cardsData]);
 
   const handleSearchClick = () => {
     setIsModalVisible(true);
@@ -139,7 +154,6 @@ const Auction = () => {
   };
 
   const handlePageChange = (pageNumber) => {
-    console.log(pageNumber);
     if (pageNumber >= 0 && pageNumber < totalPages) {
       setCurrentPage(pageNumber);
     }
@@ -212,8 +226,6 @@ const Auction = () => {
           onChange={(value) => handleInputChange("maxWeightKg", value)}
           style={{ width: "100%", marginTop: 10 }}
         />
-
-        {/* Thêm Dropdown cho sex */}
         <Select
           style={{ width: "100%", marginTop: 10 }}
           placeholder="Select Sex"
@@ -222,8 +234,6 @@ const Auction = () => {
           <Option value="MALE">Male</Option>
           <Option value="FEMALE">Female</Option>
         </Select>
-
-        {/* Thêm Dropdown cho auctionType */}
         <Select
           style={{ width: "100%", marginTop: 10 }}
           placeholder="Select Auction Type"
@@ -245,7 +255,7 @@ const Auction = () => {
             length={card.length}
             sex={card.sex}
             age={card.age}
-            countdown={card.countdown}
+            countdown={countdowns[card.auctionSessionId]}
             price={card.price.toLocaleString("en-US")}
             variety={card.variety}
             auctionStatus={card.auctionStatus}

@@ -4,7 +4,7 @@ import "./detail.css";
 import api from "../../config/axios";
 import { Table, message, Modal } from "antd";
 import BidForm from "../../components/bid-section/bid-ascending";
-import FixedPriceBid from "../../components/bid-section/bid-fixed-price"; // Import FixedPriceBid
+import FixedPriceBid from "../../components/bid-section/bid-fixed-price";
 
 const Detail = () => {
   const { auctionSessionId } = useParams();
@@ -39,7 +39,7 @@ const Detail = () => {
       const startDate = new Date(response.data.startDate);
       const endDate = new Date(response.data.endDate);
 
-      if (response.data.auctionStatus === "COMPLETED") {
+      if (response.data.auctionStatus === "COMPLETED"|| response.data.auctionStatus === "NO_WINNER") {
         setCountdown("Auction ended");
         if (response.data.winner) {
           setWinnerName(response.data.winner.fullName);
@@ -58,7 +58,7 @@ const Detail = () => {
           }
         }, 1000);
         setIntervalId(id);
-      } else {
+      } else if (response.data.auctionStatus === "ONGOING") {
         startOngoingCountdown(startDate, endDate);
       }
     } catch (error) {
@@ -79,18 +79,21 @@ const Detail = () => {
     const offset = 7 * 3600 * 1000; // 7 tiếng tính bằng mili giây
     const totalSeconds = Math.floor((toDate.getTime() - fromDate.getTime() - offset) / 1000);
 
-    const days = Math.floor(totalSeconds / (3600 * 24));
-    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
+    // Kiểm tra nếu thời gian hiện tại chưa tới thời gian bắt đầu
+    if (totalSeconds > 0) {
+      const days = Math.floor(totalSeconds / (3600 * 24));
+      const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
 
-    return totalSeconds > 0
-      ? `${days}d ${hours}h ${minutes}m ${seconds}s`
-      : "Auction starting soon";
+    // Nếu đã đến thời gian bắt đầu, nhưng chưa đến thời gian kết thúc
+    return "Auction starting soon";
   };
 
   const startOngoingCountdown = (startDate, endDate) => {
-    const countdown = getCountdown(startDate, endDate);
+    const countdown = getCountdown(new Date(), endDate);
     setCountdown(countdown);
 
     const id = setInterval(() => {
@@ -106,20 +109,17 @@ const Detail = () => {
   const handleBid = async (bidValue) => {
     try {
       const token = localStorage.getItem("token");
-      const bidDifference = bidValue - currentBid;
-  
-      // Các điều kiện để tránh bid không hợp lệ
+
       if (bidValue > productDetail.buyNowPrice) {
         message.error("Bid amount cannot exceed Buy Now price!");
         return;
       }
-  
+
       if (bidValue === productDetail.buyNowPrice) {
         await handleBuyNow();
         return;
       }
-  
-      // Gửi yêu cầu bid thông qua API
+
       const response = await api.post(
         `bid`,
         {
@@ -132,7 +132,7 @@ const Detail = () => {
           },
         }
       );
-  
+
       if (response.status === 200) {
         message.success("Bid placed successfully!");
         fetchProductDetail();
@@ -144,8 +144,6 @@ const Detail = () => {
       message.error("Failed to place bid.");
     }
   };
-  
-  
 
   const handleBuyNow = async () => {
     try {
@@ -254,15 +252,15 @@ const Detail = () => {
       <div className="additional-info-container">
         <h2>Lịch sử đấu giá</h2>
         <Table
-  dataSource={bidHistory}
-  columns={[
-    { title: "Date", dataIndex: "date", key: "date" },
-    { title: "Bid", dataIndex: "bid", key: "bid" },
-    { title: "Name", dataIndex: "name", key: "name" },
-  ]}
-  rowKey={(record) => record.date}
-  pagination={{ pageSize: 5 }} // Thêm thuộc tính pagination với pageSize là 5
-/>
+          dataSource={bidHistory}
+          columns={[
+            { title: "Date", dataIndex: "date", key: "date" },
+            { title: "Bid", dataIndex: "bid", key: "bid" },
+            { title: "Name", dataIndex: "name", key: "name" },
+          ]}
+          rowKey={(record) => record.date}
+          pagination={{ pageSize: 5 }}
+        />
       </div>
 
       <Modal
