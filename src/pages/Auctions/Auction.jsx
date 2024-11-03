@@ -24,7 +24,7 @@ const Auction = () => {
     sex: null, // Thêm thuộc tính sex
     auctionType: null, // Thêm thuộc tính auctionType
   });
-  const cardsPerPage = 10;
+  const cardsPerPage = 8;
   const navigate = useNavigate();
 
   const calculateAge = (dateOfBirth) => {
@@ -53,6 +53,7 @@ const Auction = () => {
           size: cardsPerPage,
         },
       });
+      console.log("Data fetched from API:", response.data); // In dữ liệu ra console
 
       const data = response.data.auctionSessionResponses;
       const totalPages = response.data.totalPages;
@@ -159,8 +160,19 @@ const Auction = () => {
           onChange={(value) => handleInputChange("breederName", value)}
         >
           <Option value="NND">NND</Option>
-          <Option value="Shakai">Shakai</Option>
+          <Option value="Sakai">Sakai</Option>
+          <Option value="Marushin">Marushin</Option>
           <Option value="Isa">Isa</Option>
+          <Option value="Maruhiro">Maruhiro</Option>
+          <Option value="Torazo">Torazo</Option>
+          <Option value="Shinoda">Shinoda</Option>
+          <Option value="Kanno">Kanno</Option>
+          <Option value="Dainichi">Dainichi</Option>
+          <Option value="Omosako">Omosako</Option>
+          <Option value="Izumiya">Izumiya</Option>
+          <Option value="Marudo">Marudo</Option>
+          <Option value="Marujyu">Marujyu</Option>
+          <Option value="Shintaro">Shintaro</Option>
           <Option value="koibreeder1">koibreeder1</Option>
         </Select>
         <Select
@@ -171,7 +183,7 @@ const Auction = () => {
         >
           <Option value="Kohaku">Kohaku</Option>
           <Option value="Showa">Showa</Option>
-          <Option value="Sanke">Sanke</Option>
+          <Option value="Tancho">Tancho</Option>
         </Select>
         <InputNumber
           placeholder="Min Size (cm)"

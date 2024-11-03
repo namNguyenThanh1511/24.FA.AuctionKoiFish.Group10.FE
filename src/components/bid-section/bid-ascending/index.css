@@ -9,86 +9,76 @@
 }
 
 .bid-section {
-  width: 48%;
+  width: 60%; /* Đặt chiều rộng của phần Bid lớn hơn */
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 5px; /* Điều chỉnh khoảng cách giữa ô nhập giá và nút Bid */
+}
+
+.bid-adjust-button {
+  width: 50px; /* Chiều rộng nút */
+  height: 50px; /* Chiều cao nút */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  background-color: #bfbfbf; /* Màu xám */
+  border: none; /* Không viền */
+  color: white; /* Màu chữ trắng */
+  transition: background-color 0.3s ease;
+  border-radius: 5px;
+  margin: 0 5px; /* Thêm margin giữa nút và ô input */
+}
+
+.bid-input {
+  width: 100px; /* Thay đổi chiều rộng ô nhập giá nếu cần */
+  text-align: center; /* Căn giữa nội dung ô nhập */
+}
+
+.balance-section {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 50px; /* Tăng khoảng cách giữa ô Bid và balance */
+  color: #333; /* Thay đổi màu sắc nếu cần */
 }
 
 .buy-now-section {
-  width: 48%;
+  width: 35%; /* Đặt chiều rộng của phần Buy Now nhỏ hơn */
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 
-.bid-input {
-  width: 100px;
-  height: 45px;
-  padding: 8px;
-  font-size: 16px;
-  text-align: center;
-  border: 2px solid #40a9ff;
-  border-radius: 4px;
-  background-color: #fff;
-}
-
-.buy-now-price-box {
-  background-color: #f0f0f0;
-  padding: 10px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100px;
-}
-
-.buy-now-price {
-  font-size: 16px;
-  font-weight: bold;
-  color: #333;
-}
-
-/* Các quy tắc CSS mới cho .ant-btn chỉ trong .bid-form */
-.bid-form .ant-btn {
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  padding: 0;
-  border-radius: 4px;
-  background-color: #bfbfbf; /* Đổi màu nút sang xám */
-  border: none;
-  color: white;
-  transition: background-color 0.3s ease;
-}
-
-.bid-form .ant-btn:hover {
-  background-color: #8c8c8c; /* Màu xám đậm hơn khi hover */
-}
-
 .button-bid {
   margin-left: 5px; /* Đặt khoảng cách nhỏ giữa ô Bid và nút Bid */
-  background-color: #4d4d4d;
+  background-color: #4d4d4d; /* Màu nền */
   font-size: 13px;
-}
-
-.button-bid:hover {
-  background-color: #8c8c8c;
+  color: white; /* Màu chữ */
 }
 
 .button-buy-now {
-  width: 70px;
-  font-size: 13px;
-  padding: 0 20px;
-  background-color: #f5222d;
-  margin-left: 10px;
+  width: 85px; /* Đặt chiều rộng của nút (có thể thay đổi theo ý thích) */
+  font-size: 16px; /* Tăng kích thước font chữ */
+  padding: 10px; /* Thay đổi padding để nút lớn hơn */
+  background-color: #f5222d; /* Màu nền */
+  margin-left: 10px; /* Khoảng cách với nút Buy Now */
+  border-radius: 5px; /* Góc bo tròn */
+  color: white; /* Màu chữ */
+  border: none; /* Không viền */
+  transition: background-color 0.3s ease; /* Hiệu ứng khi hover */
 }
 
 .button-buy-now:hover {
-  background-color: #cf1322;
+  background-color: #cf1322; /* Màu hover */
 }
 
+.buy-now-price-box {
+  background-color: white; /* Nền trắng */
+  border: 2px solid #1890ff; /* Viền xanh biển */
+  border-radius: 5px; /* Góc bo tròn */
+  padding: 10px; /* Khoảng cách bên trong ô */
+  display: flex; /* Để căn giữa nội dung */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  min-width: 120px; /* Chiều rộng tối thiểu để đảm bảo không bị quá nhỏ */
+}
