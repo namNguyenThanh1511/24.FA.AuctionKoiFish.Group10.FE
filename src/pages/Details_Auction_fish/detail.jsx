@@ -4,6 +4,7 @@ import "./detail.css";
 import api from "../../config/axios";
 import { Table, message, Modal } from "antd";
 import BidForm from "../../components/bid-section/bid-ascending";
+import FixedPriceBid from "../../components/bid-section/bid-fixed-price"; // Import FixedPriceBid
 
 const Detail = () => {
   const { auctionSessionId } = useParams();
@@ -106,41 +107,45 @@ const Detail = () => {
     try {
       const token = localStorage.getItem("token");
       const bidDifference = bidValue - currentBid;
-
+  
+      // Các điều kiện để tránh bid không hợp lệ
       if (bidValue > productDetail.buyNowPrice) {
         message.error("Bid amount cannot exceed Buy Now price!");
         return;
       }
-
+  
       if (bidValue === productDetail.buyNowPrice) {
         await handleBuyNow();
         return;
       }
-
-      if (bidDifference > 0) {
-        const response = await api.post(
-          `bid`,
-          {
-            auctionSessionId,
-            bidAmount: bidDifference,
+  
+      // Gửi yêu cầu bid thông qua API
+      const response = await api.post(
+        `bid`,
+        {
+          auctionSessionId,
+          bidAmount: bidValue,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
+        }
+      );
+  
+      if (response.status === 200) {
         message.success("Bid placed successfully!");
         fetchProductDetail();
       } else {
-        message.error("Bid amount must be higher than the current price!");
+        message.error("Failed to place bid.");
       }
     } catch (error) {
       console.error("Error placing bid: ", error);
       message.error("Failed to place bid.");
     }
   };
+  
+  
 
   const handleBuyNow = async () => {
     try {
@@ -173,14 +178,14 @@ const Detail = () => {
 
   if (!productDetail) return <div>Loading...</div>;
 
-  const { koi, auctionStatus, auctionType, buyNowPrice } = productDetail;
+  const { koi, auctionStatus, auctionType } = productDetail;
 
   const getStatusColor = (status) => {
     switch (status) {
       case "COMPLETED":
         return "red";
       case "UPCOMING":
-        return "yellow";
+        return "#ffc107";
       case "ONGOING":
         return "green";
       default:
@@ -233,35 +238,40 @@ const Detail = () => {
       </div>
 
       <div className="bid-container">
-        <BidForm
-          currentPrice={currentBid}
-          bidIncrement={productDetail.bidIncrement}
-          buyNowPrice={productDetail.buyNowPrice}
-          handleBid={handleBid}
-          handleBuyNow={handleBuyNow}
-        />
+        {auctionType === "FIXED_PRICE" ? (
+          <FixedPriceBid currentPrice={currentBid} handleBid={handleBid} />
+        ) : (
+          <BidForm
+            currentPrice={currentBid}
+            bidIncrement={productDetail.bidIncrement}
+            buyNowPrice={productDetail.buyNowPrice}
+            handleBid={handleBid}
+            handleBuyNow={handleBuyNow}
+          />
+        )}
       </div>
 
       <div className="additional-info-container">
         <h2>Lịch sử đấu giá</h2>
         <Table
-          dataSource={bidHistory}
-          columns={[
-            { title: "Date", dataIndex: "date", key: "date" },
-            { title: "Bid", dataIndex: "bid", key: "bid" },
-            { title: "Name", dataIndex: "name", key: "name" },
-          ]}
-          pagination={{ pageSize: 5 }} 
-        />
+  dataSource={bidHistory}
+  columns={[
+    { title: "Date", dataIndex: "date", key: "date" },
+    { title: "Bid", dataIndex: "bid", key: "bid" },
+    { title: "Name", dataIndex: "name", key: "name" },
+  ]}
+  rowKey={(record) => record.date}
+  pagination={{ pageSize: 5 }} // Thêm thuộc tính pagination với pageSize là 5
+/>
       </div>
 
       <Modal
-        title="Thông báo"
+        title="Winner"
         visible={isWinnerModalVisible}
         onCancel={() => setIsWinnerModalVisible(false)}
         footer={null}
       >
-        <p>Chúc mừng! {winnerName} đã trở thành người thắng cuộc trong cuộc đấu giá này.</p>
+        <p>Congratulations to {winnerName} for winning the auction!</p>
       </Modal>
     </div>
   );
