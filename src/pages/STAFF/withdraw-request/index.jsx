@@ -1,25 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { Table, Pagination, Modal, Input, Button, message, Tooltip, Tag } from "antd";
-import api from "../../../config/axios";
+import {
+  Table,
+  Pagination,
+  Modal,
+  Input,
+  Button,
+  message,
+  Tooltip,
+  Tag,
+} from "antd";
+import api from "../../../config/axios"; 
 import dayjs from "dayjs";
 
 const WithdrawRequest = () => {
+ 
   const [withdrawRequests, setWithdrawRequests] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRequests, setTotalRequests] = useState(0);
   const [pageSize] = useState(5);
-  const [isRejectModalVisible, setIsRejectModalVisible] = useState(false); // Modal reject
-  const [isApproveModalVisible, setIsApproveModalVisible] = useState(false); // Modal approve
-  const [selectedRequestId, setSelectedRequestId] = useState(null); // ID yêu cầu được chọn
-  const [responseNote, setResponseNote] = useState(""); //Ghi response
-  const [imageUrl, setImageUrl] = useState(""); // URL hình ảnh
-  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false); // Modal chi tiết
+  const [isRejectModalVisible, setIsRejectModalVisible] = useState(false);
+  const [isApproveModalVisible, setIsApproveModalVisible] = useState(false);
+  const [selectedRequestId, setSelectedRequestId] = useState(null);
+  const [responseNote, setResponseNote] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
   const [selectedDetail, setSelectedDetail] = useState({
     responseNote: "",
     image_url: "",
+    userId: "",
+    username: "",
   });
 
-  // Fetch dữ liệu từ API
   const fetchWithdrawData = async (page = currentPage) => {
     try {
       const response = await api.get(
@@ -38,6 +49,8 @@ const WithdrawRequest = () => {
     setSelectedDetail({
       responseNote: record.responseNote,
       image_url: record.image_url,
+      userId: record.user?.id , 
+      username: record.user?.username , 
     });
     setIsDetailModalVisible(true); // Mở modal chi tiết
   };
@@ -46,7 +59,6 @@ const WithdrawRequest = () => {
     fetchWithdrawData(currentPage);
   }, [currentPage]);
 
-  // Hàm xử lý từ chối yêu cầu
   const handleReject = async () => {
     try {
       await api.put(`/withDraw/reject/${selectedRequestId}`, {
@@ -54,8 +66,8 @@ const WithdrawRequest = () => {
         image_url: imageUrl,
       });
       message.success("Withdrawal request rejected successfully");
-      setIsRejectModalVisible(false); // Đóng modal
-      fetchWithdrawData(currentPage); // Tải lại danh sách yêu cầu
+      setIsRejectModalVisible(false);
+      fetchWithdrawData(currentPage);
       setResponseNote("");
       setImageUrl("");
     } catch (error) {
@@ -66,7 +78,6 @@ const WithdrawRequest = () => {
     }
   };
 
-  // Hàm xử lý phê duyệt yêu cầu
   const handleApprove = async () => {
     try {
       await api.put(`/withDraw/approve/${selectedRequestId}`, {
@@ -74,8 +85,8 @@ const WithdrawRequest = () => {
         image_url: imageUrl,
       });
       message.success("Withdrawal request approved successfully");
-      setIsApproveModalVisible(false); // Đóng modal
-      fetchWithdrawData(currentPage); // Tải lại danh sách yêu cầu
+      setIsApproveModalVisible(false);
+      fetchWithdrawData(currentPage);
       setResponseNote("");
       setImageUrl("");
     } catch (error) {
@@ -85,6 +96,8 @@ const WithdrawRequest = () => {
       console.error("Approve Error:", error);
     }
   };
+
+
 
   const columns = [
     {
@@ -184,7 +197,8 @@ const WithdrawRequest = () => {
       <Table
         dataSource={withdrawRequests}
         columns={columns}
-        rowKey="id" // Sử dụng ID duy nhất cho mỗi yêu cầu rút tiền
+        rowKey="id"
+        style={{ marginTop: "20px" }}
       />
       <Pagination
         current={currentPage}
@@ -254,6 +268,12 @@ const WithdrawRequest = () => {
           </Button>,
         ]}
       >
+        <p>
+          <strong>User ID:</strong> {selectedDetail.userId }
+        </p>
+        <p>
+          <strong>Username:</strong> {selectedDetail.username }
+        </p>
         <p>
           <strong>Response Note:</strong>{" "}
           {selectedDetail.responseNote || "No response note provided"}
