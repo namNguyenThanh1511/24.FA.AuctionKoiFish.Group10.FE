@@ -5,6 +5,7 @@ import api from "../../config/axios";
 import { Table, message, Modal } from "antd";
 import BidForm from "../../components/bid-section/bid-ascending";
 import FixedPriceBid from "../../components/bid-section/bid-fixed-price"; // Import FixedPriceBid
+import formatToVND from "../../utils/currency";
 
 const Detail = () => {
   const { auctionSessionId } = useParams();
@@ -31,7 +32,7 @@ const Detail = () => {
 
       const historyData = response.data.bids.map((bid) => ({
         date: new Date(bid.bidAt).toLocaleString(),
-        bid: bid.bidAmount,
+        bid: formatToVND(bid.bidAmount),
         name: bid.member.fullName,
       }));
       setBidHistory(historyData);
@@ -107,18 +108,18 @@ const Detail = () => {
     try {
       const token = localStorage.getItem("token");
       const bidDifference = bidValue - currentBid;
-  
+
       // Các điều kiện để tránh bid không hợp lệ
       if (bidValue > productDetail.buyNowPrice) {
         message.error("Bid amount cannot exceed Buy Now price!");
         return;
       }
-  
+
       if (bidValue === productDetail.buyNowPrice) {
         await handleBuyNow();
         return;
       }
-  
+
       // Gửi yêu cầu bid thông qua API
       const response = await api.post(
         `bid`,
@@ -132,7 +133,7 @@ const Detail = () => {
           },
         }
       );
-  
+
       if (response.status === 200) {
         message.success("Bid placed successfully!");
         fetchProductDetail();
@@ -144,8 +145,6 @@ const Detail = () => {
       message.error("Failed to place bid." + error.response.data);
     }
   };
-  
-  
 
   const handleBuyNow = async () => {
     try {
@@ -277,15 +276,15 @@ const Detail = () => {
       <div className="additional-info-container">
         <h2>Lịch sử đấu giá</h2>
         <Table
-  dataSource={bidHistory}
-  columns={[
-    { title: "Date", dataIndex: "date", key: "date" },
-    { title: "Bid", dataIndex: "bid", key: "bid" },
-    { title: "Name", dataIndex: "name", key: "name" },
-  ]}
-  rowKey={(record) => record.date}
-  pagination={{ pageSize: 5 }} // Thêm thuộc tính pagination với pageSize là 5
-/>
+          dataSource={bidHistory}
+          columns={[
+            { title: "Date", dataIndex: "date", key: "date" },
+            { title: "Bid", dataIndex: "bid", key: "bid" },
+            { title: "Name", dataIndex: "name", key: "name" },
+          ]}
+          rowKey={(record) => record.date}
+          pagination={{ pageSize: 5 }} // Thêm thuộc tính pagination với pageSize là 5
+        />
       </div>
 
       <Modal

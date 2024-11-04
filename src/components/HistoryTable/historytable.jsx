@@ -1,5 +1,6 @@
 // src/components/HistoryTable.jsx
-import React from 'react';
+import React from "react";
+import formatToVND from "../../utils/currency";
 
 const HistoryTable = ({ data }) => {
   // Kiểm tra nếu không có dữ liệu
@@ -22,7 +23,7 @@ const HistoryTable = ({ data }) => {
           <tr key={index}>
             <td>{new Date(bid.bidAt).toLocaleString()}</td> {/* Chuyển đổi thời gian nếu cần */}
             <td>{bid.fullName}</td>
-            <td>{bid.bidAmount}</td>
+            <td>{formatToVND(bid.bidAmount)}</td>
             {/* Thêm các ô khác nếu cần */}
           </tr>
         ))}
