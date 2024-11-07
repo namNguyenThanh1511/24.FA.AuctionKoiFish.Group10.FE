@@ -9,11 +9,10 @@ import {
   Tooltip,
   Tag,
 } from "antd";
-import api from "../../../config/axios"; 
+import api from "../../../config/axios";
 import dayjs from "dayjs";
 
 const WithdrawRequest = () => {
- 
   const [withdrawRequests, setWithdrawRequests] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalRequests, setTotalRequests] = useState(0);
@@ -27,8 +26,6 @@ const WithdrawRequest = () => {
   const [selectedDetail, setSelectedDetail] = useState({
     responseNote: "",
     image_url: "",
-    userId: "",
-    username: "",
   });
 
   const fetchWithdrawData = async (page = currentPage) => {
@@ -36,7 +33,6 @@ const WithdrawRequest = () => {
       const response = await api.get(
         `/withDrawRequest/pagination?page=${page - 1}&size=${pageSize}`
       );
-      console.log("Withdrawal data fetched: ", response.data);
       setWithdrawRequests(response.data.withDrawRequestResponseDTOList);
       setTotalRequests(response.data.totalElements);
     } catch (error) {
@@ -49,10 +45,8 @@ const WithdrawRequest = () => {
     setSelectedDetail({
       responseNote: record.responseNote,
       image_url: record.image_url,
-      userId: record.user?.id , 
-      username: record.user?.username , 
     });
-    setIsDetailModalVisible(true); // Mở modal chi tiết
+    setIsDetailModalVisible(true);
   };
 
   useEffect(() => {
@@ -72,7 +66,8 @@ const WithdrawRequest = () => {
       setImageUrl("");
     } catch (error) {
       message.error(
-        "Failed to reject withdrawal request: " + (error.response?.data || error.message)
+        "Failed to reject withdrawal request: " +
+          (error.response?.data || error.message)
       );
       console.error("Reject Error:", error);
     }
@@ -91,19 +86,28 @@ const WithdrawRequest = () => {
       setImageUrl("");
     } catch (error) {
       message.error(
-        "Failed to approve withdrawal request: " + (error.response?.data || error.message)
+        "Failed to approve withdrawal request: " +
+          (error.response?.data || error.message)
       );
       console.error("Approve Error:", error);
     }
   };
-
-
 
   const columns = [
     {
       title: "Request ID",
       dataIndex: "id",
       key: "id",
+    },
+    {
+      title: "User ID",
+      dataIndex: ["user", "id"],
+      key: "userId",
+    },
+    {
+      title: "Username",
+      dataIndex: ["user", "username"],
+      key: "username",
     },
     {
       title: "Bank Account Number",
@@ -269,12 +273,6 @@ const WithdrawRequest = () => {
         ]}
       >
         <p>
-          <strong>User ID:</strong> {selectedDetail.userId }
-        </p>
-        <p>
-          <strong>Username:</strong> {selectedDetail.username }
-        </p>
-        <p>
           <strong>Response Note:</strong>{" "}
           {selectedDetail.responseNote || "No response note provided"}
         </p>
@@ -282,7 +280,11 @@ const WithdrawRequest = () => {
           <strong>Image URL:</strong>
         </p>
         {selectedDetail.image_url ? (
-          <img src={selectedDetail.image_url} alt="Image" style={{ width: "100%" }} />
+          <img
+            src={selectedDetail.image_url}
+            alt="Image"
+            style={{ width: "100%" }}
+          />
         ) : (
           <span>No image available</span>
         )}

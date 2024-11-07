@@ -12,7 +12,7 @@ const MyAuction = () => {
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 3,
+    pageSize: 4,
     total: 0,
   });
 
@@ -127,8 +127,8 @@ const MyAuction = () => {
                 key={auction.auctionSessionId}
                 style={{
                   ...getHeaderStyle(auction.auctionStatus),
-                  border: "1px solid black", // Thêm viền đen cho các card
-                  borderRadius: "8px", // Bo góc card nếu cần
+                  border: "1px solid black",
+                  borderRadius: "10px",
                 }}
               >
                 <p>

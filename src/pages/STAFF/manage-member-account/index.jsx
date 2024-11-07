@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Space, Popconfirm, message, Form } from "antd";
 import api from "../../../config/axios";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, UnlockOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
 
 const ManageMemberAccount = () => {
-  const [accounts, setAccounts] = useState([]); // State lưu danh sách tài khoản
-  const [loading, setLoading] = useState(false); // State quản lý loading
+  const [accounts, setAccounts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 4,
+    pageSize: 5,
     total: 0,
   });
 
   const [form] = Form.useForm();
-  // Hàm fetch dữ liệu tài khoản từ API
+
   const fetchAccounts = async (
     page = pagination.current,
     pageSize = pagination.pageSize
@@ -44,7 +45,7 @@ const ManageMemberAccount = () => {
       message.error("Error fetching account data.");
       console.error("Fetch Error:", error);
     } finally {
-      setLoading(false); // Tắt trạng thái loading sau khi hoàn thành
+      setLoading(false);
     }
   };
 
@@ -59,6 +60,16 @@ const ManageMemberAccount = () => {
       fetchAccounts();
     } catch (error) {
       message.error("Failed to disable account.");
+    }
+  };
+
+  const handleUnlockAccount = async (user_id) => {
+    try {
+      await api.put(`/account/unlock/${user_id}`);
+      message.success("Account unlocked successfully.");
+      fetchAccounts();
+    } catch (error) {
+      message.error("Failed to unlock account.");
     }
   };
 
@@ -99,8 +110,9 @@ const ManageMemberAccount = () => {
     },
     {
       title: "Creation Date",
-      dataIndex: "createdDate",
-      key: "createdDate",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (createdAt) => dayjs(createdAt).format("DD-MM-YYYY HH:mm:ss"),
     },
     {
       title: "Role",
@@ -118,8 +130,8 @@ const ManageMemberAccount = () => {
       ),
     },
     {
-      title: "Account Lock",
-      key: "Account Lock",
+      title: "Account ",
+      key: "Account ",
       render: (text, record) => (
         <Space size="middle">
           <Popconfirm
@@ -129,11 +141,25 @@ const ManageMemberAccount = () => {
             cancelText="No"
           >
             <Button
-              type="danger"
+              type="primary"
               icon={<DeleteOutlined />}
               style={{ backgroundColor: "red", color: "white" }}
             >
               Disable
+            </Button>
+          </Popconfirm>
+          <Popconfirm
+            title="Are you sure to unlock this account?"
+            onConfirm={() => handleUnlockAccount(record.user_id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button
+              type="primary"
+              icon={<UnlockOutlined />}
+              disabled={record.status?.toUpperCase() === "ACTIVE"} // Chuẩn hóa status
+            >
+              Unlock
             </Button>
           </Popconfirm>
         </Space>
