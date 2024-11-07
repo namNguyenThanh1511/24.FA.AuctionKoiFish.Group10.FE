@@ -39,7 +39,10 @@ const Detail = () => {
       const startDate = new Date(response.data.startDate);
       const endDate = new Date(response.data.endDate);
 
-      if (response.data.auctionStatus === "COMPLETED"|| response.data.auctionStatus === "NO_WINNER") {
+      if (
+        response.data.auctionStatus === "COMPLETED" ||
+        response.data.auctionStatus === "NO_WINNER"
+      ) {
         setCountdown("Auction ended");
         if (response.data.winner) {
           setWinnerName(response.data.winner.fullName);
@@ -77,7 +80,9 @@ const Detail = () => {
 
   const getCountdown = (fromDate, toDate) => {
     const offset = 7 * 3600 * 1000; // 7 tiếng tính bằng mili giây
-    const totalSeconds = Math.floor((toDate.getTime() - fromDate.getTime() - offset) / 1000);
+    const totalSeconds = Math.floor(
+      (toDate.getTime() - fromDate.getTime() - offset) / 1000
+    );
 
     // Kiểm tra nếu thời gian hiện tại chưa tới thời gian bắt đầu
     if (totalSeconds > 0) {
@@ -115,11 +120,6 @@ const Detail = () => {
         return;
       }
 
-      if (bidValue === productDetail.buyNowPrice) {
-        await handleBuyNow();
-        return;
-      }
-
       const response = await api.post(
         `bid`,
         {
@@ -152,7 +152,6 @@ const Detail = () => {
         `bid/buyNow`,
         {
           auctionSessionId,
-          amount: productDetail.buyNowPrice,
         },
         {
           headers: {
@@ -193,43 +192,70 @@ const Detail = () => {
 
   return (
     <div>
-      <div className="container">
+      <div className="container-detail">
         <div className="product-image">
           <img src={koi.image_url} alt={koi.name} />
         </div>
         <div className="product-detail">
-          <h1>{productDetail.title}</h1>
+          <h1>{productDetail.title + "#" + productDetail.auctionSessionId} </h1>
           <div className="time">
             <span style={{ color: "black" }}>Time Remaining:</span>
             <span style={{ color: "red" }}> {countdown}</span>
           </div>
           <div className="product-info-container">
             <div className="info-box">
-              <p><strong>Name:</strong> {koi.name}</p>
+              <p>
+                <strong>Name:</strong> {koi.name}
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Breeder:</strong> {koi.breeder.username}</p>
+              <p>
+                <strong>Breeder:</strong> {koi.breeder.username}
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Auction Status:</strong> <span style={{ color: getStatusColor(auctionStatus) }}>{auctionStatus}</span></p>
+              <p>
+                <strong>Auction Status:</strong>{" "}
+                <span style={{ color: getStatusColor(auctionStatus) }}>
+                  {auctionStatus}
+                </span>
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Auction Type:</strong> {auctionType}</p>
+              <p>
+                <strong>Auction Type:</strong> {auctionType}
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Length:</strong> {koi.sizeCm} cm</p>
+              <p>
+                <strong>Length:</strong> {koi.sizeCm} cm
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Sex:</strong> {koi.sex}</p>
+              <p>
+                <strong>Sex:</strong> {koi.sex}
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Age:</strong> {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()} years</p>
+              <p>
+                <strong>Age:</strong>{" "}
+                {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()}{" "}
+                years
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Variety:</strong> {koi.varieties && koi.varieties.length > 0 ? koi.varieties.map((variety) => variety.name).join(", ") : "No variety available"}</p>
+              <p>
+                <strong>Variety:</strong>{" "}
+                {koi.varieties && koi.varieties.length > 0
+                  ? koi.varieties.map((variety) => variety.name).join(", ")
+                  : "No variety available"}
+              </p>
             </div>
             <div className="info-box">
-              <p><strong>Price:</strong> {productDetail.currentPrice.toLocaleString("en-US")}₫</p>
+              <p>
+                <strong>Price:</strong>{" "}
+                {productDetail.currentPrice.toLocaleString("en-US")}₫
+              </p>
             </div>
           </div>
         </div>

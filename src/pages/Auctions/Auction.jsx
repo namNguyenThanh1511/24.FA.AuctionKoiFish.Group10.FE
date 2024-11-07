@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import HeaderLogin from "../../components/header-logged-in";
 import "./Auction.css";
-import { Button, InputNumber, Select, Slider  } from "antd";
+import { Button, InputNumber, Select, Slider } from "antd";
 import Card from "../../components/Card/Card";
 import Koi from "../../images/Koi1.jpg";
 import api from "../../config/axios";
@@ -41,9 +41,9 @@ const Auction = () => {
   const fetchKoiFish = async (page, params = {}) => {
     try {
       const filteredParams = { ...params };
-      if (!filteredParams.breederName) {
-        delete filteredParams.breederName;
-      }
+      if (!filteredParams.breederName) delete filteredParams.breederName;
+      if (!filteredParams.minSizeCm) delete filteredParams.minSizeCm;
+      if (!filteredParams.maxSizeCm) delete filteredParams.maxSizeCm;
 
       const response = await api.get(`/auctionSession/search`, {
         params: {
@@ -107,6 +107,13 @@ const Auction = () => {
       : "Auction ended";
   };
 
+  const handlePageChange = (page) => {
+    if (page >= 0 && page < totalPages) {
+      setCurrentPage(page);
+      fetchKoiFish(page, searchParams); // Gọi lại API để lấy dữ liệu của trang mới
+    }
+  };
+
   useEffect(() => {
     fetchKoiFish(currentPage, searchParams);
   }, [currentPage, searchParams]);
@@ -132,12 +139,15 @@ const Auction = () => {
       const varietiesString = value.join(", ");
       setSearchParams((prev) => ({ ...prev, [name]: varietiesString }));
     } else if (name === "sizeRange") {
-      setSearchParams((prev) => ({ ...prev, minSizeCm: value.minSizeCm, maxSizeCm: value.maxSizeCm }));
+      setSearchParams((prev) => ({
+        ...prev,
+        minSizeCm: value.minSizeCm === 0 ? null : value.minSizeCm,
+        maxSizeCm: value.maxSizeCm === 0 ? null : value.maxSizeCm,
+      }));
     } else {
       setSearchParams((prev) => ({ ...prev, [name]: value }));
     }
   };
-  
 
   const handleFilterSubmit = (event) => {
     event.preventDefault();
@@ -147,82 +157,89 @@ const Auction = () => {
 
   return (
     <div className="auction-form-container">
-<form className="search-form" onSubmit={handleFilterSubmit}>
-  <div className="search-row">
-    <Select className="select-breeder"
-      placeholder="Select Breeder"
-      onChange={(value) => handleInputChange("breederName", value)}
-    >
-      <Option value="NND">NND</Option>
-      <Option value="Sakai">Sakai</Option>
-      <Option value="Marushin">Marushin</Option>
-      <Option value="Isa">Isa</Option>
-      <Option value="Maruhiro">Maruhiro</Option>
-      <Option value="Torazo">Torazo</Option>
-      <Option value="Shinoda">Shinoda</Option>
-      <Option value="Kanno">Kanno</Option>
-      <Option value="Dainichi">Dainichi</Option>
-      <Option value="Omosako">Omosako</Option>
-      <Option value="Izumiya">Izumiya</Option>
-      <Option value="Marudo">Marudo</Option>
-      <Option value="Marujyu">Marujyu</Option>
-      <Option value="Shintaro">Shintaro</Option>
-      <Option value="koibreeder1">koibreeder1</Option>
-    </Select>
+      <form className="search-form" onSubmit={handleFilterSubmit}>
+        <div className="search-row">
+          <Select
+            className="select-breeder"
+            placeholder="Select Breeder"
+            onChange={(value) => handleInputChange("breederName", value)}
+          >
+            <Option value="NND">NND</Option>
+            <Option value="Sakai">Sakai</Option>
+            <Option value="Marushin">Marushin</Option>
+            <Option value="Isa">Isa</Option>
+            <Option value="Maruhiro">Maruhiro</Option>
+            <Option value="Torazo">Torazo</Option>
+            <Option value="Shinoda">Shinoda</Option>
+            <Option value="Kanno">Kanno</Option>
+            <Option value="Dainichi">Dainichi</Option>
+            <Option value="Omosako">Omosako</Option>
+            <Option value="Izumiya">Izumiya</Option>
+            <Option value="Marudo">Marudo</Option>
+            <Option value="Marujyu">Marujyu</Option>
+            <Option value="Shintaro">Shintaro</Option>
+            <Option value="koibreeder1">koibreeder1</Option>
+          </Select>
 
-    <Select className="select-varieties"
-      mode="multiple"
-      placeholder="Varieties"
-      onChange={(values) => handleInputChange("varieties", values)}
-    >
-      <Option value="Kohaku">Kohaku</Option>
-      <Option value="Showa">Showa</Option>
-      <Option value="Tancho">Tancho</Option>
-    </Select>
-    <Select className="select-type"
-      placeholder="Select Auction Type"
-      onChange={(value) => handleInputChange("auctionType", value)}
-    >
-      <Option value="ASCENDING">Ascending</Option>
-      <Option value="FIXED_PRICE">Fixed Price</Option>
-    </Select>
-  </div>
+          <Select
+            className="select-varieties"
+            mode="multiple"
+            placeholder="Varieties"
+            onChange={(values) => handleInputChange("varieties", values)}
+          >
+            <Option value="Kohaku">Kohaku</Option>
+            <Option value="Showa">Showa</Option>
+            <Option value="Tancho">Tancho</Option>
+          </Select>
+          <Select
+            className="select-type"
+            placeholder="Select Auction Type"
+            onChange={(value) => handleInputChange("auctionType", value)}
+          >
+            <Option value="ASCENDING">Ascending</Option>
+            <Option value="FIXED_PRICE">Fixed Price</Option>
+          </Select>
+        </div>
 
-  <div className="search-row">
-    <Select
-      placeholder="Select Sex"
-      onChange={(value) => handleInputChange("sex", value)}
-    >
-      <Option value="MALE">Male</Option>
-      <Option value="FEMALE">Female</Option>
-    </Select>
-    <Select
-      placeholder="Select Status"
-      onChange={(value) => handleInputChange("status", value)}
-    >
-      <Option value="ONGOING">Ongoing</Option>
-      <Option value="UPCOMING">Upcoming</Option>
-      <Option value="NO_WINNER">No Winner</Option>
-      <Option value="COMPLETED">Completed</Option>
-    </Select>
-    <Slider
-      range
-      min={10}
-      max={100}
-      onChange={(value) =>
-        handleInputChange("sizeRange", { minSizeCm: value[0], maxSizeCm: value[1] })
-      }
-      style={{ width: "200px" }}
-      tooltip={{ formatter: (value) => `${value} cm` }}
-    />
-<Button type="primary" htmlType="submit" className="custom-filter-button">
-  FILTER
-</Button>
-
-  </div>
-</form>
-
-
+        <div className="search-row">
+          <Select
+            placeholder="Select Sex"
+            onChange={(value) => handleInputChange("sex", value)}
+          >
+            <Option value="MALE">Male</Option>
+            <Option value="FEMALE">Female</Option>
+          </Select>
+          <Select
+            placeholder="Select Status"
+            onChange={(value) => handleInputChange("status", value)}
+          >
+            <Option value="ONGOING">Ongoing</Option>
+            <Option value="UPCOMING">Upcoming</Option>
+            <Option value="NO_WINNER">No Winner</Option>
+            <Option value="COMPLETED">Completed</Option>
+          </Select>
+          <Slider
+            range
+            min={0}
+            max={100}
+            onChange={(value) =>
+              handleInputChange("sizeRange", {
+                minSizeCm: value[0],
+                maxSizeCm: value[1],
+              })
+            }
+            style={{ width: "200px" }}
+            tooltip={{ formatter: (value) => `${value} cm` }}
+          />
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="custom-filter-button"
+          >
+            FILTER
+          </Button>
+        </div>
+      </form>
 
       <div className="card-grid">
         {cardsData.map((card) => (

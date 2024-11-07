@@ -28,6 +28,7 @@ import ManageKoiBreederAccount from "./pages/MANAGER/manage-koibreeder-account";
 import ManageStaffAccount from "./pages/MANAGER/manage-staff-account";
 import PaymentSuccess from "./pages/payment-notification";
 import Detail from "./pages/Details_Auction_fish/detail";
+
 import ManageMemberAccount from "./pages/STAFF/manage-member-account";
 import IncomeOverview from "./pages/MANAGER/imcome-overview";
 import WithDraw from "./pages/withdraw";
@@ -35,7 +36,7 @@ import WithdrawRequest from "./pages/STAFF/withdraw-request";
 import Transaction from "./pages/transaction";
 function App() {
   const router = createBrowserRouter([
-    {
+    { 
       path: "",
       element: <Layout />,
       children: [
@@ -147,10 +148,9 @@ function App() {
           path: "manage-auction-request",
           element: <ManageAuctionRequest />,
         },
-        {
-          path: "manage-assigned-session",
-          element: <div>manage-assigned-session</div>,
-        },
+
+        
+        
         {
           path: "manage-member-account",
           element: <ManageMemberAccount />,
