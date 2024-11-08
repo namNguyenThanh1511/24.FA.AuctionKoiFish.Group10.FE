@@ -31,8 +31,10 @@ const BidForm = ({ currentPrice, bidIncrement, buyNowPrice, handleBid, handleBuy
   };
 
   const placeBid = () => {
-    handleBid(bidValue);
+    const incrementAmount = bidValue - currentPrice; // Tính giá trị tăng thêm
+    handleBid(incrementAmount); // Gọi hàm handleBid với giá trị tăng thêm
   };
+  
 
   return (
     <div className="bid-form-container">
