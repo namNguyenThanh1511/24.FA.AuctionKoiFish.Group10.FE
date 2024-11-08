@@ -50,28 +50,31 @@ const Card = ({
         </div>
       </div>
       <div className="card-footer">
-        <h4>Time left</h4>
-        <div className="card-countdown">{countdown}</div>
-        {/* Định dạng VNĐ cho giá */}
-        <div className="card-price">{price.toLocaleString("vi-VN")}₫</div>
+  <h4>Time left</h4>
+  <div className="card-countdown">
+    {auctionStatus === "COMPLETED_WITH_BUYNOW" || auctionStatus === "Ended" ? "Auction Ended" : countdown}
+  </div>
+  {/* Định dạng VNĐ cho giá */}
+  <div className="card-price">{price.toLocaleString("vi-VN")}₫</div>
 
-        <div className="card-status-type">
-          <p className={`card-status ${auctionStatus.toLowerCase()}`}>
-            <strong>Status: </strong>
-            <span>{auctionStatus}</span>
-          </p>
+  <div className="card-status-type">
+    <p className={`card-status ${auctionStatus.toLowerCase()}`}>
+      <strong>Status: </strong>
+      <span>{auctionStatus}</span>
+    </p>
 
-          <p className={`card-type ${auctionType.toLowerCase()}`}>
-            <strong>Type: </strong>
-            {auctionType}
-          </p>
-        </div>
-        <Button
-          className="view-button"
-          onClick={onViewClick}
-          icon={<ArrowRightOutlined />} // Giữ biểu tượng mũi tên
-        />
-      </div>
+    <p className={`card-type ${auctionType.toLowerCase()}`}>
+      <strong>Type: </strong>
+      {auctionType}
+    </p>
+  </div>
+  <Button
+    className="view-button"
+    onClick={onViewClick}
+    icon={<ArrowRightOutlined />} // Giữ biểu tượng mũi tên
+  />
+</div>
+
     </div>
   );
 };

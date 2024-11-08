@@ -24,26 +24,28 @@ const Detail = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
+  
       console.log("Product detail from API: ", response.data);
       setProductDetail(response.data);
       setCurrentBid(response.data.currentPrice);
-
+  
       const historyData = response.data.bids.map((bid) => ({
         date: new Date(bid.bidAt).toLocaleString(),
         bid: bid.bidAmount,
         name: bid.member.fullName,
       }));
       setBidHistory(historyData);
-
+  
       const startDate = new Date(response.data.startDate);
       const endDate = new Date(response.data.endDate);
-
+  
       if (
         response.data.auctionStatus === "COMPLETED" ||
-        response.data.auctionStatus === "NO_WINNER"
+        response.data.auctionStatus === "NO_WINNER" ||
+        response.data.auctionStatus === "COMPLETED_WITH_BUYNOW"
       ) {
         setCountdown("Auction ended");
+  
         if (response.data.winner) {
           setWinnerName(response.data.winner.fullName);
           setIsWinnerModalVisible(true);
@@ -51,7 +53,7 @@ const Detail = () => {
       } else if (response.data.auctionStatus === "UPCOMING") {
         const initialCountdown = getCountdown(new Date(), startDate);
         setCountdown(initialCountdown);
-
+  
         const id = setInterval(() => {
           const updatedCountdown = getCountdown(new Date(), startDate);
           setCountdown(updatedCountdown);
@@ -68,6 +70,7 @@ const Detail = () => {
       console.error("Error fetching product detail: ", error);
     }
   };
+  
 
   useEffect(() => {
     fetchProductDetail();
@@ -84,7 +87,7 @@ const Detail = () => {
       (toDate.getTime() - fromDate.getTime() - offset) / 1000
     );
 
-    // Kiểm tra nếu thời gian hiện tại chưa tới thời gian bắt đầu
+    // Nếu thời gian hiện tại chưa tới thời gian bắt đầu
     if (totalSeconds > 0) {
       const days = Math.floor(totalSeconds / (3600 * 24));
       const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
@@ -93,9 +96,9 @@ const Detail = () => {
       return `${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
 
-    // Nếu đã đến thời gian bắt đầu, nhưng chưa đến thời gian kết thúc
-    return "Auction starting soon";
-  };
+    // Trả về chuỗi trống khi chưa đến thời gian bắt đầu
+    return "";
+};
 
   const startOngoingCountdown = (startDate, endDate) => {
     const countdown = getCountdown(new Date(), endDate);
