@@ -1,125 +1,170 @@
 body {
-  background-color: #ffffff !important; /* Nền toàn bộ trang thành màu trắng */
+  background-color: #ffffff !important;
   margin: 0;
   padding: 0;
 }
 
-/* Style cho toàn bộ form */
+/* Style cho toàn bộ container của form */
 .auction-form-container {
   max-width: 1300px;
   margin: 0 auto;
   padding: 20px;
-  /* Xóa thuộc tính background-color để bỏ nền */
   border-radius: 8px;
-  
   margin-top: 130px;
+  text-align: center;
 }
 
-/* Các style khác không thay đổi */
+/* Căn chỉnh form và các thành phần bên trong */
+.search-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
 
+/* Căn chỉnh hàng của các filter */
+.search-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
 
-  
-  /* Style các trường của form */
-  .auction-form .ant-form-item {
-    margin-bottom: 16px;
-  }
-  
-  /* Style cho nút filter */
-  .auction-form .ant-btn-primary {
-    width: 100%;
-    background-color: #1890ff;
-    border-color: #1890ff;
-  }
-  
-  .auction-form .ant-btn-primary:hover {
-    background-color: #40a9ff;
-    border-color: #40a9ff;
-  }
-  
-  /* Style cho Slider */
-  .auction-form .ant-slider-track {
-    background-color: #1890ff;
-  }
-  
-  .auction-form .ant-slider-handle {
-    border-color: #1890ff;
-  }
-  
+/* Style cho các thành phần trong form */
+.search-form .ant-select,
+.search-form .ant-input-number,
+.search-form .ant-btn,
+.custom-slider {
+  width: 240px; /* Đồng bộ chiều rộng */
+}
+
+.search-form .ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+  transition: background-color 0.3s ease;
+}
+
+.search-form .ant-btn-primary:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+/* Style cho slider */
+.custom-slider {
+  width: 240px; /* Đảm bảo hai slider có cùng chiều rộng */
+}
+
+.ant-slider-track {
+  background-color: #1890ff;
+}
+
+.ant-slider-handle {
+  border-color: #1890ff;
+}
+
+/* Style cho các filter khác */
+.select-breeder,
+.select-varieties,
+.select-type,
+.select-sex,
+.select-status {
+  width: 240px;
+}
 
 /* Style cho grid chứa các thẻ Card */
 .card-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start; /* Đẩy thẻ về bên trái */
-    padding: 20px;
-    background-color: #ffffff; /* Màu nền để thấy rõ khoảng trống */
-    margin: 0 auto;
-    max-width: 1200px; /* Giới hạn chiều rộng của grid */
-    margin-bottom: 30px;
-    margin-top: 10px;
-    border-radius: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding: 20px;
+  background-color: #ffffff;
+  margin: 20px auto;
+  max-width: 1200px;
+  border-radius: 8px;
 }
 
-/* Style cho từng thẻ Card */
 .card-grid > div {
-    flex: 0 0 calc(25% - 15px); /* Mỗi thẻ chiếm khoảng 25% chiều rộng */
-    max-width: calc(25% - 15px); /* Đảm bảo thẻ không lớn hơn 25% */
-    box-sizing: border-box;
-    margin-bottom: 20px; /* Thêm khoảng cách giữa các hàng */
+  flex: 0 0 calc(25% - 20px);
+  max-width: calc(25% - 20px);
+  box-sizing: border-box;
+  margin-bottom: 20px;
 }
 
-/* Đảm bảo thẻ giữ kích thước cố định và không bị dãn */
-.card-grid > div:nth-child(4n + 1) {
-    margin-left: 0;
-}
-
-.card-grid > div:nth-child(4n) {
-    margin-right: 0;
-}
-
-/* Đặt giới hạn cho thẻ Card */
 .card-container {
-    max-width: 220px; /* Giới hạn chiều rộng tối đa */
-    margin: 10px; /* Thêm khoảng cách cho các thẻ */
+  max-width: 220px;
+  margin: 10px;
 }
 
-/* Hiệu ứng hover cho thẻ Card */
 .card-container:hover {
-    transform: scale(1.05); /* Tăng kích thước khi hover */
-    transition: transform 0.3s ease; /* Hiệu ứng chuyển động mượt mà */
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
 }
 
 .card-image {
-    width: 100%; /* Chiều rộng 100% để lấp đầy Card */
-    height: 500px; /* Đặt chiều cao cố định cho bức ảnh, bạn có thể điều chỉnh chiều cao theo nhu cầu */
-    object-fit: cover; /* Đảm bảo bức ảnh fill hết khung ảnh */
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
 }
 
 /* Style cho phần chứa nút chuyển trang */
 .pagination {
   display: flex;
-  justify-content: center; /* Căn giữa các nút */
-  align-items: center; /* Căn giữa theo chiều dọc nếu cần */
-  margin: 20px 0; /* Thêm khoảng cách phía trên và dưới */
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
 }
 
-/* Style cho các nút chuyển trang */
 .pagination-button {
   margin: 0 5px;
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  background-color: lightgray; /* Màu nền mặc định */
-  color: black; /* Màu chữ mặc định */
-  transition: background-color 0.3s ease; /* Hiệu ứng chuyển đổi màu nền */
+  background-color: lightgray;
+  color: black;
+  transition: background-color 0.3s ease;
 }
 
 .pagination-button.active {
-  background-color: rgb(255, 255, 255); /* Màu nền cho nút hiện tại */
-  color: rgb(0, 0, 0); /* Màu chữ cho nút hiện tại */
+  background-color: rgb(255, 255, 255);
+  color: rgb(0, 0, 0);
 }
 
 .pagination-button:hover {
-  background-color: darkgray; /* Màu nền khi hover */
+  background-color: darkgray;
+}
+
+/* Style cho nút filter */
+.custom-filter-button {
+  width: 240px;
+  background-color: #4caf50;
+  color: #fff;
+  border-radius: 5px;
+  font-weight: bold;
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.custom-filter-button:hover {
+  background-color: #388e3c;
+}
+
+/* Đảm bảo nút, slider và select có cùng chiều rộng */
+.select-type,
+.select-sex,
+.select-status,
+.custom-slider,
+.custom-filter-button {
+  width: 240px;
 }
