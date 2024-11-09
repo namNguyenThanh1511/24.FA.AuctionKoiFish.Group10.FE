@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePages/HomePage";
 import Login from "./pages/login/login";
@@ -39,6 +39,9 @@ import EditVariety from "./pages/STAFF/edit-variety";
 import AllTransaction from "./pages/All-Transaction";
 import Introduction from "./pages/Introduction";
 function App() {
+  useEffect(() => {
+    requestPermissions();
+  }, []);
   const router = createBrowserRouter([
     {
       path: "",

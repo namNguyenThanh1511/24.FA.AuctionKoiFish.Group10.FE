@@ -6,7 +6,9 @@ import {
   Form,
   Input,
   InputNumber,
+  Modal,
   Select,
+  Table,
   Tag,
   Tooltip,
 } from "antd";
@@ -17,13 +19,18 @@ import { CheckCircleOutlined, CloseCircleOutlined, SearchOutlined } from "@ant-d
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import BasicFilter from "../../../components/basic-filter";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import api from "../../../config/axios";
 
 function ManagerManageAuctionRequest() {
   const title = "Auction Request";
   const [formViewDetails] = useForm();
   const [form] = useForm();
   const [formCreateAuctionSession] = useForm();
+  const [staffList, setStaffList] = useState([]);
+  const [isStaffModalVisible, setIsStaffModalVisible] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState(null);
+  const [isBidIncrementDisabled, setBidIncrementDisabled] = useState(false);
   const [filters, setFilters] = useState({
     statusEnumList: null,
     breederUsernameList: null,
@@ -250,6 +257,36 @@ function ManagerManageAuctionRequest() {
     </div>
   );
 
+  const staffColumns = [
+    { title: "ID", dataIndex: "id", key: "id" },
+    { title: "Username", dataIndex: "username", key: "username" },
+    {
+      title: "Action",
+      key: "action",
+      render: (_, staff) => (
+        <Button type="link" onClick={() => handleStaffSelect(staff)}>
+          Select
+        </Button>
+      ),
+    },
+  ];
+
+  const handleOpenStaffModal = () => {
+    setIsStaffModalVisible(true);
+  };
+
+  const handleCloseStaffModal = () => {
+    setIsStaffModalVisible(false);
+  };
+
+  const handleStaffSelect = (staff) => {
+    setSelectedStaff(staff);
+    console.log(staff);
+    formCreateAuctionSession.setFieldsValue({ staff_id: staff.id }); // Set the selected staff ID in the form
+    console.log(formCreateAuctionSession.getFieldValue("staff_id"));
+    setIsStaffModalVisible(false);
+  };
+
   const formItemsCreateAuctionSession = (
     <div>
       <Form.Item
@@ -271,7 +308,17 @@ function ManagerManageAuctionRequest() {
       <Form.Item
         label="Buy Now Price"
         name="buyNowPrice"
-        rules={[{ required: true, message: "Please enter a buy now price!" }]}
+        rules={[
+          { required: true, message: "Please enter a buy now price!" },
+          ({ getFieldValue }) => ({
+            validator(_, value) {
+              if (!value || value > getFieldValue("startingPrice")) {
+                return Promise.resolve();
+              }
+              return Promise.reject(new Error("Buy now price must be greater than starting price"));
+            },
+          }),
+        ]}
       >
         <InputNumber min={0} placeholder="Enter buy now price" style={{ width: "100%" }} />
       </Form.Item>
@@ -281,7 +328,12 @@ function ManagerManageAuctionRequest() {
         name="bidIncrement"
         rules={[{ required: true, message: "Please enter bid increment!" }]}
       >
-        <InputNumber min={1} placeholder="Enter bid increment" style={{ width: "100%" }} />
+        <InputNumber
+          min={0}
+          placeholder="Enter bid increment"
+          style={{ width: "100%" }}
+          disabled={isBidIncrementDisabled}
+        />
       </Form.Item>
 
       <Form.Item
@@ -305,9 +357,18 @@ function ManagerManageAuctionRequest() {
         name="auctionType"
         rules={[{ required: true, message: "Please select auction type!" }]}
       >
-        <Select placeholder="Select auction type">
+        <Select
+          placeholder="Select auction type"
+          onChange={(value) => {
+            if (value === "FIXED_PRICE") {
+              formCreateAuctionSession.setFieldsValue({ bidIncrement: 0 });
+              setBidIncrementDisabled(true);
+            } else {
+              setBidIncrementDisabled(false);
+            }
+          }}
+        >
           <Select.Option value="ASCENDING">Ascending</Select.Option>
-          <Select.Option value="DESCENDING">Descending</Select.Option>
           <Select.Option value="FIXED_PRICE">Fixed price</Select.Option>
         </Select>
       </Form.Item>
@@ -324,32 +385,45 @@ function ManagerManageAuctionRequest() {
       >
         <InputNumber min={0} placeholder="Enter minimum balance" style={{ width: "100%" }} />
       </Form.Item>
-
-      <Form.Item
-        label="Auction Request ID"
-        name="auction_request_id"
-        rules={[
-          {
-            required: true,
-            message: "Please enter the auction request ID!",
-          },
-        ]}
-      >
-        <InputNumber min={0} placeholder="Enter auction request ID" style={{ width: "100%" }} />
+      <Form.Item hidden name="auction_request_id">
+        <InputNumber />
+      </Form.Item>
+      <Form.Item label="Staff" name="staff_id">
+        {selectedStaff ? (
+          <Card
+            actions={[
+              <Button danger key={1} type="default" onClick={() => setSelectedStaff(null)}>
+                Remove
+              </Button>,
+            ]}
+          >
+            <div>
+              <p>
+                <strong>ID:</strong> {selectedStaff.id}
+              </p>
+              <p>
+                <strong>Username:</strong> {selectedStaff.username}
+              </p>
+            </div>
+          </Card>
+        ) : (
+          <Button onClick={handleOpenStaffModal}>Assign Staff</Button>
+        )}
       </Form.Item>
 
-      <Form.Item
-        label="Staff ID"
-        name="staff_id"
-        rules={[
-          {
-            required: true,
-            message: "Please enter the staff ID!",
-          },
-        ]}
+      <Modal
+        title="Assign staff"
+        open={isStaffModalVisible}
+        onCancel={() => handleCloseStaffModal()}
+        footer={null}
       >
-        <InputNumber min={0} placeholder="Enter staff ID" style={{ width: "100%" }} />
-      </Form.Item>
+        <Table
+          dataSource={staffList}
+          columns={staffColumns}
+          rowKey="id"
+          pagination={{ pageSize: 5 }}
+        />
+      </Modal>
     </div>
   );
   const onChangeFilter = (field, value) => {
@@ -403,9 +477,22 @@ function ManagerManageAuctionRequest() {
     </div>
   );
 
+  const fetchStaffs = async () => {
+    try {
+      const response = await api.get("staffs");
+      setStaffList(response.data);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+  useEffect(() => {
+    fetchStaffs();
+  }, []);
+
   return (
     <div style={{ margin: "100px auto" }}>
       <BasicFilter filterItems={filterItems} />
+
       <DashboardManageRequestTemplateForManager
         apiUriPOST="auctionRequest"
         // formItems={formItems}

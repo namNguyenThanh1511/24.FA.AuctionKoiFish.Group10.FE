@@ -40,7 +40,7 @@ const ProcessLog = () => {
       key: "date",
       render: (date) => (
         <Tooltip title={dayjs(date).format("MMMM D, YYYY, h:mm A")}>
-          <span>{dayjs(date).format("YYYY-MM-DD HH:mm:ss")}</span>
+          <span>{dayjs(date).format("YYYY-MM-DD")}</span>
         </Tooltip>
       ),
     },
@@ -50,7 +50,7 @@ const ProcessLog = () => {
       key: "status",
     },
     {
-      title: "Auction Title",
+      title: "Auction Session Title",
       dataIndex: ["auctionRequest", "title"],
       key: "auctionTitle",
     },
@@ -76,7 +76,7 @@ const ProcessLog = () => {
   ];
 
   return (
-    <div style={{ padding: "50px" }}>
+    <div style={{ margin: "100px auto" }}>
       <Table dataSource={processLogs} columns={columns} rowKey="id" />
 
       {/* Modal hiển thị chi tiết log */}
@@ -96,8 +96,7 @@ const ProcessLog = () => {
               <strong>Log ID:</strong> {selectedLog.id}
             </p>
             <p>
-              <strong>Date:</strong>{" "}
-              {dayjs(selectedLog.date).format("YYYY-MM-DD HH:mm:ss")}
+              <strong>Date:</strong> {dayjs(selectedLog.date).format("YYYY-MM-DD HH:mm:ss")}
             </p>
             <p>
               <strong>Status:</strong> {selectedLog.status}
@@ -107,21 +106,16 @@ const ProcessLog = () => {
             </p>
             <p>
               <strong>Created Date:</strong>{" "}
-              {dayjs(selectedLog.auctionRequest.createdDate).format(
-                "YYYY-MM-DD HH:mm:ss"
-              )}
+              {dayjs(selectedLog.auctionRequest.createdDate).format("YYYY-MM-DD HH:mm:ss")}
             </p>
             <p>
-              <strong>Breeder:</strong>{" "}
-              {selectedLog.auctionRequest.breeder.username}
+              <strong>Breeder:</strong> {selectedLog.auctionRequest.breeder.username}
             </p>
             <p>
-              <strong>Staff Name:</strong>{" "}
-              {selectedLog.staff?.fullName || "Null"}
+              <strong>Staff Name:</strong> {selectedLog.staff?.fullName || "Null"}
             </p>
             <p>
-              <strong>Manager Name:</strong>{" "}
-              {selectedLog.manager?.fullName || "Null"}
+              <strong>Manager Name:</strong> {selectedLog.manager?.fullName || "Null"}
             </p>
           </>
         )}

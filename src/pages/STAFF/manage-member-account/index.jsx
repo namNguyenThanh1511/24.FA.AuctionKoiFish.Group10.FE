@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Space, Popconfirm, message, Form } from "antd";
+import { Table, Button, Space, Popconfirm, message, Form, Tooltip } from "antd";
 import api from "../../../config/axios";
 import { DeleteOutlined, UnlockOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -28,13 +28,8 @@ const ManageMemberAccount = () => {
         },
       });
       console.log("API Response:", response.data);
-      const {
-        accountResponseList,
-        totalElements,
-        totalPages,
-        pageNumber,
-        numberOfElements,
-      } = response.data;
+      const { accountResponseList, totalElements, totalPages, pageNumber, numberOfElements } =
+        response.data;
       setAccounts(accountResponseList);
       setPagination({
         current: pageNumber + 1,
@@ -124,9 +119,7 @@ const ManageMemberAccount = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <span style={{ color: status === "ACTIVE" ? "green" : "red" }}>
-          {status}
-        </span>
+        <span style={{ color: status === "ACTIVE" ? "green" : "red" }}>{status}</span>
       ),
     },
     {

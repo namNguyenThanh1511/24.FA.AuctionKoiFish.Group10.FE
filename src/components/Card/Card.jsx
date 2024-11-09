@@ -8,7 +8,8 @@ const Card = ({
   title,
   name,
   breeder,
-  length,
+  size,
+  weight,
   sex,
   age,
   countdown,
@@ -43,8 +44,12 @@ const Card = ({
               {sex}
             </p>
             <p>
-              <strong>Length: </strong>
-              {length} cm
+              <strong>Size: </strong>
+              {size} cm
+            </p>
+            <p>
+              <strong>Weight: </strong>
+              {weight} cm
             </p>
           </div>
         </div>
