@@ -99,13 +99,9 @@ const WithdrawRequest = () => {
       dataIndex: "id",
       key: "id",
     },
+
     {
-      title: "User ID",
-      dataIndex: ["user", "id"],
-      key: "userId",
-    },
-    {
-      title: "Username",
+      title: "From User",
       dataIndex: ["user", "username"],
       key: "username",
     },

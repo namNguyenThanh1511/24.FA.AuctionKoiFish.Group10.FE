@@ -13,7 +13,7 @@ const Transaction = () => {
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 5,
+    pageSize: 8,
     total: 0,
   });
   const [filters, setFilters] = useState({
@@ -22,7 +22,10 @@ const Transaction = () => {
     endDate: null,
   });
 
-  const fetchTransactions = async (page = pagination.current, pageSize = pagination.pageSize) => {
+  const fetchTransactions = async (
+    page = pagination.current,
+    pageSize = pagination.pageSize
+  ) => {
     setLoading(true);
     try {
       const { transactionType, startDate, endDate } = filters;
@@ -144,14 +147,30 @@ const Transaction = () => {
       dataIndex: "fromAccount",
       key: "fromAccount",
       render: (fromAccount) =>
-        fromAccount ? `${fromAccount.fullName} (${fromAccount.username})` : "N/A",
+        fromAccount && fromAccount.username.toLowerCase() !== "manager" ? (
+          `${fromAccount.username}`
+        ) : (
+          <span style={{ color: "red" }}>System</span>
+        ),
     },
+
     {
       title: "To Account",
       dataIndex: "toAccount",
       key: "toAccount",
-      render: (toAccount) => (toAccount ? `${toAccount.fullName} (${toAccount.username})` : "N/A"),
+      render: (toAccount, record) => {
+        if (record.type === "WITHDRAW_FUNDS") {
+          return "";
+        }
+
+        if (!toAccount || toAccount.username.toLowerCase() === "manager") {
+          return <span style={{ color: "red" }}>System</span>;
+        }
+
+        return `${toAccount.username}`;
+      },
     },
+
     {
       title: "Auction",
       dataIndex: "auctionSessionId",
