@@ -1,13 +1,14 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
 import "./login.css";
-import { auth, googleprovider } from "../../config/firebase";
+import { auth, googleprovider, messaging } from "../../config/firebase";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import api from "../../config/axios";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login, selectUser } from "../../redux/feature/userSlice";
+import { getToken } from "firebase/messaging";
 
 const Login = () => {
   const user = useSelector(selectUser);
@@ -23,6 +24,10 @@ const Login = () => {
       const { token, roleEnum } = response.data;
       localStorage.setItem("token", token);
       toast.success("Login success");
+
+      const fcmToken = await handleGetFCMToken();
+
+      console.log(fcmToken);
       const user = response.data;
       dispatch(login(user));
       if (roleEnum === "KOI_BREEDER") {
@@ -63,7 +68,21 @@ const Login = () => {
       toast.error(error.response?.data || error.message);
     }
   };
-
+  const handleGetFCMToken = async () => {
+    try {
+      const fcmToken = await getToken(messaging, {
+        vapidKey:
+          "BHKxHoT4uosKVWPlKFy3sXByL3IvGXyr8moP2z_8mp45KPsXROO9t9AqFRYYEXhGoEh3zplbkqRvLCwjooVuahQ",
+        //vapidKey : get from Firebase -> Project Settings -> Cloud Messaging -> Web configuration -> Generate key pairs
+      });
+      if (fcmToken) {
+        console.log(fcmToken);
+        return fcmToken;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="login-container">
       <div className="login-form">

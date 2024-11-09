@@ -72,7 +72,7 @@ function DashboardManageRequestTemplateForManager({
   }, []);
 
   useEffect(() => {
-    fetchData(pagination.current, pagination.pageSize);
+    fetchData(1, pagination.pageSize);
   }, [filterParams]);
 
   useEffect(() => {
@@ -313,14 +313,8 @@ function DashboardManageRequestTemplateForManager({
       handleCloseAuctionModal();
       fetchData(pagination.current, pagination.pageSize);
     } catch (error) {
-      toast.error("Error during auction session creation. Attempting to rollback approval.");
+      toast.error(error.response.data);
       // toast.error(error.response.data);
-      try {
-        await api.put(`auctionRequest/revertApprove/${values[keyField]}`);
-        toast.success("Approval rollback successful.");
-      } catch (error) {
-        toast.error("Failed to rollback approval. Please contact support.");
-      }
     }
     setLoading(false);
   };

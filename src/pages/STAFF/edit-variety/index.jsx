@@ -89,11 +89,7 @@ const VarietyManagement = () => {
       render: (_, record) => (
         <>
           <Button onClick={() => showModal(record)}>Edit</Button>
-          <Button
-            onClick={() => confirmDelete(record.id)}
-            danger
-            style={{ marginLeft: 10 }}
-          >
+          <Button onClick={() => confirmDelete(record.id)} danger style={{ marginLeft: 10 }}>
             Delete
           </Button>
         </>
@@ -102,12 +98,8 @@ const VarietyManagement = () => {
   ];
 
   return (
-    <div style={{ padding: 50 }}>
-      <Button
-        type="primary"
-        onClick={() => showModal()}
-        style={{ marginBottom: 16 }}
-      >
+    <div style={{ margin: "100px auto" }}>
+      <Button type="primary" onClick={() => showModal()} style={{ marginBottom: 16 }}>
         Add Variety
       </Button>
       <Table dataSource={varieties} columns={columns} rowKey="id" />
@@ -122,9 +114,7 @@ const VarietyManagement = () => {
           <Form.Item
             name="name"
             label="Variety Name"
-            rules={[
-              { required: true, message: "Please input the variety name!" },
-            ]}
+            rules={[{ required: true, message: "Please input the variety name!" }]}
           >
             <Input placeholder="Enter variety name" />
           </Form.Item>
