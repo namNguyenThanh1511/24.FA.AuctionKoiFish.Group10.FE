@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Table, Tag, message } from "antd";
-import api from "../../../config/axios"; // Đường dẫn đến file cấu hình API
+import { Table, Tag, message, Button, Modal, Input } from "antd";
+import api from "../../../config/axios";
 import dayjs from "dayjs";
 
-const AssignedAuctions = ({ staffId }) => {
-  // Đảm bảo staffId được truyền vào
+const AssignedAuctions = () => {
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
@@ -13,46 +12,78 @@ const AssignedAuctions = ({ staffId }) => {
     total: 0,
   });
 
-  const fetchAssignedAuctions = async (
-    page = pagination.current,
-    pageSize = pagination.pageSize
-  ) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("");
+  const [selectedAuctionId, setSelectedAuctionId] = useState(null);
+  const [note, setNote] = useState("");
+
+  // Fetch danh sách các phiên đấu giá được giao
+  useEffect(() => {
+    fetchAssignedAuctions(pagination.current, pagination.pageSize);
+  }, []);
+
+  const fetchAssignedAuctions = async (page = 1, pageSize = 5) => {
     setLoading(true);
     try {
-      // Chỉnh sửa đường dẫn để bao gồm staffId
-      const response = await api.get(`/auctionSession/staff/${staffId}`, {
-        params: {
-          page: page - 1, // API thường yêu cầu chỉ số trang bắt đầu từ 0
-          size: pageSize,
-        },
+      const response = await api.get("/auctionSession/current-staff", {
+        params: { page: page - 1, size: pageSize },
       });
-      console.log("API Response:", response.data);
       const { auctionSessionResponses, totalElements, pageNumber } =
         response.data;
-
-      // Cập nhật dữ liệu và phân trang
       setAuctions(auctionSessionResponses);
       setPagination({
-        current: pageNumber + 1, // API trả về số trang bắt đầu từ 0, nên cộng 1
-        pageSize: pageSize,
+        current: pageNumber + 1,
+        pageSize,
         total: totalElements,
       });
     } catch (error) {
       message.error("Failed to load assigned auctions");
-      console.error("Error fetching auctions:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchAssignedAuctions();
-  }, [staffId]);
-
-  const handleTableChange = (pagination) => {
-    fetchAssignedAuctions(pagination.current, pagination.pageSize); // Gọi lại hàm với trang và kích thước trang
+  // Mở modal để cập nhật trạng thái
+  const openModal = (id, type) => {
+    setSelectedAuctionId(id);
+    setModalType(type);
+    setIsModalOpen(true);
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedAuctionId(null);
+    setNote("");
+  };
+
+  const handleUpdateStatus = async () => {
+    if (!selectedAuctionId) return;
+
+    let apiEndpoint = "";
+    if (modalType === "delivering") {
+      apiEndpoint = `/auctionSession/markDelivering/${selectedAuctionId}`;
+    } else if (modalType === "delivered") {
+      apiEndpoint = `/auctionSession/markDelivered/${selectedAuctionId}`;
+    } else if (modalType === "cancel") {
+      apiEndpoint = `/auctionSession/markDeliveryCancelled/${selectedAuctionId}`;
+    }
+
+    try {
+      await api.put(apiEndpoint, { note });
+      message.success("Cập nhật trạng thái thành công");
+      fetchAssignedAuctions(pagination.current, pagination.pageSize);
+      closeModal();
+    } catch (error) {
+      message.error("Cập nhật trạng thái thất bại");
+    }
+  };
+
+  // Kiểm tra trạng thái đấu giá đã hoàn tất
+  const isCompletedStatus = (status) => {
+    return status === "COMPLETED" || status === "COMPLETED_WITH_BUYNOW";
+  };
+
+  // Cấu hình các cột cho bảng
   const columns = [
     {
       title: "Auction Title",
@@ -78,14 +109,6 @@ const AssignedAuctions = ({ staffId }) => {
       render: (price) => price.toLocaleString(),
     },
     {
-      title: "Auction Status",
-      dataIndex: "auctionStatus",
-      key: "auctionStatus",
-      render: (status) => (
-        <Tag color={status === "COMPLETED" ? "green" : "orange"}>{status}</Tag>
-      ),
-    },
-    {
       title: "Start Date",
       dataIndex: "startDate",
       key: "startDate",
@@ -97,7 +120,76 @@ const AssignedAuctions = ({ staffId }) => {
       key: "endDate",
       render: (date) => dayjs(date).format("YYYY-MM-DD HH:mm:ss"),
     },
+    {
+      title: "Auction Status",
+      dataIndex: "auctionStatus",
+      key: "auctionStatus",
+      render: (status) => (
+        <Tag color={isCompletedStatus(status) ? "green" : "orange"}>
+          {status}
+        </Tag>
+      ),
+    },
+    {
+      title: "Delivery Status",
+      dataIndex: "deliveryStatus",
+      key: "deliveryStatus",
+      render: (status) =>
+        status ? (
+          <Tag color={status === "DELIVERING" ? "orange" : "green"}>
+            {status}
+          </Tag>
+        ) : (
+          <Tag color="red">Pending</Tag>
+        ),
+    },
+    {
+      title: "Edit Delivery Status",
+      key: "editDeliveryStatus",
+      render: (_, record) => {
+        // Hiển thị nút Mark Delivering nếu đấu giá đã hoàn tất và chưa giao hàng
+        if (isCompletedStatus(record.auctionStatus)) {
+          if (record.deliveryStatus === null) {
+            return (
+              <Button
+                type="primary"
+                onClick={() => openModal(record.auctionSessionId, "delivering")}
+              >
+                Mark Delivering
+              </Button>
+            );
+          }
+
+          // Hiển thị Mark Delivered và Cancel Delivery nếu trạng thái đang giao hàng
+          if (record.deliveryStatus === "DELIVERING") {
+            return (
+              <>
+                <Button
+                  type="primary"
+                  onClick={() => openModal(record.auctionSessionId, "delivered")}
+                  style={{ marginRight: "10px" }}
+                >
+                  Mark Delivered
+                </Button>
+                <Button
+                  danger
+                  onClick={() => openModal(record.auctionSessionId, "cancel")}
+                >
+                  Cancel Delivery
+                </Button>
+              </>
+            );
+          }
+        }
+        return <Tag color="default">Not Editable</Tag>;
+      },
+    },
   ];
+
+  const handleTableChange = (pagination) => {
+    setPagination(pagination);
+    fetchAssignedAuctions(pagination.current, pagination.pageSize);
+  };
 
   return (
     <div style={{ padding: "50px" }}>
@@ -107,14 +199,31 @@ const AssignedAuctions = ({ staffId }) => {
         columns={columns}
         rowKey="auctionSessionId"
         loading={loading}
-        pagination={{
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
-          onChange: handleTableChange,
-          showSizeChanger: false,
-        }}
+        onChange={handleTableChange}
+        pagination={pagination}
       />
+
+      {/* Modal để nhập ghi chú */}
+      <Modal
+        title={
+          modalType === "delivering"
+            ? "Mark as Delivering"
+            : modalType === "delivered"
+            ? "Mark as Delivered"
+            : "Cancel Delivery"
+        }
+        open={isModalOpen}
+        onOk={handleUpdateStatus}
+        onCancel={closeModal}
+        okText="Submit"
+        cancelText="Cancel"
+      >
+        <Input
+          placeholder="Enter note"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+        />
+      </Modal>
     </div>
   );
 };

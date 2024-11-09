@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Collapse, Pagination, Button } from "antd";
+import { Table, Button, Pagination } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import dayjs from "dayjs";
-
-const { Panel } = Collapse;
 
 const MyAuction = () => {
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 4,
+    pageSize: 5,
     total: 0,
   });
 
@@ -53,22 +51,110 @@ const MyAuction = () => {
     fetchAuctions(page, pageSize);
   };
 
-  const getHeaderStyle = (status) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case "COMPLETED":
-        return { backgroundColor: "#4CAF50", color: "white" }; // Green
+        return { color: "green" }; // Green
       case "UPCOMING":
-        return { backgroundColor: "#FF0000", color: "white" }; // Red
+        return { color: "red" }; // Red
       case "ONGOING":
-        return { backgroundColor: "#FFC107", color: "white" }; // Yellow
+        return { color: "orange" }; // Yellow
+      case "COMPLETED_WITH_BUYNOW":
+        return { color: "green" }; // Yellow
       default:
-        return { backgroundColor: "#f0f0f0", color: "#333" }; // Default
+        return { color: "#333" }; // Default
+    }
+  };
+
+  const getDeliveryStatusColor = (status) => {
+    switch (status) {
+      case "DELIVERED":
+        return { color: "green" }; // Green
+      case "DELIVERING":
+        return { color: "yellow" }; // Yellow
+      case "CANCELLED":
+        return { color: "red" }; // Red
+      default:
+        return { color: "#333" }; // Default color
     }
   };
 
   const goToAuctionDetail = (auctionId) => {
     navigate(`/auctions/${auctionId}`);
   };
+
+  const columns = [
+    {
+      title: "Auction ID",
+      dataIndex: "auctionSessionId",
+      key: "auctionSessionId",
+    },
+    {
+      title: "Title",
+      dataIndex: "title",
+      key: "title",
+    },
+    {
+      title: "Starting Price",
+      dataIndex: "startingPrice",
+      key: "startingPrice",
+      render: (text) => `${text} VND`,
+    },
+    {
+      title: "Current Price",
+      dataIndex: "currentPrice",
+      key: "currentPrice",
+      render: (text) => `${text} VND`,
+    },
+    {
+      title: "Buy Now Price",
+      dataIndex: "buyNowPrice",
+      key: "buyNowPrice",
+      render: (text) => `${text} VND`,
+    },
+    {
+      title: "Start Date",
+      dataIndex: "startDate",
+      key: "startDate",
+      render: (text) =>
+        text ? dayjs(text).format("DD-MM-YYYY HH:mm:ss") : "N/A",
+    },
+    {
+      title: "End Date",
+      dataIndex: "endDate",
+      key: "endDate",
+      render: (text) =>
+        text ? dayjs(text).format("DD-MM-YYYY HH:mm:ss") : "N/A",
+    },
+    {
+      title: "Auction Status",
+      dataIndex: "auctionStatus",
+      key: "auctionStatus",
+      render: (status) => <span style={getStatusColor(status)}>{status}</span>,
+    },
+    {
+      title: "Delivery Status",
+      dataIndex: "deliveryStatus",
+      key: "deliveryStatus",
+      render: (status) => (
+        <span style={getDeliveryStatusColor(status)}>{status}</span>
+      ),
+    },
+    {
+      title: "Auction",
+      dataIndex: "auctionSessionId",
+      key: "auctionSessionId",
+      render: (auctionSessionId) => (
+        <Button
+          type="link"
+          onClick={() => goToAuctionDetail(auctionSessionId)}
+          style={{ padding: 0 }}
+        >
+          <RightOutlined style={{ fontSize: "16px", color: "#1890ff" }} />
+        </Button>
+      ),
+    },
+  ];
 
   return (
     <div
@@ -82,95 +168,16 @@ const MyAuction = () => {
       <h2 style={{ fontSize: "28px", fontWeight: "bold", color: "#333" }}>
         My Auctions List
       </h2>
-      <Row gutter={[16, 16]}>
-        {auctions.map((auction) => (
-          <Col key={auction.auctionSessionId} xs={24} sm={12} md={8}>
-            <Collapse>
-              <Panel
-                header={
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
-                  >
-                    <span>{auction.title}</span>
-                    <Button
-                      type="primary"
-                      shape="circle"
-                      icon={<RightOutlined />}
-                      size="medium"
-                      onClick={() =>
-                        goToAuctionDetail(auction.auctionSessionId)
-                      }
-                      style={{
-                        backgroundColor: "black", // Nút màu đen
-                        borderColor: "#1890ff",
-                        boxShadow: "0 2px 5px rgba(0,0,0,0.1)",
-                        transition: "all 0.3s ease",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "32px",
-                        height: "32px",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.backgroundColor = "#40a9ff")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.backgroundColor = "black")
-                      }
-                    />
-                  </div>
-                }
-                key={auction.auctionSessionId}
-                style={{
-                  ...getHeaderStyle(auction.auctionStatus),
-                  border: "1px solid black",
-                  borderRadius: "10px",
-                }}
-              >
-                <p>
-                  <strong>Auction ID:</strong> {auction.auctionSessionId}
-                </p>
-                <p>
-                  <strong>Starting Price:</strong> {auction.startingPrice} VND
-                </p>
-                <p>
-                  <strong>Current Price:</strong> {auction.currentPrice} VND
-                </p>
-                <p>
-                  <strong>Buy Now Price:</strong> {auction.buyNowPrice} VND
-                </p>
-                <p>
-                  <strong>Start Date:</strong>
-                  {auction.startDate
-                    ? dayjs(auction.startDate).format("DD-MM-YYYY HH:mm:ss")
-                    : "N/A"}
-                </p>
-                <p>
-                  <strong>End Date:</strong>
-                  {auction.endDate
-                    ? dayjs(auction.endDate).format("DD-MM-YYYY HH:mm:ss")
-                    : "N/A"}
-                </p>
-                <p>
-                  <strong>Status:</strong>
-                  <span
-                    style={{
-                      color:
-                        auction.auctionStatus === "COMPLETED" ? "green" : "red",
-                    }}
-                  >
-                    {auction.auctionStatus}
-                  </span>
-                </p>
-              </Panel>
-            </Collapse>
-          </Col>
-        ))}
-      </Row>
+
+      <Table
+        loading={loading}
+        dataSource={auctions}
+        columns={columns}
+        rowKey="auctionSessionId"
+        pagination={false}
+        bordered
+      />
+
       <Pagination
         style={{ marginTop: "20px" }}
         current={pagination.current}
