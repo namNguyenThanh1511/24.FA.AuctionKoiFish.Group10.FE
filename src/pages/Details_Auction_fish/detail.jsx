@@ -4,7 +4,7 @@ import "./detail.css";
 import api from "../../config/axios";
 import { Table, message, Modal } from "antd";
 import BidForm from "../../components/bid-section/bid-ascending";
-import FixedPriceBid from "../../components/bid-section/bid-fixed-price"; // Import FixedPriceBid
+import FixedPriceBid from "../../components/bid-section/bid-fixed-price";
 import formatToVND from "../../utils/currency";
 
 const Detail = () => {
@@ -16,6 +16,7 @@ const Detail = () => {
   const [isWinnerModalVisible, setIsWinnerModalVisible] = useState(false);
   const [winnerName, setWinnerName] = useState("");
   const [intervalId, setIntervalId] = useState(null);
+  const [isVideoModalVisible, setIsVideoModalVisible] = useState(false);
 
   const fetchProductDetail = async () => {
     try {
@@ -40,7 +41,11 @@ const Detail = () => {
       const startDate = new Date(response.data.startDate);
       const endDate = new Date(response.data.endDate);
 
-      if (response.data.auctionStatus === "COMPLETED") {
+      if (
+        response.data.auctionStatus === "COMPLETED" ||
+        response.data.auctionStatus === "DRAWN" ||
+        response.data.auctionStatus === "NO_WINNER"
+      ) {
         setCountdown("Auction ended");
         if (response.data.winner) {
           setWinnerName(response.data.winner.fullName);
@@ -53,13 +58,10 @@ const Detail = () => {
         const id = setInterval(() => {
           const updatedCountdown = getCountdown(new Date(), startDate);
           setCountdown(updatedCountdown);
-          if (updatedCountdown === "Auction starting soon") {
-            clearInterval(id);
-            startOngoingCountdown(startDate, endDate);
-          }
+
         }, 1000);
         setIntervalId(id);
-      } else {
+      } else if (response.data.auctionStatus === "ONGOING") {
         startOngoingCountdown(startDate, endDate);
       }
     } catch (error) {
@@ -78,20 +80,25 @@ const Detail = () => {
 
   const getCountdown = (fromDate, toDate) => {
     const offset = 7 * 3600 * 1000; // 7 tiếng tính bằng mili giây
-    const totalSeconds = Math.floor((toDate.getTime() - fromDate.getTime() - offset) / 1000);
+    const totalSeconds = Math.floor(
+      (toDate.getTime() - fromDate.getTime() - offset) / 1000
+    );
 
-    const days = Math.floor(totalSeconds / (3600 * 24));
-    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
+    // Kiểm tra nếu thời gian hiện tại chưa tới thời gian bắt đầu
+    if (totalSeconds > 0) {
+      const days = Math.floor(totalSeconds / (3600 * 24));
+      const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
 
-    return totalSeconds > 0
-      ? `${days}d ${hours}h ${minutes}m ${seconds}s`
-      : "Auction starting soon";
+    // Nếu đã đến thời gian bắt đầu, nhưng chưa đến thời gian kết thúc
+    return "Auction starting soon";
   };
 
   const startOngoingCountdown = (startDate, endDate) => {
-    const countdown = getCountdown(startDate, endDate);
+    const countdown = getCountdown(new Date(), endDate);
     setCountdown(countdown);
 
     const id = setInterval(() => {
@@ -107,20 +114,12 @@ const Detail = () => {
   const handleBid = async (bidValue) => {
     try {
       const token = localStorage.getItem("token");
-      const bidDifference = bidValue - currentBid;
 
-      // Các điều kiện để tránh bid không hợp lệ
       if (bidValue > productDetail.buyNowPrice) {
         message.error("Bid amount cannot exceed Buy Now price!");
         return;
       }
 
-      if (bidValue === productDetail.buyNowPrice) {
-        await handleBuyNow();
-        return;
-      }
-
-      // Gửi yêu cầu bid thông qua API
       const response = await api.post(
         `bid`,
         {
@@ -153,7 +152,6 @@ const Detail = () => {
         `bid/buyNow`,
         {
           auctionSessionId,
-          amount: productDetail.buyNowPrice,
         },
         {
           headers: {
@@ -191,15 +189,52 @@ const Detail = () => {
         return "black";
     }
   };
+  const showVideoModal = () => {
+    setIsVideoModalVisible(true);
+  };
+
+  const handleVideoModalClose = () => {
+    setIsVideoModalVisible(false);
+  };
 
   return (
     <div>
-      <div className="container">
+      <div className="container-detail">
         <div className="product-image">
           <img src={koi.image_url} alt={koi.name} />
+          {productDetail?.koi?.video_url && (
+            <button onClick={showVideoModal} className="video-button">
+              Video
+            </button>
+          )}
         </div>
+
+        <Modal
+          title="Koi Auction Video"
+          open={isVideoModalVisible}
+          onCancel={handleVideoModalClose}
+          footer={null}
+          centered
+          width={800} // Tăng chiều rộng modal để khớp với video
+        >
+          {productDetail?.koi?.video_url && (
+            <div className="video-container">
+              <iframe
+                src={
+                  productDetail.koi.video_url.includes("watch?v=")
+                    ? productDetail.koi.video_url.replace("watch?v=", "embed/")
+                    : productDetail.koi.video_url
+                }
+                title="Koi Auction Video"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            </div>
+          )}
+        </Modal>
+
         <div className="product-detail">
-          <h1>{productDetail.title}</h1>
+          <h1>{productDetail.title + "#" + productDetail.auctionSessionId} </h1>
           <div className="time">
             <span style={{ color: "black" }}>Time Remaining:</span>
             <span style={{ color: "red" }}> {countdown}</span>
@@ -218,7 +253,9 @@ const Detail = () => {
             <div className="info-box">
               <p>
                 <strong>Auction Status:</strong>{" "}
-                <span style={{ color: getStatusColor(auctionStatus) }}>{auctionStatus}</span>
+                <span style={{ color: getStatusColor(auctionStatus) }}>
+                  {auctionStatus}
+                </span>
               </p>
             </div>
             <div className="info-box">
@@ -228,7 +265,7 @@ const Detail = () => {
             </div>
             <div className="info-box">
               <p>
-                <strong>Length:</strong> {koi.sizeCm} cm
+                <strong>Size:</strong> {koi.sizeCm} cm
               </p>
             </div>
             <div className="info-box">
@@ -239,7 +276,8 @@ const Detail = () => {
             <div className="info-box">
               <p>
                 <strong>Age:</strong>{" "}
-                {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()} years
+                {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()}{" "}
+                years
               </p>
             </div>
             <div className="info-box">
@@ -252,7 +290,13 @@ const Detail = () => {
             </div>
             <div className="info-box">
               <p>
-                <strong>Price:</strong> {productDetail.currentPrice.toLocaleString("en-US")}₫
+                <strong>Price:</strong>{" "}
+                {productDetail.currentPrice.toLocaleString("en-US")}₫
+              </p>
+            </div>
+            <div className="info-box">
+              <p>
+                <strong>Weight:</strong> {koi.weightKg} {"kg"}
               </p>
             </div>
           </div>
@@ -283,7 +327,7 @@ const Detail = () => {
             { title: "Name", dataIndex: "name", key: "name" },
           ]}
           rowKey={(record) => record.date}
-          pagination={{ pageSize: 5 }} // Thêm thuộc tính pagination với pageSize là 5
+          pagination={{ pageSize: 5 }}
         />
       </div>
 

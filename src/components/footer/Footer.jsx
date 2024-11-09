@@ -14,60 +14,66 @@ const Footer = () => {
         <div className="footer-info">
           <div className="info-text">
             <p>
-              Koi Auction Legend is the premier destination for quality Japanese
-              koi fish for sale. We are the largest importer of Koi in North
-              America.
+              Koi Auction Vietnam is your premier destination for quality Koi fish auctions in Vietnam. We are dedicated to connecting Koi enthusiasts with top-quality Koi bred locally.
             </p>
-            <p>P.O. Box 893086, Mililani HI 96789</p>
-            <p>TEL: +1 (833) Koi Love (1-833-564-5683)</p>
+            <p>Address: 123 Nguyen Van Linh, District 7, Ho Chi Minh City, Vietnam</p>
+            <p>TEL: +84 908 123 456</p>
             <p>
               Email:{" "}
               <a
-                href="mailto:info@KoiAuctionLegend.com"
+                href="mailto:info@KoiAuctionVN.com"
                 className="footer-link"
               >
-                info@KoiAuctionLegend.com
+                info@KoiAuctionVN.com
               </a>
             </p>
             <p>
-              Help:{" "}
+              Support:{" "}
               <a
-                href="mailto:help@KoiAuctionLegend.com"
+                href="mailto:support@KoiAuctionVN.com"
                 className="footer-link"
               >
-                help@KoiAuctionLegend.com
+                support@KoiAuctionVN.com
               </a>
             </p>
           </div>
         </div>
+
         <div className="footer-hours">
           <h3>Hours of Operation</h3>
-          <p>Monday – Friday: 7:00 a.m. to 3:00 p.m. HST</p>
-          <p>Saturday and Sunday Closed</p>
+          <p>Monday – Friday: 8:00 a.m. to 5:00 p.m. ICT</p>
+          <p>Saturday: 8:00 a.m. to 12:00 p.m. ICT</p>
+          <p>Sunday Closed</p>
         </div>
+
         <div className="footer-links">
-          <h3>Visit Our Local Stores</h3>
+          <h3>Visit Our Showroom</h3>
           <ul>
             <li>
-              <a href="/florida" className="footer-link">
-                Koi Auction Legend in New York
+              <a href="/hochiminh" className="footer-link">
+                Koi Auction Vietnam in Ho Chi Minh City
               </a>
             </li>
             <li>
-              <a href="/newjersey" className="footer-link">
-                Koi Auction Legend in Viet Nam
+              <a href="/hanoi" className="footer-link">
+                Koi Auction Vietnam in Hanoi
               </a>
             </li>
           </ul>
         </div>
+
         <div className="footer-payment">
           <h3>Payment Methods</h3>
-
-          <img src={VNPay} alt="Momo" />
+          <img src={VNPay} alt="VNPay" />
+          
         </div>
       </div>
+
       <div className="footer-bottom">
-        
+        <p>&copy; 2024 Koi Auction Vietnam. All rights reserved.</p>
+        <p>
+          Terms of Service | Privacy Policy
+        </p>
       </div>
     </footer>
   );
