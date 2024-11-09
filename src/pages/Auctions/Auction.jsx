@@ -17,7 +17,6 @@ const Auction = () => {
   const [varietiesList, setVarietiesList] = useState([]);
   const [breedersList, setBreedersList] = useState([]);
   const [searchParams, setSearchParams] = useState({
-    
     breederName: "",
     varieties: null,
     minSizeCm: null,
@@ -59,25 +58,20 @@ const Auction = () => {
       console.log("Error fetching breeders:", error);
     }
   };
-  
-  
-  // Gọi hàm fetchVarieties khi component được mount
 
+  // Gọi hàm fetchVarieties khi component được mount
 
   useEffect(() => {
     fetchVarieties();
     fetchBreeders(); // Gọi API lấy danh sách breeder
   }, []);
-  
-  
 
   const fetchKoiFish = async (page, params = {}) => {
     try {
-      // Kiểm tra nếu tất cả các tham số tìm kiếm đều trống
       const isEmptyFilter = Object.values(params).every(
         (value) => value === null || value === ""
       );
-  
+
       const filteredParams = { ...params };
       if (!filteredParams.breederName) delete filteredParams.breederName;
       if (!filteredParams.minSizeCm) delete filteredParams.minSizeCm;
@@ -88,18 +82,23 @@ const Auction = () => {
       if (!filteredParams.sex) delete filteredParams.sex;
       if (!filteredParams.auctionType) delete filteredParams.auctionType;
       if (!filteredParams.status) delete filteredParams.status;
-  
+
       const response = await api.get(`/auctionSession/search`, {
         params: {
-          ...(isEmptyFilter ? {} : filteredParams), // Truyền params nếu có bộ lọc
+          ...(isEmptyFilter ? {} : filteredParams),
           page: page,
           size: cardsPerPage,
         },
       });
-  
-      const data = response.data.auctionSessionResponses;
+
+      let data = response.data.auctionSessionResponses;
       const totalPages = response.data.totalPages;
-  
+
+// Sắp xếp mảng `data` theo `startDate` từ xa nhất tới gần nhất
+data.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+
+
+
       const transformedData = data.map((item) => ({
         auctionSessionId: item.auctionSessionId,
         name: item.koi.name || "Unknown",
@@ -117,7 +116,7 @@ const Auction = () => {
         auctionStatus: item.auctionStatus || "Unknown",
         auctionType: item.auctionType || "Unknown",
       }));
-  
+
       setCardsData(transformedData);
       setTotalPages(totalPages);
     } catch (error) {
@@ -125,8 +124,6 @@ const Auction = () => {
       alert("There was an error fetching data. Please try again.");
     }
   };
-  
-  
 
   const getCountdown = (startDate, endDate, auctionStatus) => {
     if (auctionStatus === "COMPLETED") return "Auction ended";
@@ -193,49 +190,46 @@ const Auction = () => {
       setSearchParams((prev) => ({ ...prev, [name]: value }));
     }
   };
-  
+
   const handleFilterSubmit = (event) => {
     event.preventDefault();
     fetchKoiFish(0, searchParams); // Gọi lại API với tham số mới
     setCurrentPage(0);
   };
-  
-  
 
   return (
     <div className="auction-form-container">
       <form className="search-form" onSubmit={handleFilterSubmit}>
         <div className="search-row">
-        <Select
-        allowClear
-  className="custom-select select-breeder"
-  placeholder="Select Breeder"
-  onChange={(value) => handleInputChange("breederName", value)}
->
-  {breedersList.map((breeder) => (
-    <Option key={breeder.id} value={breeder.username}>
-      {breeder.username}
-    </Option>
-  ))}
-</Select>
-
-<Select
-allowClear
-  className="custom-select select-varieties"
-  mode="multiple"
-  placeholder="Select Varieties"
-  onChange={(values) => handleInputChange("varieties", values)}
->
-  {varietiesList.map((variety) => (
-    <Option key={variety.id} value={variety.name}>
-      {variety.name}
-    </Option>
-  ))}
-</Select>
-
+          <Select
+            allowClear
+            className="custom-select select-breeder"
+            placeholder="Select Breeder"
+            onChange={(value) => handleInputChange("breederName", value)}
+          >
+            {breedersList.map((breeder) => (
+              <Option key={breeder.id} value={breeder.username}>
+                {breeder.username}
+              </Option>
+            ))}
+          </Select>
 
           <Select
-          allowClear
+            allowClear
+            className="custom-select select-varieties"
+            mode="multiple"
+            placeholder="Select Varieties"
+            onChange={(values) => handleInputChange("varieties", values)}
+          >
+            {varietiesList.map((variety) => (
+              <Option key={variety.id} value={variety.name}>
+                {variety.name}
+              </Option>
+            ))}
+          </Select>
+
+          <Select
+            allowClear
             className="select-type"
             placeholder="Select Auction Type"
             onChange={(value) => handleInputChange("auctionType", value)}
@@ -247,7 +241,7 @@ allowClear
 
         <div className="search-row">
           <Select
-          allowClear
+            allowClear
             placeholder="Select Sex"
             onChange={(value) => handleInputChange("sex", value)}
           >
@@ -256,70 +250,61 @@ allowClear
           </Select>
 
           <Select
-  className="select-status"
-  allowClear
-  placeholder="Select Status"
-  onChange={(value) => handleInputChange("status", value)}
->
-  <Option value="UPCOMING">Upcoming</Option>
-  <Option value="ONGOING">Ongoing</Option>
-  <Option value="NO_WINNER">No winner</Option>
-  <Option value="COMPLETED">Completed</Option>
-  <Option value="COMPLETED_WITH_BUYNOW">Completed by Buy Now</Option>
-  <Option value="DRAWN">Drawn</Option>
-</Select>
-
-<div className="custom-slider">
-  <label>Size (cm):</label>
-  <Slider
-    range
-    min={0}
-    max={100}
-    marks={{
-      0: "0 cm",
-      50: "50 cm",
-      100: "100 cm",
-    }}
-    onChange={(value) =>
-      handleInputChange("sizeRange", {
-        minSizeCm: value[0],
-        maxSizeCm: value[1],
-      })
-    }
-    tooltip={{ formatter: (value) => `${value} cm` }}
-  />
-</div>
-
-<div className="custom-slider">
-  <label>Weight (kg):</label>
-  <Slider
-    range
-    min={0}
-    max={100}
-    step={0.1}
-    marks={{
-      0: "0 kg",
-      50: "50 kg",
-      100: "100 kg",
-    }}
-    onChange={(value) =>
-      handleInputChange("weightRange", {
-        minWeightKg: value[0],
-        maxWeightKg: value[1],
-      })
-    }
-    tooltip={{ formatter: (value) => `${value} kg` }}
-  />
-</div>
-
-
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="custom-filter-button"
+            className="select-status"
+            allowClear
+            placeholder="Select Status"
+            onChange={(value) => handleInputChange("status", value)}
           >
-            FILTER
-          </Button>
+            <Option value="UPCOMING">Upcoming</Option>
+            <Option value="ONGOING">Ongoing</Option>
+            <Option value="NO_WINNER">No winner</Option>
+            <Option value="COMPLETED">Completed</Option>
+            <Option value="COMPLETED_WITH_BUYNOW">Completed by Buy Now</Option>
+            <Option value="DRAWN">Drawn</Option>
+          </Select>
+
+          <div className="custom-slider">
+            <label>Size (cm):</label>
+            <Slider
+              range
+              min={0}
+              max={100}
+              marks={{
+                0: "0 cm",
+                50: "50 cm",
+                100: "100 cm",
+              }}
+              onChange={(value) =>
+                handleInputChange("sizeRange", {
+                  minSizeCm: value[0],
+                  maxSizeCm: value[1],
+                })
+              }
+              tooltip={{ formatter: (value) => `${value} cm` }}
+            />
+          </div>
+
+          <div className="custom-slider">
+            <label>Weight (kg):</label>
+            <Slider
+              range
+              min={0}
+              max={100}
+              step={0.1}
+              marks={{
+                0: "0 kg",
+                50: "50 kg",
+                100: "100 kg",
+              }}
+              onChange={(value) =>
+                handleInputChange("weightRange", {
+                  minWeightKg: value[0],
+                  maxWeightKg: value[1],
+                })
+              }
+              tooltip={{ formatter: (value) => `${value} kg` }}
+            />
+          </div>
         </div>
       </form>
 
