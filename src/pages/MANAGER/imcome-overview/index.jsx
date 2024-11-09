@@ -18,7 +18,6 @@ import api from "../../../config/axios";
 
 const { Title } = Typography;
 
-// Hàm tạo màu ngẫu nhiên
 const getRandomColor = () => {
   const letters = "0123456789ABCDEF";
   let color = "#";
@@ -51,40 +50,48 @@ const IncomeOverview = () => {
 
   if (loading || !data) return <p>Loading...</p>;
 
-  // Tổng hợp doanh thu của các phiên đấu giá
-  const auctionRevenueData = Object.values(
-    data["Auction Session Revenue"].reduce((acc, item) => {
-      const auctionId = item["Auction Session ID"];
-      if (!acc[auctionId]) {
-        acc[auctionId] = { auctionId, revenue: 0 };
-      }
-      acc[auctionId].revenue += item["Total revenue"];
-      return acc;
-    }, {})
+  // Auction Session Revenue Data (Bar Chart)
+  const auctionRevenueData = (data["Auction Session Revenue"] || []).map(
+    (item) => ({
+      auctionId: item["Auction Session ID"],
+      revenue: item["Total revenue"],
+    })
   );
 
-  // Dữ liệu doanh thu hệ thống
-  const systemRevenueData = data["System Revenue"].map((item) => ({
-    month: `${item["Month"]}/${item["Year"]}`,
-    balance: item["Balance"],
-  }));
+  // Daily System Revenue Data (Line Chart)
+  const dailySystemRevenueData = (data["Daily System Revenue"] || []).map(
+    (item) => ({
+      date: `${item["Day"]}/${item["Month"]}/${item["Year"]}`,
+      balance: item["Balance"],
+    })
+  );
 
-  // Lấy balance gần nhất
+  // Monthly System Revenue Data (Line Chart)
+  const monthlySystemRevenueData = (data["Monthly System Revenue"] || []).map(
+    (item) => ({
+      month: `${item["Month"]}/${item["Year"]}`,
+      balance: item["Balance"],
+    })
+  );
+
+  // Latest Balance
   const latestBalance =
-    data["System Revenue"][data["System Revenue"].length - 1]["Balance"];
+    dailySystemRevenueData.length > 0
+      ? dailySystemRevenueData[dailySystemRevenueData.length - 1].balance
+      : 0;
 
-  // Dữ liệu các giống cá top
-  const topVarietiesData = data["Top Varieties"].map((variety) => ({
+  // Top Varieties Data (Pie Chart)
+  const topVarietiesData = (data["Top Varieties"] || []).map((variety) => ({
     name: variety["Name"],
     participants: variety["Number of participant(s)"],
   }));
 
-  // Màu sắc cho biểu đồ Pie
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#AF19FF"];
 
-  // Tính toán màu sắc cho Auction Success Rate
+  // Auction Success Rate
   const auctionSuccessRate = (
-    data["Successful rate of all auction session (except upcoming )"] * 100
+    (data["Successful rate of all auction session (except upcoming )"] || 0) *
+    100
   ).toFixed(2);
 
   let auctionRateColor = "";
@@ -102,11 +109,9 @@ const IncomeOverview = () => {
         Income Overview
       </Title>
 
-      {/* Hàng đầu chứa 4 trường dữ liệu*/}
       <Row gutter={[16, 16]}>
         <Col span={6}>
           <Card style={{ backgroundColor: "#e6f7ff" }}>
-            {" "}
             <Statistic
               title="Total Auction Sessions"
               value={data["Total number of Auction Sessions"]}
@@ -116,7 +121,6 @@ const IncomeOverview = () => {
         </Col>
         <Col span={6}>
           <Card style={{ backgroundColor: "#fffbe6" }}>
-            {" "}
             <Statistic
               title="Completed Auction Sessions"
               value={data["Total number of completed auction session"]}
@@ -126,7 +130,6 @@ const IncomeOverview = () => {
         </Col>
         <Col span={6}>
           <Card style={{ backgroundColor: "#fff0f6" }}>
-            {" "}
             <Statistic
               title="Average Bids per Session"
               value={data["Average number of bids per auction session"]}
@@ -137,22 +140,19 @@ const IncomeOverview = () => {
         </Col>
         <Col span={6}>
           <Card style={{ backgroundColor: "#f6ffed" }}>
-            {" "}
             <Statistic
               title="Auction Success Rate"
               value={auctionSuccessRate}
               suffix="%"
-              valueStyle={{ color: auctionRateColor }} // Màu chữ dựa trên giá trị
+              valueStyle={{ color: auctionRateColor }}
             />
           </Card>
         </Col>
       </Row>
 
-      {/* Các thống kê bổ sung */}
       <Row gutter={[16, 16]} style={{ marginTop: "20px" }}>
         <Col span={6}>
           <Card style={{ backgroundColor: "#e6fffb" }}>
-            {" "}
             <Statistic
               title="Total Members"
               value={data["Total members"]}
@@ -162,7 +162,6 @@ const IncomeOverview = () => {
         </Col>
         <Col span={6}>
           <Card style={{ backgroundColor: "#e6f7ff" }}>
-            {" "}
             <Statistic
               title="Total Koi Breeders"
               value={data["Total koi breeders"]}
@@ -172,7 +171,6 @@ const IncomeOverview = () => {
         </Col>
         <Col span={6}>
           <Card style={{ backgroundColor: "#fff1f0" }}>
-            {" "}
             <Statistic
               title="Total Staffs"
               value={data["Total staffs"]}
@@ -182,107 +180,113 @@ const IncomeOverview = () => {
         </Col>
         <Col span={6}>
           <Card style={{ backgroundColor: "#fff7e6" }}>
-            {" "}
             <Statistic
               title="Latest Balance"
-              value={latestBalance} // Lấy balance gần nhất của hệ thống
+              value={latestBalance}
               valueStyle={{ color: "#ff7300" }}
             />
           </Card>
         </Col>
       </Row>
 
-      {/* Biểu đồ doanh thu phiên đấu giá và doanh thu hệ thống */}
+      {/* Row for Daily and Monthly System Revenue */}
       <Row gutter={[16, 16]} style={{ marginTop: "20px" }}>
         <Col span={12}>
-          <Card title="Auction Session Revenue">
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={auctionRevenueData}>
-                <XAxis
-                  dataKey="auctionId"
-                  label={{
-                    value: "Auction ID",
-                    position: "insideBottom",
-                    offset: -5,
-                  }}
-                />
-                <YAxis
-                  label={{
-                    value: "Revenue (VND)",
-                    angle: -90,
-                    position: "insideLeft",
-                  }}
-                />
-                <Tooltip />
-                <Bar dataKey="revenue" fill="#1890ff" />
-              </BarChart>
-            </ResponsiveContainer>
+          <Card title="Daily System Revenue Over Time">
+            {dailySystemRevenueData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={dailySystemRevenueData}>
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="balance" stroke="#ff7300" />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <p style={{ textAlign: "center" }}>No data available</p>
+            )}
           </Card>
         </Col>
 
         <Col span={12}>
-          <Card title="System Revenue Over Time">
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={systemRevenueData}>
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="balance" stroke="#ff7300" />
-              </LineChart>
-            </ResponsiveContainer>
+          <Card title="Monthly System Revenue">
+            {monthlySystemRevenueData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={monthlySystemRevenueData}>
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="balance" stroke="#0033cc" />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <p style={{ textAlign: "center" }}>No data available</p>
+            )}
           </Card>
         </Col>
       </Row>
 
-      {/* Biểu đồ giống cá top và người trả giá top */}
+      {/* Row for Auction Revenue and Top Varieties */}
       <Row gutter={[16, 16]} style={{ marginTop: "20px" }}>
         <Col span={12}>
-          <Card title="Top Auction Varieties by Participants">
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={topVarietiesData}
-                  dataKey="participants"
-                  nameKey="name"
-                  cx="50%"
-                  cy="50%"
-                  outerRadius={100}
-                  fill="#8884d8"
-                  label
-                >
-                  {topVarietiesData.map((_, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index] || getRandomColor()}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+          <Card title="Auction Session Revenue">
+            {auctionRevenueData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={auctionRevenueData}>
+                  <XAxis
+                    dataKey="auctionId"
+                    label={{
+                      value: "Auction ID",
+                      position: "insideBottom",
+                      offset: -5,
+                    }}
+                  />
+                  <YAxis
+                    label={{
+                      value: "Revenue (VND)",
+                      angle: -90,
+                      position: "insideLeft",
+                    }}
+                  />
+                  <Tooltip />
+                  <Bar dataKey="revenue" fill="#1890ff" />
+                </BarChart>
+              </ResponsiveContainer>
+            ) : (
+              <p style={{ textAlign: "center" }}>No data available</p>
+            )}
           </Card>
         </Col>
 
         <Col span={12}>
-          <Card title="Top Bidder Amounts">
-            <ul style={{ listStyleType: "none", padding: 0 }}>
-              {data["Top Bidder Amounts"].map((bidder, index) => (
-                <li key={bidder["User ID"]} style={{ marginBottom: "8px" }}>
-                  <span
-                    style={{
-                      fontWeight: "bold",
-                      color:
-                        index === 0 ? "gold" : index === 1 ? "silver" : "black",
-                    }}
+          <Card title="Top Auction Varieties by Participants">
+            {topVarietiesData.length > 0 ? (
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={topVarietiesData}
+                    dataKey="participants"
+                    nameKey="name"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={100}
+                    fill="#8884d8"
+                    label
                   >
-                    Top {index + 1}
-                  </span>{" "}
-                  <strong>{bidder.Username}</strong>:{" "}
-                  {bidder["Total bid amount"]} VND
-                </li>
-              ))}
-            </ul>
+                    {topVarietiesData.map((_, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index] || getRandomColor()}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                  <Legend />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <p style={{ textAlign: "center" }}>No data available</p>
+            )}
           </Card>
         </Col>
       </Row>

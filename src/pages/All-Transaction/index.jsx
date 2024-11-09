@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Tag, Button, Select, DatePicker, message } from "antd";
+import { Table, Tag, Button, Select, DatePicker, Input, message } from "antd";
 import api from "../../config/axios";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import { RightOutlined } from "@ant-design/icons";
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
-const Transaction = () => {
+const AllTransaction = () => {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
@@ -26,6 +26,7 @@ const Transaction = () => {
     page = pagination.current,
     pageSize = pagination.pageSize
   ) => {
+    console.log(page);
     setLoading(true);
     try {
       const { transactionType, startDate, endDate } = filters;
@@ -36,7 +37,8 @@ const Transaction = () => {
         page: page - 1,
         size: pageSize,
       };
-      const response = await api.get("/transaction/my-transactions", {
+
+      const response = await api.get("/transaction/filter-transactions", {
         params,
       });
       const { transactionResponseList, totalElements, pageNumber } =
@@ -56,37 +58,40 @@ const Transaction = () => {
     }
   };
 
+  // Gọi lại API khi filters hoặc pagination thay đổi
   useEffect(() => {
-    fetchTransactions();
-  }, []);
+    fetchTransactions(1, pagination.pageSize);
+  }, [filters]);
 
   const handleFilterChange = (value, field) => {
-    setFilters({
-      ...filters,
+    setFilters((prevFilters) => ({
+      ...prevFilters,
       [field]: value,
-    });
+    }));
   };
 
   const handleDateChange = (dates) => {
     const [start, end] = dates || [];
-    setFilters({
-      ...filters,
+    setFilters((prevFilters) => ({
+      ...prevFilters,
       startDate: start ? start.format("YYYY-MM-DD") : null,
       endDate: end ? end.format("YYYY-MM-DD") : null,
-    });
+    }));
   };
 
   const handleTableChange = (pagination) => {
-    fetchTransactions(pagination, pagination.pageSize);
+    setPagination(pagination);
+    fetchTransactions(pagination.current, pagination.pageSize);
   };
 
   const handleAllTransactions = () => {
     setFilters({
       transactionType: "",
+      fromUserId: "",
+      toUserId: "",
       startDate: null,
       endDate: null,
     });
-    fetchTransactions(1); // Load lại tất cả giao dịch
   };
 
   const columns = [
@@ -141,7 +146,6 @@ const Transaction = () => {
         return description;
       },
     },
-
     {
       title: "From Account",
       dataIndex: "fromAccount",
@@ -153,7 +157,6 @@ const Transaction = () => {
           <span style={{ color: "red" }}>System</span>
         ),
     },
-
     {
       title: "To Account",
       dataIndex: "toAccount",
@@ -175,17 +178,21 @@ const Transaction = () => {
       title: "Auction",
       dataIndex: "auctionSessionId",
       key: "auctionSessionId",
-      render: (auctionSessionId) => (
-        <Button
-          type="link"
-          onClick={() => goToAuctionDetail(auctionSessionId)}
-          style={{ padding: 0 }}
-        >
-          <RightOutlined style={{ fontSize: "16px", color: "#1890ff" }} />
-        </Button>
-      ),
+      render: (auctionSessionId) =>
+        auctionSessionId ? (
+          <Button
+            type="link"
+            onClick={() => goToAuctionDetail(auctionSessionId)}
+            style={{ padding: 0 }}
+          >
+            <RightOutlined style={{ fontSize: "16px", color: "#1890ff" }} />
+          </Button>
+        ) : (
+          "N/A"
+        ),
     },
   ];
+
   const navigate = useNavigate();
 
   const goToAuctionDetail = (auctionSessionId) => {
@@ -203,13 +210,13 @@ const Transaction = () => {
         >
           <Option value="DEPOSIT_FUNDS">DEPOSIT_FUNDS</Option>
           <Option value="TRANSFER_FUNDS">TRANSFER_FUNDS</Option>
+          <Option value="FEE_TRANSFER">FEE_TRANSFER</Option>
           <Option value="BID">BID</Option>
           <Option value="WITHDRAW_FUNDS">WITHDRAW_FUNDS</Option>
         </Select>
+
         <RangePicker onChange={handleDateChange} style={{ marginRight: 10 }} />
-        <Button type="primary" onClick={() => fetchTransactions(1)}>
-          Filter
-        </Button>
+
         <Button onClick={handleAllTransactions} style={{ marginLeft: 10 }}>
           All
         </Button>
@@ -224,13 +231,13 @@ const Transaction = () => {
           current: pagination.current,
           pageSize: pagination.pageSize,
           total: pagination.total,
-          onChange: handleTableChange,
           showSizeChanger: false,
         }}
+        onChange={handleTableChange}
         style={{ marginBottom: "20px" }}
       />
     </div>
   );
 };
 
-export default Transaction;
+export default AllTransaction;

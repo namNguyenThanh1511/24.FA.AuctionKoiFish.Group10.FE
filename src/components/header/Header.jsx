@@ -48,6 +48,9 @@ const Header = () => {
             <Link to="/about">About</Link>
           </li>
           <li>
+            <Link to="/Introduction">Introduction</Link>
+          </li>
+          <li>
             <button className="btn-login" onClick={() => navigate("/login")}>
               Login
             </button>

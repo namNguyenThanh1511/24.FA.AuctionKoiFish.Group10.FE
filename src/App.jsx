@@ -36,7 +36,8 @@ import Transaction from "./pages/transaction";
 import AssignedAuctions from "./pages/STAFF/assigned-auctions";
 import AuctionProcessLog from "./pages/MANAGER/auction-processlog";
 import EditVariety from "./pages/STAFF/edit-variety";
-import requestPermissions from "./config/notification";
+import AllTransaction from "./pages/All-Transaction";
+import Introduction from "./pages/Introduction";
 function App() {
   useEffect(() => {
     requestPermissions();
@@ -49,6 +50,10 @@ function App() {
         {
           path: "/",
           element: <HomePage />,
+        },
+        {
+          path: "introduction",
+          element: <Introduction />,
         },
         {
           path: "/auctions",
@@ -163,6 +168,10 @@ function App() {
           element: <ManageMemberAccount />,
         },
         {
+          path: "all-transaction",
+          element: <AllTransaction />,
+        },
+        {
           path: "edit-variety",
           element: <EditVariety />,
         },
@@ -195,6 +204,10 @@ function App() {
         {
           path: "manage-koibreeder-account",
           element: <ManageKoiBreederAccount />,
+        },
+        {
+          path: "all-transaction",
+          element: <AllTransaction />,
         },
         {
           path: "auction-processlog",
