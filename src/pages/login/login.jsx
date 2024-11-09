@@ -1,13 +1,14 @@
 import React from "react";
 import { Form, Input, Button } from "antd";
 import "./login.css";
-import { auth, googleprovider } from "../../config/firebase";
+import { auth, googleprovider, messaging } from "../../config/firebase";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import api from "../../config/axios";
 import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { login, selectUser } from "../../redux/feature/userSlice";
+import { getToken } from "firebase/messaging";
 
 const Login = () => {
   const user = useSelector(selectUser);
@@ -23,6 +24,10 @@ const Login = () => {
       const { token, roleEnum } = response.data;
       localStorage.setItem("token", token);
       toast.success("Login success");
+
+      const fcmToken = handleGetFCMToken();
+
+      console.log(fcmToken);
       const user = response.data;
       dispatch(login(user));
       if (roleEnum === "KOI_BREEDER") {
@@ -63,7 +68,21 @@ const Login = () => {
       toast.error(error.response?.data || error.message);
     }
   };
-
+  const handleGetFCMToken = async () => {
+    try {
+      const fcmToken = await getToken(messaging, {
+        vapidKey:
+          "BHKxHoT4uosKVWPlKFy3sXByL3IvGXyr8moP2z_8mp45KPsXROO9t9AqFRYYEXhGoEh3zplbkqRvLCwjooVuahQ",
+        //vapidKey : get from Firebase -> Project Settings -> Cloud Messaging -> Web configuration -> Generate key pairs
+      });
+      if (fcmToken) {
+        console.log(fcmToken);
+        return fcmToken;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="login-container">
       <div className="login-form">
@@ -95,14 +114,24 @@ const Login = () => {
           </div>
 
           <Form.Item>
-            <Button className="signin-button" type="primary" htmlType="submit" block>
+            <Button
+              className="signin-button"
+              type="primary"
+              htmlType="submit"
+              block
+            >
               SIGN IN
             </Button>
           </Form.Item>
         </Form>
 
         <div className="login-google">
-          <Button className="google-button" type="default" block onClick={handleLoginGoogle}>
+          <Button
+            className="google-button"
+            type="default"
+            block
+            onClick={handleLoginGoogle}
+          >
             <img
               src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASsAAACoCAMAAACPKThEAAABklBMVEX////+/v40qFP///1FhPXqQjf4vA
               TtQTfsQjUzp1RFhPZFhfP8uwc+fvqYufFChfUzqFA3eu7e7v4zeefk8PzpQzP7///3vQH73d3oRDf+//r6uAAxq1PoPC/vQjbsOy7eOS3bOjR

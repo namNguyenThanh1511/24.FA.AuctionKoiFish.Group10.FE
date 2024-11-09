@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Space, Popconfirm, message, Form } from "antd";
+import { Table, Button, Space, Popconfirm, message, Form, Tooltip } from "antd";
 import api from "../../../config/axios";
 import { DeleteOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
 
 const ManageMemberAccount = () => {
   const [accounts, setAccounts] = useState([]); // State lưu danh sách tài khoản
@@ -14,10 +15,7 @@ const ManageMemberAccount = () => {
 
   const [form] = Form.useForm();
   // Hàm fetch dữ liệu tài khoản từ API
-  const fetchAccounts = async (
-    page = pagination.current,
-    pageSize = pagination.pageSize
-  ) => {
+  const fetchAccounts = async (page = pagination.current, pageSize = pagination.pageSize) => {
     setLoading(true);
     try {
       const response = await api.get("/members-pagination", {
@@ -27,13 +25,8 @@ const ManageMemberAccount = () => {
         },
       });
       console.log("API Response:", response.data);
-      const {
-        accountResponseList,
-        totalElements,
-        totalPages,
-        pageNumber,
-        numberOfElements,
-      } = response.data;
+      const { accountResponseList, totalElements, totalPages, pageNumber, numberOfElements } =
+        response.data;
       setAccounts(accountResponseList);
       setPagination({
         current: pageNumber + 1,
@@ -99,8 +92,23 @@ const ManageMemberAccount = () => {
     },
     {
       title: "Creation Date",
-      dataIndex: "createdDate",
-      key: "createdDate",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (date) => (
+        <Tooltip title={dayjs(date).format("MMMM D, YYYY, h:mm A")}>
+          <span>{dayjs(date).format("YYYY-MM-DD")}</span>
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Updated Date",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      render: (date) => (
+        <Tooltip title={dayjs(date).format("MMMM D, YYYY, h:mm A")}>
+          <span>{dayjs(date).format("YYYY-MM-DD")}</span>
+        </Tooltip>
+      ),
     },
     {
       title: "Role",
@@ -112,9 +120,7 @@ const ManageMemberAccount = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <span style={{ color: status === "ACTIVE" ? "green" : "red" }}>
-          {status}
-        </span>
+        <span style={{ color: status === "ACTIVE" ? "green" : "red" }}>{status}</span>
       ),
     },
     {

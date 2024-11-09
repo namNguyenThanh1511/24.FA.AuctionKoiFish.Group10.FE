@@ -8,6 +8,9 @@ import {
   ScheduleOutlined,
   TeamOutlined,
   LogoutOutlined,
+  EditOutlined,
+  DollarOutlined,
+
 } from "@ant-design/icons";
 
 const DropdownMenuStaff = () => {
@@ -30,7 +33,18 @@ const DropdownMenuStaff = () => {
       <Menu.Item key="4" icon={<TeamOutlined />}>
         <Link to="/staff-profile/manage-member-account">Member Account</Link>
       </Menu.Item>
-      <Menu.Item key="5" icon={<LogoutOutlined />} danger onClick={handleLogout}>
+      <Menu.Item key="5" icon={<EditOutlined />} >
+      <Link to="/staff-profile/edit-variety">Edit Variety</Link>
+      </Menu.Item>
+      <Menu.Item key="6" icon={<DollarOutlined />} >
+      <Link to="/staff-profile/withdraw-request">Withdraw</Link>
+      </Menu.Item>
+      <Menu.Item
+        key="6"
+        icon={<LogoutOutlined />}
+        danger
+        onClick={handleLogout}
+      >
         Log out
       </Menu.Item>
     </Menu>

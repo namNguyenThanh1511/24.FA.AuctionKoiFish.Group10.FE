@@ -1,39 +1,50 @@
 import React, { useState, useEffect } from "react";
-import { Button, Input } from "antd";
+import { Button, Input, message } from "antd";
+import { useSelector } from "react-redux";
 import "./index.css";
 import api from "../../../config/axios";
 
 const FixedPriceBid = ({ currentPrice, handleBid }) => {
-  const [bidValue, setBidValue] = useState(currentPrice); // Giá mặc định là currentPrice
-  const [balance, setBalance] = useState(0); // Khởi tạo trạng thái balance
+  const [bidValue, setBidValue] = useState(currentPrice);
+  const [balance, setBalance] = useState(0);
 
+  // Lấy role từ Redux store
+  const roleEnum = useSelector((state) => state.user.roleEnum);
+
+  // Lấy balance khi component được mount
   useEffect(() => {
     const fetchBalance = async () => {
       try {
-        const response = await api.get(`user/balance`); // Gọi API để lấy balance
-        setBalance(response.data.balance); // Cập nhật balance từ phản hồi API
+        const balanceResponse = await api.get("user/balance");
+        setBalance(balanceResponse.data.balance);
       } catch (error) {
         console.error("Lỗi khi lấy số dư:", error);
       }
     };
 
     fetchBalance();
-  }, []); // Chỉ gọi API một lần khi component được tải lên
+  }, []);
 
   const placeBid = () => {
+    // Kiểm tra nếu người dùng không phải là "MEMBER"
+    if (roleEnum !== "MEMBER") {
+      message.error("Bạn không có quyền đặt giá thầu!");
+      return;
+    }
+
     handleBid(bidValue);
   };
 
   return (
     <div className="fixed-price-bid-container">
-      {/* Hiển thị thông tin balance bên trái */}
+      {/* Hiển thị số dư */}
       <div className="balance-section">
         <span style={{ fontSize: "16px", fontWeight: "bold" }}>
           Balance: {balance.toLocaleString("en-US")}₫
         </span>
       </div>
 
-      {/* Ô nhập giá ở giữa, chỉ hiển thị giá trị mặc định và không thể chỉnh sửa */}
+      {/* Ô nhập giá, chỉ hiển thị giá trị mặc định và không thể chỉnh sửa */}
       <Input
         type="text"
         className="bid-input"
@@ -47,7 +58,7 @@ const FixedPriceBid = ({ currentPrice, handleBid }) => {
         className="button-bid"
         type="primary"
         onClick={placeBid}
-        disabled={bidValue > balance} // Nút sẽ bị vô hiệu nếu giá trị bid lớn hơn balance
+        disabled={bidValue > balance || roleEnum !== "MEMBER"}
         style={{ marginLeft: "10px" }}
       >
         Bid

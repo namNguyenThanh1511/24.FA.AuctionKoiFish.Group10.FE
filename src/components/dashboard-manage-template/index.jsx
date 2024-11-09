@@ -42,6 +42,7 @@ function DashboardTemplate({
   isCreateNew,
   setSelectedFish,
   paginationTarget,
+  filterParams,
   setIsRender,
 }) {
   const [dataSource, setDataSource] = useState([]);
@@ -65,6 +66,10 @@ function DashboardTemplate({
   useEffect(() => {
     fetchData(pagination.current, pagination.pageSize);
   }, []);
+
+  useEffect(() => {
+    fetchData(1, pagination.pageSize);
+  }, [filterParams]);
 
   useEffect(() => {
     if (currentRecord) {
@@ -180,8 +185,24 @@ function DashboardTemplate({
   }, [columns]);
 
   const fetchData = async (current, pageSize) => {
+    const filterParamsAfterEncode = Object.entries(filterParams)
+      .filter(
+        ([key, value]) =>
+          value !== undefined &&
+          value !== "" &&
+          value != null &&
+          !(Array.isArray(value) && value.length === 0) &&
+          value !== 0
+      )
+      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+      .join("&");
+    console.log(filterParamsAfterEncode);
     try {
-      const response = await api.get(apiURI + `?page=${current - 1}&size=${pageSize}`);
+      const response = await api.get(
+        `${apiURI}?page=${current - 1}&size=${pageSize}${
+          filterParamsAfterEncode ? `&${filterParamsAfterEncode}` : ""
+        }`
+      );
       setIsFetching(false);
       setDataSource(response.data[paginationTarget]);
       setPagination({

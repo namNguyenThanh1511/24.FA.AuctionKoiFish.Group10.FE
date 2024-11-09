@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePages/HomePage";
 import Login from "./pages/login/login";
@@ -34,9 +34,16 @@ import IncomeOverview from "./pages/MANAGER/imcome-overview";
 import WithDraw from "./pages/withdraw";
 import WithdrawRequest from "./pages/STAFF/withdraw-request";
 import Transaction from "./pages/transaction";
+import AssignedAuctions from "./pages/STAFF/assigned-auctions";
+import AuctionProcessLog from "./pages/MANAGER/auction-processlog";
+import EditVariety from "./pages/STAFF/edit-variety";
+import requestPermissions from "./config/notification";
 function App() {
+  useEffect(() => {
+    requestPermissions();
+  }, []);
   const router = createBrowserRouter([
-    { 
+    {
       path: "",
       element: <Layout />,
       children: [
@@ -148,12 +155,17 @@ function App() {
           path: "manage-auction-request",
           element: <ManageAuctionRequest />,
         },
-
-        
-        
+        {
+          path: "manage-assigned-session",
+          element: <AssignedAuctions />,
+        },
         {
           path: "manage-member-account",
           element: <ManageMemberAccount />,
+        },
+        {
+          path: "edit-variety",
+          element: <EditVariety />,
         },
         {
           path: "withdraw-request",
@@ -184,6 +196,10 @@ function App() {
         {
           path: "manage-koibreeder-account",
           element: <ManageKoiBreederAccount />,
+        },
+        {
+          path: "auction-processlog",
+          element: <AuctionProcessLog />,
         },
         {
           path: "imcome-overview",

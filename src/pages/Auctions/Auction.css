@@ -11,40 +11,45 @@ body {
   padding: 20px;
   border-radius: 8px;
   margin-top: 130px;
-  text-align: center; /* Center align the form */
+  text-align: center;
 }
 
+/* Căn chỉnh form và các thành phần bên trong */
 .search-form {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center items horizontally */
-  justify-content: center; /* Căn giữa theo chiều dọc */
-  gap: 15px;
+  align-items: center;
+  gap: 20px;
   background-color: #f8f8f8;
-  padding: 15px;
+  padding: 20px;
   border-radius: 8px;
-  width: 1170px;
-  margin-left: 50px;
- 
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
+/* Căn chỉnh hàng của các filter */
 .search-row {
   display: flex;
-  gap: 15px;
-  justify-content: center; /* Center align each row */
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 /* Style cho các thành phần trong form */
 .search-form .ant-select,
 .search-form .ant-input-number,
-.search-form .ant-btn {
-  width: 200px;
+.search-form .ant-btn,
+.custom-slider {
+  width: 240px; /* Đồng bộ chiều rộng */
 }
 
 .search-form .ant-btn-primary {
-  width: auto;
   background-color: #1890ff;
   border-color: #1890ff;
+  transition: background-color 0.3s ease;
 }
 
 .search-form .ant-btn-primary:hover {
@@ -52,13 +57,26 @@ body {
   border-color: #40a9ff;
 }
 
-/* Style cho slider trong form (nếu có) */
-.search-form .ant-slider-track {
+/* Style cho slider */
+.custom-slider {
+  width: 240px; /* Đảm bảo hai slider có cùng chiều rộng */
+}
+
+.ant-slider-track {
   background-color: #1890ff;
 }
 
-.search-form .ant-slider-handle {
+.ant-slider-handle {
   border-color: #1890ff;
+}
+
+/* Style cho các filter khác */
+.select-breeder,
+.select-varieties,
+.select-type,
+.select-sex,
+.select-status {
+  width: 240px;
 }
 
 /* Style cho grid chứa các thẻ Card */
@@ -68,36 +86,23 @@ body {
   justify-content: flex-start;
   padding: 20px;
   background-color: #ffffff;
-  margin: 0 auto;
+  margin: 20px auto;
   max-width: 1200px;
-  margin-bottom: 30px;
-  margin-top: 10px;
   border-radius: 8px;
 }
 
-/* Style cho từng thẻ Card */
 .card-grid > div {
-  flex: 0 0 calc(25% - 15px);
-  max-width: calc(25% - 15px);
+  flex: 0 0 calc(25% - 20px);
+  max-width: calc(25% - 20px);
   box-sizing: border-box;
   margin-bottom: 20px;
 }
 
-.card-grid > div:nth-child(4n + 1) {
-  margin-left: 0;
-}
-
-.card-grid > div:nth-child(4n) {
-  margin-right: 0;
-}
-
-/* Đặt giới hạn cho thẻ Card */
 .card-container {
   max-width: 220px;
   margin: 10px;
 }
 
-/* Hiệu ứng hover cho thẻ Card */
 .card-container:hover {
   transform: scale(1.05);
   transition: transform 0.3s ease;
@@ -117,7 +122,6 @@ body {
   margin: 20px 0;
 }
 
-/* Style cho các nút chuyển trang */
 .pagination-button {
   margin: 0 5px;
   padding: 8px 16px;
@@ -138,20 +142,29 @@ body {
   background-color: darkgray;
 }
 
-
-.select-type {
-  margin-right: 92px;
-}
-
+/* Style cho nút filter */
 .custom-filter-button {
-  background-color: #4caf50; /* Đổi màu nền */
-  color: #fff; /* Đổi màu chữ */
-  border-radius: 5px; /* Bo tròn góc */
-  font-weight: bold; /* Đậm chữ */
-  padding: 5px 10px; /* Giảm khoảng cách bên trong để nút nhỏ lại */
-  font-size: 14px; /* Giảm kích thước chữ */
-  border: none; /* Bỏ viền */
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Giảm đổ bóng */
-  transition: all 0.3s ease; /* Hiệu ứng chuyển đổi khi hover */
+  width: 240px;
+  background-color: #4caf50;
+  color: #fff;
+  border-radius: 5px;
+  font-weight: bold;
+  padding: 8px 16px;
+  font-size: 14px;
+  border: none;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
 }
 
+.custom-filter-button:hover {
+  background-color: #388e3c;
+}
+
+/* Đảm bảo nút, slider và select có cùng chiều rộng */
+.select-type,
+.select-sex,
+.select-status,
+.custom-slider,
+.custom-filter-button {
+  width: 240px;
+}

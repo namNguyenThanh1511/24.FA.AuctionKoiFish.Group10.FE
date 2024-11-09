@@ -5,6 +5,7 @@ import api from "../../config/axios";
 import { Table, message, Modal } from "antd";
 import BidForm from "../../components/bid-section/bid-ascending";
 import FixedPriceBid from "../../components/bid-section/bid-fixed-price";
+import formatToVND from "../../utils/currency";
 
 const Detail = () => {
   const { auctionSessionId } = useParams();
@@ -32,7 +33,7 @@ const Detail = () => {
 
       const historyData = response.data.bids.map((bid) => ({
         date: new Date(bid.bidAt).toLocaleString(),
-        bid: bid.bidAmount,
+        bid: formatToVND(bid.bidAmount),
         name: bid.member.fullName,
       }));
       setBidHistory(historyData);
@@ -42,6 +43,7 @@ const Detail = () => {
 
       if (
         response.data.auctionStatus === "COMPLETED" ||
+        response.data.auctionStatus === "DRAWN" ||
         response.data.auctionStatus === "NO_WINNER"
       ) {
         setCountdown("Auction ended");
@@ -56,10 +58,7 @@ const Detail = () => {
         const id = setInterval(() => {
           const updatedCountdown = getCountdown(new Date(), startDate);
           setCountdown(updatedCountdown);
-          if (updatedCountdown === "Auction starting soon") {
-            clearInterval(id);
-            startOngoingCountdown(startDate, endDate);
-          }
+
         }, 1000);
         setIntervalId(id);
       } else if (response.data.auctionStatus === "ONGOING") {
@@ -141,8 +140,8 @@ const Detail = () => {
         message.error("Failed to place bid.");
       }
     } catch (error) {
-      console.error("Error placing bid: ", error);
-      message.error("Failed to place bid.");
+      console.error("Error placing bid: " + error.response.data);
+      message.error("Failed to place bid." + error.response.data);
     }
   };
 

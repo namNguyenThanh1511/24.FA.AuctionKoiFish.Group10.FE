@@ -91,7 +91,7 @@ const IncomeOverview = () => {
   if (auctionSuccessRate < 40) {
     auctionRateColor = "red";
   } else if (auctionSuccessRate < 60) {
-    auctionRateColor = "yellow";
+    auctionRateColor = "orange";
   } else {
     auctionRateColor = "green";
   }

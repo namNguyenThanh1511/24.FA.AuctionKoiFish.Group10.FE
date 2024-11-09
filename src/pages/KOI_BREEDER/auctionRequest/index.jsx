@@ -21,7 +21,12 @@ import {
 } from "antd";
 import DashboardTemplate from "../../../components/dashboard-manage-template";
 import dayjs from "dayjs";
-import { CheckCircleOutlined, CloseCircleOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  SearchOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
 import formatToVND from "../../../utils/currency";
@@ -30,6 +35,7 @@ import CardKoiFish from "../../../components/card-koi-fish";
 import Title from "antd/es/typography/Title";
 import Paragraph from "antd/es/typography/Paragraph";
 import TextArea from "antd/es/input/TextArea";
+import BasicFilter from "../../../components/basic-filter";
 
 function ManageAuctionRequestOfKoiBreeder() {
   const title = "Auction Request";
@@ -42,6 +48,11 @@ function ManageAuctionRequestOfKoiBreeder() {
 
   const [form] = useForm();
   const [formViewDetails] = useForm();
+  const [filters, setFilters] = useState({
+    status: null,
+    startDate: null,
+    endDate: null,
+  });
   const koiColumns = [
     {
       title: "Image",
@@ -94,7 +105,9 @@ function ManageAuctionRequestOfKoiBreeder() {
     {
       title: "Action",
       key: "action",
-      render: (_, fish) => <Button onClick={() => handleFishSelect(fish)}>Select</Button>,
+      render: (_, fish) => (
+        <Button onClick={() => handleFishSelect(fish)}>Select</Button>
+      ),
     },
   ];
   const columns = [
@@ -143,13 +156,18 @@ function ManageAuctionRequestOfKoiBreeder() {
       key: "responseNote",
       render: (response, record) => {
         // If status is pending or response is empty, return an empty string
-        if (record.status === "PENDING" || response === "" || response === null) {
+        if (
+          record.status === "PENDING" ||
+          response === "" ||
+          response === null
+        ) {
           return null;
         }
 
         // Determine alert type based on the record status
         const alertType =
-          record.status === "ACCEPTED_BY_STAFF" || record.status === "APPROVED_BY_MANAGER"
+          record.status === "ACCEPTED_BY_STAFF" ||
+          record.status === "APPROVED_BY_MANAGER"
             ? "success"
             : "error";
 
@@ -230,6 +248,18 @@ function ManageAuctionRequestOfKoiBreeder() {
     }
   };
 
+  const statusColors = {
+    AVAILABLE: "green",
+    PENDING: "yellow",
+    PENDING_AUCTION: "orange",
+    SELLING: "purple",
+    DELIVER_REQUIRED: "red",
+    DELIVERING_TO_BUYER: "teal",
+    RETURNING: "brown",
+    SOLD: "blue",
+    UNAVAILABLE: "gray",
+  };
+
   useEffect(() => {
     fetchVarieties();
     fetchFish(); // Fetch fish data when component mounts
@@ -306,12 +336,7 @@ function ManageAuctionRequestOfKoiBreeder() {
             Select Fish
           </Button>
         </div>
-        <Form.Item
-          hidden
-          label="Description"
-          name={"koiFish_id"}
-          rules={[{ required: true, message: "Please enter description!" }]}
-        >
+        <Form.Item hidden label="Koi Fish" name={"koiFish_id"}>
           <Input value={selectedFish?.koi_id} />
         </Form.Item>
       </div>
@@ -320,7 +345,12 @@ function ManageAuctionRequestOfKoiBreeder() {
         <Card
           style={{ width: 300, marginTop: 16 }}
           actions={[
-            <Button danger key={1} type="default" onClick={() => setSelectedFish(null)}>
+            <Button
+              danger
+              key={1}
+              type="default"
+              onClick={() => setSelectedFish(null)}
+            >
               Remove
             </Button>,
           ]}
@@ -332,11 +362,73 @@ function ManageAuctionRequestOfKoiBreeder() {
               <Tag color="volcano">{selectedFish.sex}</Tag>
             </div>
             <p style={{ marginTop: 8 }}>
-              <strong>Size:</strong> {selectedFish.sizeCm} cm
+              <strong>Koi ID :</strong>{" "}
+              {selectedFish.name + "#" + selectedFish.koi_id}
             </p>
             <p>
-              <strong>Weight:</strong> {selectedFish.weightKg} kg
+              <strong>Size:</strong> {selectedFish?.sizeCm} cm
             </p>
+            <p>
+              <strong>Weight:</strong> {selectedFish?.weightKg} kg
+            </p>
+            <p>
+              <strong>Born In:</strong>{" "}
+              {dayjs(selectedFish?.bornIn).format("YYYY-MM-DD")}
+            </p>
+            <p>
+              <strong>Description:</strong> {selectedFish?.description}
+            </p>
+            <p>
+              <strong>Estimated Value:</strong>{" "}
+              {formatToVND(selectedFish?.estimatedValue)}
+            </p>
+            <p>
+              <strong>Status:</strong>{" "}
+              <Tag color={statusColors[selectedFish?.koiStatus]}>
+                {selectedFish?.koiStatus}
+              </Tag>
+            </p>
+            <span>
+              <strong>Varieties :</strong>{" "}
+            </span>
+            {/* Display Koi Varieties as Tags */}
+            {selectedFish?.varieties?.map((variety, id) => {
+              // Define a color map or generate a color based on variety
+              const varietyColorMap = {
+                Kohaku: "red",
+                Sowa: "lime",
+                Ochibashigure: "magenta",
+                Hirenaga: "gold",
+                Tancho: "purple",
+                Kiryuu: "orange",
+                Sanke: "volcano",
+                Showa: "green",
+                Utsurimono: "blue",
+                Bekko: "cyan",
+                Asagi: "geekblue",
+                Shusui: "purple",
+              };
+              const color = varietyColorMap[variety.name] || "gray";
+
+              return (
+                <Tag color={color} key={id} style={{ margin: "4px" }}>
+                  {variety.name}
+                </Tag>
+              );
+            })}
+
+            {selectedFish?.video_url && (
+              <p>
+                <strong>Video:</strong>{" "}
+                <a
+                  href={selectedFish?.video_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Watch Video
+                </a>
+              </p>
+            )}
           </div>
         </Card>
       )}
@@ -407,7 +499,10 @@ function ManageAuctionRequestOfKoiBreeder() {
       <Form.Item label="Description : " name="description">
         <TextArea
           rows={4} // Adjust the number of rows
-          value={formViewDetails.getFieldValue("description") || "No description available."}
+          value={
+            formViewDetails.getFieldValue("description") ||
+            "No description available."
+          }
           style={{
             margin: 0,
             color: "#333",
@@ -426,7 +521,10 @@ function ManageAuctionRequestOfKoiBreeder() {
       <Form.Item label="Response note" name="responseNote">
         <TextArea
           rows={4} // Adjust the number of rows
-          value={formViewDetails.getFieldValue("responseNote") || "No response note available."}
+          value={
+            formViewDetails.getFieldValue("responseNote") ||
+            "No response note available."
+          }
           style={{
             margin: 0,
             color: "red",
@@ -449,9 +547,70 @@ function ManageAuctionRequestOfKoiBreeder() {
       {/* <CardKoiFish id={formViewDetails.getFieldValue("koi_id")} /> */}
     </Card>
   );
+  const onChangeFilter = (field, value) => {
+    const updatedFilters = { ...filters, [field]: value };
+    setFilters(updatedFilters);
+    console.log(updatedFilters);
+  };
+  const statusOptions = [
+    { value: "PENDING", color: "orange" },
+    { value: "ACCEPTED_BY_STAFF", color: "blue" },
+    { value: "APPROVED_BY_MANAGER", color: "green" },
+    { value: "REJECTED_BY_MANAGER", color: "red" },
+    { value: "REJECTED_BY_STAFF", color: "red" },
+  ];
+  const filterItems = (
+    <div
+      style={{
+        display: "flex",
+        gap: "16px",
+        marginBottom: "16px",
+        padding: "16px",
+        borderRadius: "8px",
+        backgroundColor: "#f0f2f5",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <Form.Item name="status" label="Status" style={{ flex: 1 }}>
+        <Select
+          onChange={(value) => onChangeFilter("status", value)}
+          placeholder="Select status"
+          style={{ borderRadius: "4px" }}
+        >
+          {statusOptions.map(({ value, color }) => (
+            <Select.Option key={value} value={value}>
+              <Tag color={color} style={{ marginRight: "8px" }}>
+                {value}
+              </Tag>
+            </Select.Option>
+          ))}
+        </Select>
+      </Form.Item>
+      <Form.Item name="startDate" label="Start Date" style={{ flex: 1 }}>
+        <DatePicker
+          onChange={(date, dateString) =>
+            onChangeFilter("startDate", dateString)
+          }
+          format="YYYY-MM-DD"
+          placeholder="Select start date"
+          style={{ width: "100%", borderRadius: "4px" }}
+        />
+      </Form.Item>
 
+      {/* End Date Filter */}
+      <Form.Item name="endDate" label="End Date" style={{ flex: 1 }}>
+        <DatePicker
+          onChange={(date, dateString) => onChangeFilter("endDate", dateString)}
+          format="YYYY-MM-DD"
+          placeholder="Select end date"
+          style={{ width: "100%", borderRadius: "4px" }}
+        />
+      </Form.Item>
+    </div>
+  );
   return (
     <div style={{ margin: "100px auto" }}>
+      <BasicFilter filterItems={filterItems} />
       <DashboardTemplate
         form={form}
         isRerender={render}
@@ -464,7 +623,7 @@ function ManageAuctionRequestOfKoiBreeder() {
         formViewDetailsItem={formViewDetailsItems}
         isBasicCRUD={false}
         isIncludeImage={false}
-        apiURI={"auctionRequest/koiBreeder/pagination"}
+        apiURI={"auctionRequest/koiBreeder/pagination/filter"}
         formViewDetails={formViewDetails}
         isShownCardKoiFish={true}
         isCreateNew={true}
@@ -472,6 +631,7 @@ function ManageAuctionRequestOfKoiBreeder() {
         setSelectedFish={setSelectedFish}
         paginationTarget={"auctionRequestResponseList"}
         setIsRender={setRender}
+        filterParams={filters}
       />
     </div>
   );

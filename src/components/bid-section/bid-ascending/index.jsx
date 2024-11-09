@@ -41,19 +41,24 @@ const BidForm = ({ currentPrice, bidIncrement, buyNowPrice, handleBid, handleBuy
   return (
     <div className="bid-form-container">
       <div className="bid-section">
-        <button className="bid-adjust-button" onClick={decreaseBid} disabled={roleEnum !== "MEMBER"}>-</button>
+        <button className="bid-adjust-button" onClick={decreaseBid} disabled={roleEnum !== "MEMBER"}>
+          -
+        </button>
         <input
           type="text"
           className="bid-input"
           value={bidValue.toLocaleString("en-US")}
           readOnly
         />
-        <button className="bid-adjust-button" onClick={increaseBid} disabled={roleEnum !== "MEMBER"}>+</button>
-        <button className="button-bid" onClick={placeBid} disabled={roleEnum !== "MEMBER"}>Bid</button>
-        <span className="balance-section">
-          Balance: {balance.toLocaleString("en-US")}₫
-        </span>
+        <button className="bid-adjust-button" onClick={increaseBid} disabled={roleEnum !== "MEMBER"}>
+          +
+        </button>
+        <button className="button-bid" onClick={placeBid} disabled={roleEnum !== "MEMBER"}>
+          Bid
+        </button>
+        <span className="balance-section">Balance: {balance.toLocaleString("en-US")}₫</span>
       </div>
+
 
       <div className="buy-now-section">
         <div className="buy-now-price-box">
