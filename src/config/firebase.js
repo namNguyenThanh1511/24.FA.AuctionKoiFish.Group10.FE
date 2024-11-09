@@ -3,6 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { GoogleAuthProvider, getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
+import { getMessaging } from "firebase/messaging";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -16,14 +17,34 @@ const firebaseConfig = {
   messagingSenderId: "996152946405",
   appId: "1:996152946405:web:6d62fdb32e353683462e0c",
 };
+// Register the service worker
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker
+    .register("/firebase-messaging-sw.js")
+    .then((registration) => {
+      console.log("Service Worker registered with scope:", registration.scope);
+    })
+    .catch((error) => {
+      console.error("Service Worker registration failed:", error);
+    });
+}
 
+// Request permission to show notifications (optional)
+Notification.requestPermission().then((permission) => {
+  if (permission === "granted") {
+    console.log("Notification permission granted.");
+  } else {
+    console.log("Unable to get permission to notify.");
+  }
+});
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+
 const googleprovider = new GoogleAuthProvider();
-
 const storage = getStorage(app);
-
+const analytics = getAnalytics(app);
+const messaging = getMessaging(app);
 const auth = getAuth();
-export { googleprovider, auth, app };
+
+export { googleprovider, auth, app, messaging };
 export default storage;

@@ -102,7 +102,7 @@ function ManageKoiFish() {
       render: (varieties) => (
         <>
           {varieties.map((variety) => (
-            <div key={variety.id}>{variety.name},</div>
+            <div key={variety.id}>{variety.name}</div>
           ))}
         </>
       ),
@@ -127,26 +127,19 @@ function ManageKoiFish() {
       dataIndex: "koiStatus",
       key: "koiStatus",
       render: (status) => {
-        let color;
-        switch (status) {
-          case "AVAILABLE":
-            color = "green";
-            break;
-          case "PENDING":
-            color = "yellow";
-            break;
-          case "PENDING_AUCTION":
-            color = "orange";
-            break;
-          case "SOLD":
-            color = "blue";
-            break;
-          case "SELLING":
-            color = "purple";
-            break;
-          default:
-            color = "red";
-        }
+        const statusColors = {
+          AVAILABLE: "green",
+          PENDING: "yellow",
+          PENDING_AUCTION: "orange",
+          SELLING: "purple",
+          DELIVER_REQUIRED: "red",
+          DELIVERING_TO_BUYER: "teal",
+          RETURNING: "brown",
+          SOLD: "blue",
+          UNAVAILABLE: "gray",
+        };
+        let color = statusColors[status];
+
         return (
           <Tooltip title={status}>
             <Tag color={color} style={{ cursor: "pointer" }}>
@@ -395,13 +388,18 @@ function ManageKoiFish() {
     { value: "AVAILABLE", color: "green" },
     { value: "PENDING", color: "yellow" },
     { value: "PENDING_AUCTION", color: "orange" },
-    { value: "SOLD", color: "blue" },
     { value: "SELLING", color: "purple" },
+    { value: "DELIVER_REQUIRED", color: "red" },
+    { value: "DELIVERING_TO_BUYER", color: "teal" },
+    { value: "RETURNING", color: "brown" },
+    { value: "SOLD", color: "blue" },
+    { value: "UNAVAILABLE", color: "gray" },
   ];
+
   const onChangeFilter = (field, value) => {
     const updatedFilters = { ...filters };
 
-    if (Array.isArray(value)) {
+    if (Array.isArray(value) && (field === "WeightKg" || field === "SizeCm")) {
       // If value is an array, assume it's a range and store min and max separately
       updatedFilters[`min${field}`] = value[0];
       updatedFilters[`max${field}`] = value[1];

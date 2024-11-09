@@ -241,6 +241,18 @@ function ManageAuctionRequestOfKoiBreeder() {
     }
   };
 
+  const statusColors = {
+    AVAILABLE: "green",
+    PENDING: "yellow",
+    PENDING_AUCTION: "orange",
+    SELLING: "purple",
+    DELIVER_REQUIRED: "red",
+    DELIVERING_TO_BUYER: "teal",
+    RETURNING: "brown",
+    SOLD: "blue",
+    UNAVAILABLE: "gray",
+  };
+
   useEffect(() => {
     fetchVarieties();
     fetchFish(); // Fetch fish data when component mounts
@@ -317,12 +329,7 @@ function ManageAuctionRequestOfKoiBreeder() {
             Select Fish
           </Button>
         </div>
-        <Form.Item
-          hidden
-          label="Description"
-          name={"koiFish_id"}
-          rules={[{ required: true, message: "Please enter description!" }]}
-        >
+        <Form.Item hidden label="Koi Fish" name={"koiFish_id"}>
           <Input value={selectedFish?.koi_id} />
         </Form.Item>
       </div>
@@ -343,11 +350,64 @@ function ManageAuctionRequestOfKoiBreeder() {
               <Tag color="volcano">{selectedFish.sex}</Tag>
             </div>
             <p style={{ marginTop: 8 }}>
-              <strong>Size:</strong> {selectedFish.sizeCm} cm
+              <strong>Koi ID :</strong> {selectedFish.name + "#" + selectedFish.koi_id}
             </p>
             <p>
-              <strong>Weight:</strong> {selectedFish.weightKg} kg
+              <strong>Size:</strong> {selectedFish?.sizeCm} cm
             </p>
+            <p>
+              <strong>Weight:</strong> {selectedFish?.weightKg} kg
+            </p>
+            <p>
+              <strong>Born In:</strong> {dayjs(selectedFish?.bornIn).format("YYYY-MM-DD")}
+            </p>
+            <p>
+              <strong>Description:</strong> {selectedFish?.description}
+            </p>
+            <p>
+              <strong>Estimated Value:</strong> {formatToVND(selectedFish?.estimatedValue)}
+            </p>
+            <p>
+              <strong>Status:</strong>{" "}
+              <Tag color={statusColors[selectedFish?.koiStatus]}>{selectedFish?.koiStatus}</Tag>
+            </p>
+            <span>
+              <strong>Varieties :</strong>{" "}
+            </span>
+            {/* Display Koi Varieties as Tags */}
+            {selectedFish?.varieties?.map((variety, id) => {
+              // Define a color map or generate a color based on variety
+              const varietyColorMap = {
+                Kohaku: "red",
+                Sowa: "lime",
+                Ochibashigure: "magenta",
+                Hirenaga: "gold",
+                Tancho: "purple",
+                Kiryuu: "orange",
+                Sanke: "volcano",
+                Showa: "green",
+                Utsurimono: "blue",
+                Bekko: "cyan",
+                Asagi: "geekblue",
+                Shusui: "purple",
+              };
+              const color = varietyColorMap[variety.name] || "gray";
+
+              return (
+                <Tag color={color} key={id} style={{ margin: "4px" }}>
+                  {variety.name}
+                </Tag>
+              );
+            })}
+
+            {selectedFish?.video_url && (
+              <p>
+                <strong>Video:</strong>{" "}
+                <a href={selectedFish?.video_url} target="_blank" rel="noopener noreferrer">
+                  Watch Video
+                </a>
+              </p>
+            )}
           </div>
         </Card>
       )}

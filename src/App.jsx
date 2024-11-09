@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePages/HomePage";
 import Login from "./pages/login/login";
@@ -36,7 +36,11 @@ import Transaction from "./pages/transaction";
 import AssignedAuctions from "./pages/STAFF/assigned-auctions";
 import AuctionProcessLog from "./pages/MANAGER/auction-processlog";
 import EditVariety from "./pages/STAFF/edit-variety";
+import requestPermissions from "./config/notification";
 function App() {
+  useEffect(() => {
+    requestPermissions();
+  }, []);
   const router = createBrowserRouter([
     {
       path: "",

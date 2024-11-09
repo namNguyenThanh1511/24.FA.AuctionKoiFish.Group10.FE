@@ -59,17 +59,16 @@ function CardKoiFish({ id }) {
   if (error) {
     return <Alert message={error} type="error" />;
   }
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "PENDING":
-        return "yellow";
-      case "ACCEPTED":
-        return "green";
-      case "REJECTED":
-        return "red";
-      default:
-        return "default";
-    }
+  const statusColors = {
+    AVAILABLE: "green",
+    PENDING: "yellow",
+    PENDING_AUCTION: "orange",
+    SELLING: "purple",
+    DELIVER_REQUIRED: "red",
+    DELIVERING_TO_BUYER: "teal",
+    RETURNING: "brown",
+    SOLD: "blue",
+    UNAVAILABLE: "gray",
   };
 
   return (
@@ -100,7 +99,7 @@ function CardKoiFish({ id }) {
         </p>
         <p>
           <strong>Status:</strong>{" "}
-          <Tag color={getStatusColor(data?.koiStatus)}>{data?.koiStatus}</Tag>
+          <Tag color={statusColors[data?.koiStatus]}>{data?.koiStatus}</Tag>
         </p>
         <span>
           <strong>Varieties :</strong>{" "}

@@ -68,7 +68,7 @@ function DashboardTemplate({
   }, []);
 
   useEffect(() => {
-    fetchData(pagination.current, pagination.pageSize);
+    fetchData(1, pagination.pageSize);
   }, [filterParams]);
 
   useEffect(() => {

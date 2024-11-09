@@ -23,6 +23,7 @@ const Auction = () => {
     maxWeightKg: null,
     sex: null, // Thêm thuộc tính sex
     auctionType: null, // Thêm thuộc tính auctionType
+    status: null,
   });
   const cardsPerPage = 8;
   const navigate = useNavigate();
@@ -69,7 +70,8 @@ const Auction = () => {
           name: item.koi.name || "Unknown",
           title: item.title || "Unknown",
           breeder: item.koi.breeder.username || "Unknown",
-          length: item.koi.sizeCm || "Unknown",
+          size: item.koi.sizeCm || "Unknown",
+          weight: item.koi.weightKg || "Unknown",
           sex: item.koi.sex || "Unknown",
           bornIn: item.koi.bornIn || "Unknown",
           age: age || "0 years 0 months",
@@ -229,6 +231,18 @@ const Auction = () => {
           <Option value="ASCENDING">Ascending</Option>
           <Option value="DESCENDING">Descending</Option>
         </Select>
+        <Select
+          style={{ width: "100%", marginTop: 10 }}
+          placeholder="Select status"
+          onChange={(value) => handleInputChange("status", value)}
+        >
+          <Option value="UPCOMING">Upcoming</Option>
+          <Option value="ONGOING">On-going</Option>
+          <Option value="NO_WINNER">No winner</Option>
+          <Option value="COMPLETED">Completed</Option>
+          <Option value="COMPLETED_WITH_BUYNOW">Completed by buy now</Option>
+          <Option value="DRAWN">DRAWN</Option>
+        </Select>
       </Modal>
 
       <div className="card-grid">
@@ -239,7 +253,8 @@ const Auction = () => {
             title={card.title}
             name={card.name}
             breeder={card.breeder}
-            length={card.length}
+            size={card.size}
+            weight={card.weight}
             sex={card.sex}
             age={card.age}
             countdown={card.countdown}

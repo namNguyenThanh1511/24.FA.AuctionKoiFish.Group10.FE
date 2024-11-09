@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Table,
-  Button,
-  Space,
-  Popconfirm,
-  message,
-  Form,
-  Modal,
-  Input,
-} from "antd";
+import { Table, Button, Space, Popconfirm, message, Form, Modal, Input, Tooltip } from "antd";
 import api from "../../../config/axios";
 import { DeleteOutlined } from "@ant-design/icons";
 import "./index.css";
@@ -19,33 +10,25 @@ const ManageKoiBreederAccount = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [pagination, setPagination] = useState({
-    current: 1, 
-    pageSize: 4, 
+    current: 1,
+    pageSize: 8,
     total: 0,
   });
 
   const [form] = Form.useForm();
 
-  const fetchAccounts = async (
-    page = pagination.current,
-    pageSize = pagination.pageSize
-  ) => {
+  const fetchAccounts = async (page = pagination.current, pageSize = pagination.pageSize) => {
     setLoading(true);
     try {
       const response = await api.get("/breeders-pagination", {
         params: {
-          page: page - 1, 
+          page: page - 1,
           size: pageSize,
         },
       });
       console.log("API Response:", response.data);
-      const {
-        accountResponseList,
-        totalElements,
-        totalPages,
-        pageNumber,
-        numberOfElements,
-      } = response.data;
+      const { accountResponseList, totalElements, totalPages, pageNumber, numberOfElements } =
+        response.data;
       setAccounts(accountResponseList);
       setPagination({
         current: pageNumber + 1, // Adjust for zero-based index
@@ -136,9 +119,23 @@ const ManageKoiBreederAccount = () => {
     },
     {
       title: "Creation Date",
-      dataIndex: "createdDate",
-      key: "createdDate",
-      render: (createdDate) => dayjs(createdDate).format("DD-MM-YYYY HH:mm:ss"),
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (date) => (
+        <Tooltip title={dayjs(date).format("MMMM D, YYYY, h:mm A")}>
+          <span>{dayjs(date).format("YYYY-MM-DD")}</span>
+        </Tooltip>
+      ),
+    },
+    {
+      title: "Updated Date",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
+      render: (date) => (
+        <Tooltip title={dayjs(date).format("MMMM D, YYYY, h:mm A")}>
+          <span>{dayjs(date).format("YYYY-MM-DD")}</span>
+        </Tooltip>
+      ),
     },
     {
       title: "Balance",
@@ -155,9 +152,7 @@ const ManageKoiBreederAccount = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <span style={{ color: status === "ACTIVE" ? "green" : "red" }}>
-          {status}
-        </span>
+        <span style={{ color: status === "ACTIVE" ? "green" : "red" }}>{status}</span>
       ),
     },
     {
@@ -215,11 +210,7 @@ const ManageKoiBreederAccount = () => {
         onCancel={() => setIsModalVisible(false)}
         footer={null}
       >
-        <Form
-          form={form}
-          onFinish={handleCreateKoiBreederAccount}
-          layout="vertical"
-        >
+        <Form form={form} onFinish={handleCreateKoiBreederAccount} layout="vertical">
           <Form.Item
             label="Username"
             name="username"
@@ -270,11 +261,7 @@ const ManageKoiBreederAccount = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              style={{ marginRight: 10 }}
-            >
+            <Button type="primary" htmlType="submit" style={{ marginRight: 10 }}>
               Submit
             </Button>
             <Button onClick={() => setIsModalVisible(false)}>Cancel</Button>
