@@ -12,30 +12,7 @@
     height: auto;
 }
 
-.product-image {
-    margin-right: 20px;
-    text-align: center;
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    background-color: #fff;
-    width: 400px; /* Đặt kích thước cố định cho khung ảnh */
-    height: 439px; /* Đặt chiều cao cố định cho khung ảnh */
-}
 
-
-.product-image img {
-    width: 100%;
-    height: 100%;
-    max-width: 300px; /* Đặt chiều rộng tối đa cho ảnh */
-    max-height: 430px; /* Đặt chiều cao tối đa cho ảnh */
-    border-radius: 8px;
-    border: 2px solid #ccc;
-    object-fit: cover; /* Ảnh sẽ bao phủ toàn bộ khung, nhưng không bị bóp méo */
-    margin-left: 60px;
-}
 
 
 /* Cập nhật chiều cao cho sản phẩm detail để tương thích với ảnh */
@@ -101,3 +78,66 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     text-align: left;
 }
+
+
+.product-image {
+    margin-right: 20px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column; /* Thay đổi để sắp xếp ảnh và nút theo chiều dọc */
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background-color: #fff;
+    width: 400px;
+    height: auto;
+    padding: 10px;
+    border-radius: 8px;
+   
+  }
+  
+  .product-image img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    max-height: 430px;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    object-fit: cover;
+    margin-left: 40px;
+  }
+  
+
+.video-button {
+    margin-top: 15px; /* Khoảng cách giữa ảnh và nút */
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .video-button:hover {
+    background-color: #0056b3;
+  }
+
+  .video-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 800px; /* Đảm bảo modal không quá lớn */
+    height: auto;
+  }
+  
+  .video-container iframe {
+    width: 100%;
+    height: 450px; /* Tăng chiều cao để phù hợp với tỉ lệ video */
+    border: none;
+    border-radius: 8px;
+  }
+
+  

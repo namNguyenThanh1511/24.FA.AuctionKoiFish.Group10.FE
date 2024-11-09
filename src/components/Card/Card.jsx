@@ -11,6 +11,7 @@ const Card = ({
   length,
   sex,
   age,
+  weightKg,
   countdown,
   price,
   variety,
@@ -43,8 +44,12 @@ const Card = ({
               {sex}
             </p>
             <p>
-              <strong>Length: </strong>
+              <strong>Size: </strong>
               {length} cm
+            </p>
+            <p>
+              <strong>Weight: </strong>
+              {weightKg} cm
             </p>
           </div>
         </div>
