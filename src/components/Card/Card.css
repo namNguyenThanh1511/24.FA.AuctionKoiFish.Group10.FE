@@ -122,6 +122,19 @@
   color: #dc3545; /* Màu đỏ cho giá trị End */
 }
 
+.card-status.completed_with_buynow span {
+  color: #dc3545; /* Màu đỏ cho giá trị End */
+}
+
+.card-status.no_winner span {
+  color: #777777; /* Màu đỏ cho giá trị End */
+}
+
+.card-status.drawn span {
+  color:#dc3545 /* Màu đỏ cho giá trị End */
+}
+
+
 .card-type {
   color: #000000; /* Đổi màu chữ thành tối hơn để dễ nhìn */
   font-size: 12px; /* Giảm kích thước chữ */
@@ -139,6 +152,10 @@
 .card-type.completed {
   color: #dc3545; /* Màu đỏ cho loại End */
 }
+
+
+
+
 
 .view-button {
   position: absolute; /* Đặt vị trí tuyệt đối */

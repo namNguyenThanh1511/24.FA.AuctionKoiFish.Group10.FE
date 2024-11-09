@@ -1,7 +1,16 @@
 import React from "react";
 import "./Card.css";
 import { Button } from "antd";
-import { ArrowRightOutlined } from "@ant-design/icons"; // Import biểu tượng mũi tên
+import { ArrowRightOutlined } from "@ant-design/icons";
+
+const statusMapping = {
+  ONGOING: "On Going",
+  COMPLETED: "Completed",
+  DRAWN: "Drawn",
+  COMPLETED_WITH_BUYNOW: "Buy Now",
+  NO_WINNER: "No Winner",
+  UPCOMING: "Up Coming",
+};
 
 const Card = ({
   image,
@@ -12,7 +21,6 @@ const Card = ({
   weight,
   sex,
   age,
-
   countdown,
   price,
   variety,
@@ -52,36 +60,36 @@ const Card = ({
               <strong>Weight: </strong>
               {weight} kg
             </p>
-
           </div>
         </div>
       </div>
       <div className="card-footer">
-  <h4>Time left</h4>
-  <div className="card-countdown">
-    {auctionStatus === "COMPLETED_WITH_BUYNOW" || auctionStatus === "Ended" ? "Auction Ended" : countdown}
-  </div>
-  {/* Định dạng VNĐ cho giá */}
-  <div className="card-price">{price.toLocaleString("vi-VN")}₫</div>
+        <h4>Time left</h4>
+        <div className="card-countdown">
+          {auctionStatus === "COMPLETED_WITH_BUYNOW" ||
+          auctionStatus === "Ended"
+            ? "Auction Ended"
+            : countdown}
+        </div>
+        <div className="card-price">{price.toLocaleString("vi-VN")}₫</div>
 
-  <div className="card-status-type">
-    <p className={`card-status ${auctionStatus.toLowerCase()}`}>
-      <strong>Status: </strong>
-      <span>{auctionStatus}</span>
-    </p>
-
-    <p className={`card-type ${auctionType.toLowerCase()}`}>
-      <strong>Type: </strong>
-      {auctionType}
-    </p>
-  </div>
-  <Button
-    className="view-button"
-    onClick={onViewClick}
-    icon={<ArrowRightOutlined />} // Giữ biểu tượng mũi tên
-  />
-</div>
-
+        {/* Hiển thị trạng thái từ object mapping */}
+        <div className="card-status-type">
+          <p className={`card-status ${auctionStatus.toLowerCase()}`}>
+            <strong>Status: </strong>
+            <span>{statusMapping[auctionStatus] || auctionStatus}</span>
+          </p>
+          <p className={`card-type ${auctionType.toLowerCase()}`}>
+            <strong>Type: </strong>
+            {auctionType}
+          </p>
+        </div>
+        <Button
+          className="view-button"
+          onClick={onViewClick}
+          icon={<ArrowRightOutlined />}
+        />
+      </div>
     </div>
   );
 };
