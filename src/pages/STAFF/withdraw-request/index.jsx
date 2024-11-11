@@ -11,7 +11,8 @@ import {
 } from "antd";
 import api from "../../../config/axios";
 import dayjs from "dayjs";
-
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const WithdrawRequest = () => {
   const [withdrawRequests, setWithdrawRequests] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,7 +28,8 @@ const WithdrawRequest = () => {
     responseNote: "",
     image_url: "",
   });
-
+  const roleEnum = useSelector((state) => state.user.roleEnum);
+  const navigate = useNavigate();
   const fetchWithdrawData = async (page = currentPage) => {
     try {
       const response = await api.get(
@@ -48,6 +50,16 @@ const WithdrawRequest = () => {
     });
     setIsDetailModalVisible(true);
   };
+
+  useEffect(() => {
+    if (roleEnum !== "STAFF") {
+      message.error("You do not have permission to access this page.");
+      navigate("/");
+      return;
+    }
+
+    fetchWithdrawData();
+  }, [roleEnum, navigate]);
 
   useEffect(() => {
     fetchWithdrawData(currentPage);

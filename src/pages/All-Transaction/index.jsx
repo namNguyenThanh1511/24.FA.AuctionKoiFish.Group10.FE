@@ -4,7 +4,7 @@ import api from "../../config/axios";
 import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import { RightOutlined } from "@ant-design/icons";
-
+import { useSelector } from "react-redux";
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -21,6 +21,9 @@ const AllTransaction = () => {
     startDate: null,
     endDate: null,
   });
+  const roleEnum = useSelector((state) => state.user.roleEnum);
+
+  const navigate = useNavigate();
 
   const fetchTransactions = async (
     page = pagination.current,
@@ -58,7 +61,16 @@ const AllTransaction = () => {
     }
   };
 
-  // Gọi lại API khi filters hoặc pagination thay đổi
+  useEffect(() => {
+    if (roleEnum !== "MANAGER" && roleEnum != "STAFF") {
+      message.error("You do not have permission to access this page.");
+      navigate("/");
+      return;
+    }
+
+    fetchTransactions();
+  }, [roleEnum, navigate]);
+
   useEffect(() => {
     fetchTransactions(1, pagination.pageSize);
   }, [filters]);
@@ -192,8 +204,6 @@ const AllTransaction = () => {
         ),
     },
   ];
-
-  const navigate = useNavigate();
 
   const goToAuctionDetail = (auctionSessionId) => {
     navigate(`/auctions/${auctionSessionId}`);

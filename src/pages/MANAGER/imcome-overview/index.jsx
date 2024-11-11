@@ -15,6 +15,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import api from "../../../config/axios";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -30,6 +32,8 @@ const getRandomColor = () => {
 const IncomeOverview = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const roleEnum = useSelector((state) => state.user.roleEnum);
+  const navigate = useNavigate();
 
   const fetchData = async () => {
     setLoading(true);
@@ -45,8 +49,14 @@ const IncomeOverview = () => {
   };
 
   useEffect(() => {
+    if (roleEnum !== "MANAGER") {
+      message.error("You do not have permission to access this page.");
+      navigate("/");
+      return;
+    }
+
     fetchData();
-  }, []);
+  }, [roleEnum, navigate]);
 
   if (loading || !data) return <p>Loading...</p>;
 

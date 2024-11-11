@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Pagination } from "antd";
+import { Table, Button, Pagination, message } from "antd";
 import { RightOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import dayjs from "dayjs";
-
+import { useSelector } from "react-redux";
 const MyAuction = () => {
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -13,8 +13,17 @@ const MyAuction = () => {
     pageSize: 5,
     total: 0,
   });
-
+  const roleEnum = useSelector((state) => state.user.roleEnum);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (roleEnum !== "MEMBER") {
+      message.error("You do not have permission to access this page.");
+      navigate("/");
+      return;
+    }
+    fetchAuctions();
+  }, [roleEnum, navigate]);
 
   const fetchAuctions = async (
     page = pagination.current,

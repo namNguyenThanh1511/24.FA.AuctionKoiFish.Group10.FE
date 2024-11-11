@@ -11,16 +11,23 @@ import {
   Table,
   Tag,
   Tooltip,
+  message,
 } from "antd";
 import { useForm } from "antd/es/form/Form";
 import DashboardManageRequestTemplate from "../../../components/dashboard-manage-request-template";
 import DashboardManageRequestTemplateForManager from "../../../components/dashboard-manage-request-manager";
-import { CheckCircleOutlined, CloseCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import dayjs from "dayjs";
 import TextArea from "antd/es/input/TextArea";
 import BasicFilter from "../../../components/basic-filter";
 import { useEffect, useState } from "react";
 import api from "../../../config/axios";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function ManagerManageAuctionRequest() {
   const title = "Auction Request";
@@ -31,6 +38,9 @@ function ManagerManageAuctionRequest() {
   const [isStaffModalVisible, setIsStaffModalVisible] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState(null);
   const [isBidIncrementDisabled, setBidIncrementDisabled] = useState(false);
+  const roleEnum = useSelector((state) => state.user.roleEnum);
+  const navigate = useNavigate();
+
   const [filters, setFilters] = useState({
     statusEnumList: null,
     breederUsernameList: null,
@@ -69,12 +79,17 @@ function ManagerManageAuctionRequest() {
       dataIndex: "responseNote",
       key: "responseNote",
       render: (response, record) => {
-        if (record.status === "PENDING" || response === "" || response === null) {
+        if (
+          record.status === "PENDING" ||
+          response === "" ||
+          response === null
+        ) {
           return null;
         }
 
         const alertType =
-          record.status === "ACCEPTED_BY_STAFF" || record.status === "APPROVED_BY_MANAGER"
+          record.status === "ACCEPTED_BY_STAFF" ||
+          record.status === "APPROVED_BY_MANAGER"
             ? "success"
             : "error";
 
@@ -99,7 +114,8 @@ function ManagerManageAuctionRequest() {
                   boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
                   borderRadius: "4px",
                   padding: "4px 8px",
-                  backgroundColor: alertType === "success" ? "#f6ffed" : "#fff2f0",
+                  backgroundColor:
+                    alertType === "success" ? "#f6ffed" : "#fff2f0",
                 }}
                 closable
               />
@@ -198,7 +214,10 @@ function ManagerManageAuctionRequest() {
       <Form.Item label="Description : " name="description">
         <TextArea
           rows={4} // Adjust the number of rows
-          value={formViewDetails.getFieldValue("description") || "No description available."}
+          value={
+            formViewDetails.getFieldValue("description") ||
+            "No description available."
+          }
           style={{
             margin: 0,
             color: "#333",
@@ -217,7 +236,10 @@ function ManagerManageAuctionRequest() {
       <Form.Item label="Response note" name="responseNote">
         <TextArea
           rows={4} // Adjust the number of rows
-          value={formViewDetails.getFieldValue("responseNote") || "No response note available."}
+          value={
+            formViewDetails.getFieldValue("responseNote") ||
+            "No response note available."
+          }
           style={{
             margin: 0,
             color: "red",
@@ -302,7 +324,11 @@ function ManagerManageAuctionRequest() {
         name="startingPrice"
         rules={[{ required: true, message: "Please enter a starting price!" }]}
       >
-        <InputNumber min={0} placeholder="Enter starting price" style={{ width: "100%" }} />
+        <InputNumber
+          min={0}
+          placeholder="Enter starting price"
+          style={{ width: "100%" }}
+        />
       </Form.Item>
 
       <Form.Item
@@ -315,12 +341,18 @@ function ManagerManageAuctionRequest() {
               if (!value || value > getFieldValue("startingPrice")) {
                 return Promise.resolve();
               }
-              return Promise.reject(new Error("Buy now price must be greater than starting price"));
+              return Promise.reject(
+                new Error("Buy now price must be greater than starting price")
+              );
             },
           }),
         ]}
       >
-        <InputNumber min={0} placeholder="Enter buy now price" style={{ width: "100%" }} />
+        <InputNumber
+          min={0}
+          placeholder="Enter buy now price"
+          style={{ width: "100%" }}
+        />
       </Form.Item>
 
       <Form.Item
@@ -341,7 +373,11 @@ function ManagerManageAuctionRequest() {
         name="startDate"
         rules={[{ required: true, message: "Please select the start date!" }]}
       >
-        <DatePicker showTime style={{ width: "100%" }} placeholder="Select start date" />
+        <DatePicker
+          showTime
+          style={{ width: "100%" }}
+          placeholder="Select start date"
+        />
       </Form.Item>
 
       <Form.Item
@@ -349,7 +385,11 @@ function ManagerManageAuctionRequest() {
         name="endDate"
         rules={[{ required: true, message: "Please select the end date!" }]}
       >
-        <DatePicker showTime style={{ width: "100%" }} placeholder="Select end date" />
+        <DatePicker
+          showTime
+          style={{ width: "100%" }}
+          placeholder="Select end date"
+        />
       </Form.Item>
 
       <Form.Item
@@ -383,7 +423,11 @@ function ManagerManageAuctionRequest() {
           },
         ]}
       >
-        <InputNumber min={0} placeholder="Enter minimum balance" style={{ width: "100%" }} />
+        <InputNumber
+          min={0}
+          placeholder="Enter minimum balance"
+          style={{ width: "100%" }}
+        />
       </Form.Item>
       <Form.Item hidden name="auction_request_id">
         <InputNumber />
@@ -392,7 +436,12 @@ function ManagerManageAuctionRequest() {
         {selectedStaff ? (
           <Card
             actions={[
-              <Button danger key={1} type="default" onClick={() => setSelectedStaff(null)}>
+              <Button
+                danger
+                key={1}
+                type="default"
+                onClick={() => setSelectedStaff(null)}
+              >
                 Remove
               </Button>,
             ]}
@@ -450,9 +499,15 @@ function ManagerManageAuctionRequest() {
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <Form.Item name="breederUsernameList" label="Koi Breeder's username" style={{ flex: 1 }}>
+      <Form.Item
+        name="breederUsernameList"
+        label="Koi Breeder's username"
+        style={{ flex: 1 }}
+      >
         <Input
-          onChange={(e) => onChangeFilter("breederUsernameList", e.target.value)}
+          onChange={(e) =>
+            onChangeFilter("breederUsernameList", e.target.value)
+          }
           placeholder="Search by username"
           prefix={<SearchOutlined />} // Add an icon
           style={{ borderRadius: "4px" }}
@@ -486,8 +541,14 @@ function ManagerManageAuctionRequest() {
     }
   };
   useEffect(() => {
+    if (roleEnum !== "MANAGER") {
+      message.error("You do not have permission to access this page.");
+      navigate("/");
+      return;
+    }
+
     fetchStaffs();
-  }, []);
+  }, [roleEnum, navigate]);
 
   return (
     <div style={{ margin: "100px auto" }}>

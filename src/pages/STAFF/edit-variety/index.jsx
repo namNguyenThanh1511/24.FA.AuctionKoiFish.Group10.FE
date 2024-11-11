@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Modal, Form, Input, message } from "antd";
 import axios from "../../../config/axios";
-
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 const VarietyManagement = () => {
   const [varieties, setVarieties] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingVariety, setEditingVariety] = useState(null);
   const [form] = Form.useForm();
-
+  const roleEnum = useSelector((state) => state.user.roleEnum);
+  const navigate = useNavigate();
   const fetchVarieties = async () => {
     try {
       const response = await axios.get("/variety/all");
@@ -69,8 +71,13 @@ const VarietyManagement = () => {
   };
 
   useEffect(() => {
-    fetchVarieties();
-  }, []);
+    if (roleEnum !== "STAFF") {
+      message.error("You do not have permission to access this page.");
+      navigate("/");
+      return; 
+    }
+  fetchVarieties();
+  }, [roleEnum, navigate]);
 
   const columns = [
     {
@@ -89,7 +96,11 @@ const VarietyManagement = () => {
       render: (_, record) => (
         <>
           <Button onClick={() => showModal(record)}>Edit</Button>
-          <Button onClick={() => confirmDelete(record.id)} danger style={{ marginLeft: 10 }}>
+          <Button
+            onClick={() => confirmDelete(record.id)}
+            danger
+            style={{ marginLeft: 10 }}
+          >
             Delete
           </Button>
         </>
@@ -99,7 +110,11 @@ const VarietyManagement = () => {
 
   return (
     <div style={{ margin: "100px auto" }}>
-      <Button type="primary" onClick={() => showModal()} style={{ marginBottom: 16 }}>
+      <Button
+        type="primary"
+        onClick={() => showModal()}
+        style={{ marginBottom: 16 }}
+      >
         Add Variety
       </Button>
       <Table dataSource={varieties} columns={columns} rowKey="id" />
@@ -114,7 +129,9 @@ const VarietyManagement = () => {
           <Form.Item
             name="name"
             label="Variety Name"
-            rules={[{ required: true, message: "Please input the variety name!" }]}
+            rules={[
+              { required: true, message: "Please input the variety name!" },
+            ]}
           >
             <Input placeholder="Enter variety name" />
           </Form.Item>
