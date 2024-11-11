@@ -9,6 +9,9 @@ import {
   DollarOutlined,
   UserAddOutlined,
   EditOutlined,
+  ScheduleOutlined,
+  FileDoneOutlined,
+  TransactionOutlined,
 } from "@ant-design/icons";
 
 import Footer from "../../footer/Footer";
@@ -40,18 +43,15 @@ const StaffProfileLayout = ({ children, collapsed, setCollapsed }) => {
   };
   const items = [
     getItem("Personal", "personal", <TeamOutlined />),
-    getItem(
-      "Auction Request",
-      "manage-auction-request",
-      <PullRequestOutlined />
-    ),
+    getItem("Auction Request", "manage-auction-request", <FileDoneOutlined />),
     getItem(
       "Assigned Auction",
       "manage-assigned-session",
-      <PieChartOutlined />
+      <ScheduleOutlined />
     ),
-    getItem("Member Account", "manage-member-account", <UserAddOutlined />),
+    getItem("Member Account", "manage-member-account", <TeamOutlined />),
     getItem("Edit Variety", "edit-variety", <EditOutlined />),
+    getItem("All Transaction", "all-transaction", <TransactionOutlined />),
     getItem("Withdraw Request", "withdraw-request", <DollarOutlined />),
     getItem("Logout", "logout", <LogoutOutlined />, handleLogout),
   ];

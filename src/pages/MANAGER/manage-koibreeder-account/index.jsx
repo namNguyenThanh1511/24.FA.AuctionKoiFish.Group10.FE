@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Space, Popconfirm, message, Form, Modal, Input, Tooltip } from "antd";
 import api from "../../../config/axios";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, UnlockOutlined } from "@ant-design/icons";
 import "./index.css";
 import dayjs from "dayjs";
 
@@ -57,6 +57,15 @@ const ManageKoiBreederAccount = () => {
     }
   };
 
+  const handleUnlockAccount = async (user_id) => {
+    try {
+      await api.put(`/account/unlock/${user_id}`);
+      message.success("Account unlocked successfully.");
+      fetchAccounts();
+    } catch (error) {
+      message.error("Failed to unlock account.");
+    }
+  };
   const validatePhoneNumber = (_, value) => {
     const phonePattern = /^0\d{9}$/;
     if (!value || phonePattern.test(value)) {
@@ -156,8 +165,8 @@ const ManageKoiBreederAccount = () => {
       ),
     },
     {
-      title: "Account Lock",
-      key: "Account Lock",
+      title: "Actions ",
+      key: "Actions ",
       render: (text, record) => (
         <Space size="middle">
           <Popconfirm
@@ -167,11 +176,26 @@ const ManageKoiBreederAccount = () => {
             cancelText="No"
           >
             <Button
-              type="danger"
+              disabled={record.status === "INACTIVE"}
+              type="primary"
               icon={<DeleteOutlined />}
               style={{ backgroundColor: "red", color: "white" }}
             >
               Disable
+            </Button>
+          </Popconfirm>
+          <Popconfirm
+            title="Are you sure to unlock this account?"
+            onConfirm={() => handleUnlockAccount(record.user_id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button
+              type="primary"
+              icon={<UnlockOutlined />}
+              disabled={record.status?.toUpperCase() === "ACTIVE"} // Chuẩn hóa status
+            >
+              Unlock
             </Button>
           </Popconfirm>
         </Space>

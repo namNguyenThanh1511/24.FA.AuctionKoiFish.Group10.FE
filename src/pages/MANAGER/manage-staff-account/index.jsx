@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Space, Popconfirm, message, Form, Modal, Input, Tooltip } from "antd";
 import api from "../../../config/axios";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, UnlockOutlined } from "@ant-design/icons";
 import "./index.css";
 import dayjs from "dayjs";
 
 const ManageStaffAccount = () => {
   const [accounts, setAccounts] = useState([]);
-  const [loading, setLoading] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
-
   const [pagination, setPagination] = useState({
     current: 1,
-    pageSize: 4,
+    pageSize: 5,
     total: 0,
   });
   const [form] = Form.useForm();
@@ -26,12 +25,10 @@ const ManageStaffAccount = () => {
           size: pageSize,
         },
       });
-      console.log("API Response:", response.data);
-      const { accountResponseList, totalElements, totalPages, pageNumber, numberOfElements } =
-        response.data;
+      const { accountResponseList, totalElements, pageNumber } = response.data;
       setAccounts(accountResponseList);
       setPagination({
-        current: page + 1,
+        current: pageNumber + 1,
         pageSize: pageSize,
         total: totalElements,
       });
@@ -65,6 +62,7 @@ const ManageStaffAccount = () => {
       setIsModalVisible(false);
       form.resetFields();
       fetchAccounts();
+      message.success("Account created successfully.");
     } catch (error) {
       message.error("Failed to create account.");
     }
@@ -73,16 +71,25 @@ const ManageStaffAccount = () => {
   const handleBanStaffAccount = async (user_id) => {
     try {
       await api.delete(`/account/${user_id}`);
-      message.success("Account deleted successfully");
+      message.success("Account disabled successfully.");
       fetchAccounts();
     } catch (error) {
       message.error("Failed to disable account.");
     }
   };
 
+  const handleUnlockAccount = async (user_id) => {
+    try {
+      await api.put(`/account/unlock/${user_id}`);
+      message.success("Account unlocked successfully.");
+      fetchAccounts();
+    } catch (error) {
+      message.error("Failed to unlock account.");
+    }
+  };
+
   const handleTableChange = (pagination) => {
-    console.log(paginationn);
-    fetchAccounts(paginationn, pagination.pageSize);
+    fetchAccounts(pagination.current, pagination.pageSize);
   };
 
   const columns = [
@@ -150,8 +157,8 @@ const ManageStaffAccount = () => {
       ),
     },
     {
-      title: "Account Lock",
-      key: "Account Lock",
+      title: "Actions",
+      key: "actions",
       render: (text, record) => (
         <Space size="middle">
           <Popconfirm
@@ -161,11 +168,27 @@ const ManageStaffAccount = () => {
             cancelText="No"
           >
             <Button
-              type="danger"
+              disabled={record.status === "INACTIVE"}
+              type="primary"
               icon={<DeleteOutlined />}
               style={{ backgroundColor: "red", color: "white" }}
             >
               Disable
+            </Button>
+          </Popconfirm>
+
+          <Popconfirm
+            title="Are you sure to unlock this account?"
+            onConfirm={() => handleUnlockAccount(record.user_id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <Button
+              type="primary"
+              icon={<UnlockOutlined />}
+              disabled={record.status?.toUpperCase() === "ACTIVE"} // Chuẩn hóa status
+            >
+              Unlock
             </Button>
           </Popconfirm>
         </Space>
@@ -177,7 +200,7 @@ const ManageStaffAccount = () => {
     <div className="staff-account-container" style={{ margin: "100px auto" }}>
       <Button
         type="primary"
-        onClick={() => setIsModalVisible(true)} // Mở modal khi nhấn nút
+        onClick={() => setIsModalVisible(true)}
         style={{ marginBottom: "20px" }}
       >
         Create Staff Account
@@ -189,18 +212,18 @@ const ManageStaffAccount = () => {
         loading={loading}
         rowKey={(record) => record.user_id}
         pagination={{
-          current: pagination.current, // Keep current page as is
+          current: pagination.current,
           pageSize: pagination.pageSize,
-          total: pagination.total, // Total elements
-          onChange: handleTableChange, // Handle page change
-          showSizeChanger: false, // Optional: hide size changer
+          total: pagination.total,
+          onChange: handleTableChange,
+          showSizeChanger: false,
         }}
       />
       <Modal
         title="Create Staff Account"
         open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)} // Đóng modal khi nhấn Cancel
-        footer={null} // Tùy chỉnh footer của modal
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
       >
         <Form form={form} onFinish={handleCreateStaffAccount} layout="vertical">
           <Form.Item
@@ -239,7 +262,7 @@ const ManageStaffAccount = () => {
             name="phoneNumber"
             rules={[
               { required: true, message: "Please enter phone number" },
-              { validator: validatePhoneNumber }, // Thêm hàm kiểm tra số điện thoại
+              { validator: validatePhoneNumber },
             ]}
           >
             <Input />
@@ -251,7 +274,6 @@ const ManageStaffAccount = () => {
           >
             <Input />
           </Form.Item>
-
           <Form.Item>
             <Button type="primary" htmlType="submit" style={{ marginRight: 10 }}>
               Submit

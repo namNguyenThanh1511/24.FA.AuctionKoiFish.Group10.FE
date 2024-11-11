@@ -105,7 +105,9 @@ function ManageAuctionRequestOfKoiBreeder() {
     {
       title: "Action",
       key: "action",
-      render: (_, fish) => <Button onClick={() => handleFishSelect(fish)}>Select</Button>,
+      render: (_, fish) => (
+        <Button onClick={() => handleFishSelect(fish)}>Select</Button>
+      ),
     },
   ];
   const columns = [
@@ -154,13 +156,18 @@ function ManageAuctionRequestOfKoiBreeder() {
       key: "responseNote",
       render: (response, record) => {
         // If status is pending or response is empty, return an empty string
-        if (record.status === "PENDING" || response === "" || response === null) {
+        if (
+          record.status === "PENDING" ||
+          response === "" ||
+          response === null
+        ) {
           return null;
         }
 
         // Determine alert type based on the record status
         const alertType =
-          record.status === "ACCEPTED_BY_STAFF" || record.status === "APPROVED_BY_MANAGER"
+          record.status === "ACCEPTED_BY_STAFF" ||
+          record.status === "APPROVED_BY_MANAGER"
             ? "success"
             : "error";
 
@@ -339,7 +346,12 @@ function ManageAuctionRequestOfKoiBreeder() {
         <Card
           style={{ width: 300, marginTop: 16 }}
           actions={[
-            <Button danger key={1} type="default" onClick={() => setSelectedFish(null)}>
+            <Button
+              danger
+              key={1}
+              type="default"
+              onClick={() => setSelectedFish(null)}
+            >
               Remove
             </Button>,
           ]}
@@ -351,7 +363,8 @@ function ManageAuctionRequestOfKoiBreeder() {
               <Tag color="volcano">{selectedFish.sex}</Tag>
             </div>
             <p style={{ marginTop: 8 }}>
-              <strong>Koi ID :</strong> {selectedFish.name + "#" + selectedFish.koi_id}
+              <strong>Koi ID :</strong>{" "}
+              {selectedFish.name + "#" + selectedFish.koi_id}
             </p>
             <p>
               <strong>Size:</strong> {selectedFish?.sizeCm} cm
@@ -360,17 +373,21 @@ function ManageAuctionRequestOfKoiBreeder() {
               <strong>Weight:</strong> {selectedFish?.weightKg} kg
             </p>
             <p>
-              <strong>Born In:</strong> {dayjs(selectedFish?.bornIn).format("YYYY-MM-DD")}
+              <strong>Born In:</strong>{" "}
+              {dayjs(selectedFish?.bornIn).format("YYYY-MM-DD")}
             </p>
             <p>
               <strong>Description:</strong> {selectedFish?.description}
             </p>
             <p>
-              <strong>Estimated Value:</strong> {formatToVND(selectedFish?.estimatedValue)}
+              <strong>Estimated Value:</strong>{" "}
+              {formatToVND(selectedFish?.estimatedValue)}
             </p>
             <p>
               <strong>Status:</strong>{" "}
-              <Tag color={statusColors[selectedFish?.koiStatus]}>{selectedFish?.koiStatus}</Tag>
+              <Tag color={statusColors[selectedFish?.koiStatus]}>
+                {selectedFish?.koiStatus}
+              </Tag>
             </p>
             <span>
               <strong>Varieties :</strong>{" "}
@@ -404,7 +421,11 @@ function ManageAuctionRequestOfKoiBreeder() {
             {selectedFish?.video_url && (
               <p>
                 <strong>Video:</strong>{" "}
-                <a href={selectedFish?.video_url} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={selectedFish?.video_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Watch Video
                 </a>
               </p>
@@ -479,7 +500,10 @@ function ManageAuctionRequestOfKoiBreeder() {
       <Form.Item label="Description : " name="description">
         <TextArea
           rows={4} // Adjust the number of rows
-          value={formViewDetails.getFieldValue("description") || "No description available."}
+          value={
+            formViewDetails.getFieldValue("description") ||
+            "No description available."
+          }
           style={{
             margin: 0,
             color: "#333",
@@ -498,7 +522,10 @@ function ManageAuctionRequestOfKoiBreeder() {
       <Form.Item label="Response note" name="responseNote">
         <TextArea
           rows={4} // Adjust the number of rows
-          value={formViewDetails.getFieldValue("responseNote") || "No response note available."}
+          value={
+            formViewDetails.getFieldValue("responseNote") ||
+            "No response note available."
+          }
           style={{
             margin: 0,
             color: "red",
@@ -549,7 +576,6 @@ function ManageAuctionRequestOfKoiBreeder() {
         <Select
           onChange={(value) => onChangeFilter("status", value)}
           placeholder="Select status"
-          allowClear
           style={{ borderRadius: "4px" }}
         >
           {statusOptions.map(({ value, color }) => (
@@ -563,7 +589,9 @@ function ManageAuctionRequestOfKoiBreeder() {
       </Form.Item>
       <Form.Item name="startDate" label="Start Date" style={{ flex: 1 }}>
         <DatePicker
-          onChange={(date, dateString) => onChangeFilter("startDate", dateString)}
+          onChange={(date, dateString) =>
+            onChangeFilter("startDate", dateString)
+          }
           format="YYYY-MM-DD"
           placeholder="Select start date"
           style={{ width: "100%", borderRadius: "4px" }}

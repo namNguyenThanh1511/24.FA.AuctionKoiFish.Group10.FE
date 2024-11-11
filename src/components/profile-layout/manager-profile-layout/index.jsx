@@ -9,6 +9,7 @@ import {
   TeamOutlined,
   BarChartOutlined,
   HistoryOutlined,
+  TransactionOutlined,
 } from "@ant-design/icons";
 
 import Footer from "../../footer/Footer";
@@ -54,6 +55,7 @@ const ManagerProfileLayout = ({ children, collapsed, setCollapsed }) => {
       <UserAddOutlined />
     ),
     getItem("Auction Process Log", "auction-processlog", <HistoryOutlined />),
+    getItem("All Transaction", "all-transaction", <TransactionOutlined />),
     getItem("Income Overview", "imcome-overview", <BarChartOutlined />),
     getItem("Logout", "logout", <LogoutOutlined />, handleLogout),
   ];

@@ -44,6 +44,9 @@ const HeaderLogin = () => {
             <Link to={"/about"}>About</Link>
           </li>
           <li>
+            <a href="/Introduction">Introduction</a>
+          </li>
+          <li>
             <Dropdown overlay={DropdownMenuComponent} trigger={["hover"]} placement="bottomRight">
               <div className="avatar-wrapper">
                 <img src={avatar} alt="User Avatar" className="avatar" />
