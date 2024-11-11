@@ -159,7 +159,7 @@ const MyAuction = () => {
   return (
     <div
       style={{
-        margin: "50px auto",
+        margin: "100px auto",
         padding: "0 20px",
         maxWidth: "1200px",
         textAlign: "center",

@@ -104,7 +104,7 @@ const IncomeOverview = () => {
   }
 
   return (
-    <div style={{ padding: "30px", maxWidth: "1200px", margin: "auto" }}>
+    <div style={{ padding: "30px", maxWidth: "1200px", margin: "80px auto" }}>
       <Title level={2} style={{ textAlign: "center", marginBottom: "20px" }}>
         Income Overview
       </Title>
