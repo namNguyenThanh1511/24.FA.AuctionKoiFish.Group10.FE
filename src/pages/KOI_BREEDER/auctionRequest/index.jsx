@@ -324,6 +324,7 @@ function ManageAuctionRequestOfKoiBreeder() {
             style={{ textAlign: "center" }}
             onClick={() => {
               setIsOpenModal(true);
+              fetchFish();
             }}
           >
             Select Fish

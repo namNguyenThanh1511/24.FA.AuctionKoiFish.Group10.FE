@@ -29,14 +29,6 @@ if ("serviceWorker" in navigator) {
     });
 }
 
-// Request permission to show notifications (optional)
-Notification.requestPermission().then((permission) => {
-  if (permission === "granted") {
-    console.log("Notification permission granted.");
-  } else {
-    console.log("Unable to get permission to notify.");
-  }
-});
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 

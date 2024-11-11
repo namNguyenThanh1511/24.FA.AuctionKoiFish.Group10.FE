@@ -25,7 +25,7 @@ const Login = () => {
       localStorage.setItem("token", token);
       toast.success("Login success");
 
-      const fcmToken = await handleGetFCMToken();
+      const fcmToken = handleGetFCMToken();
 
       console.log(fcmToken);
       const user = response.data;
@@ -77,9 +77,13 @@ const Login = () => {
       });
       if (fcmToken) {
         console.log(fcmToken);
+        await api.patch("account/fcm", { fcmToken: fcmToken });
         return fcmToken;
       }
     } catch (error) {
+      if (error.response.data) {
+        console.log(error.response.data);
+      }
       console.log(error);
     }
   };

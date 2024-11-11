@@ -3,13 +3,15 @@ import { Form, Input, Button, Row, Col, Breadcrumb } from "antd";
 import api from "../../../config/axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import "./profile.css";
+import { login } from "../../../redux/feature/userSlice";
 
 const Personal = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user);
 
   const fetchUserProfile = async () => {
@@ -35,7 +37,8 @@ const Personal = () => {
   const handleSaveProfile = async (values) => {
     setLoading(true);
     try {
-      await api.put(`account/update-profile-current-user`, values);
+      const response = await api.put(`account/update-profile-current-user`, values);
+      dispatch(login(response.data));
       toast.success("Profile updated successfully");
     } catch (error) {
       toast.error(error.response.data);
@@ -49,21 +52,14 @@ const Personal = () => {
     if (!value || phonePattern.test(value)) {
       return Promise.resolve();
     }
-    return Promise.reject(
-      new Error("Phone number must be 10 digits, starting with 0.")
-    );
+    return Promise.reject(new Error("Phone number must be 10 digits, starting with 0."));
   };
 
   return (
     <div className="profile-form">
       <h2>My Profile</h2>
       <h4>Manage your profile information to keep your account secure</h4>
-      <Form
-        form={form}
-        name="profile"
-        onFinish={handleSaveProfile}
-        layout="vertical"
-      >
+      <Form form={form} name="profile" onFinish={handleSaveProfile} layout="vertical">
         <Form.Item label="Name" required>
           <Row gutter={16}>
             <Col span={12}>
