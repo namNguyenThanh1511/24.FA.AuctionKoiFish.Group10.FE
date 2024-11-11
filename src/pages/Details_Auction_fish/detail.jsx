@@ -58,7 +58,6 @@ const Detail = () => {
         const id = setInterval(() => {
           const updatedCountdown = getCountdown(new Date(), startDate);
           setCountdown(updatedCountdown);
-
         }, 1000);
         setIntervalId(id);
       } else if (response.data.auctionStatus === "ONGOING") {
@@ -313,6 +312,7 @@ const Detail = () => {
             buyNowPrice={productDetail.buyNowPrice}
             handleBid={handleBid}
             handleBuyNow={handleBuyNow}
+            auctionSessionId={auctionSessionId}
           />
         )}
       </div>
