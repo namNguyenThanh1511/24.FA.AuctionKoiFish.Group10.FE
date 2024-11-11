@@ -40,7 +40,8 @@ const MemberProfileLayout = ({ collapsed, setCollapsed }) => {
 
   const items = [
     getItem("Personal", "personal", <TeamOutlined />),
-    getItem("My Auction", "my-auction", <FileOutlined />),
+    getItem("My Auctions", "my-auction", <FileOutlined />),
+    getItem("My won Auctions", "my-won-auction", <FileOutlined />),
     getItem("Transaction", "transaction", <TransactionOutlined />),
     getItem("Wallet", "wallet", <WalletOutlined />),
     getItem("Withdraw", "withdraw", <DollarOutlined />),
@@ -64,19 +65,12 @@ const MemberProfileLayout = ({ collapsed, setCollapsed }) => {
           }}
         >
           {!collapsed && (
-            <span
-              style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}
-            >
+            <span style={{ fontSize: "20px", fontWeight: "bold", color: "#fff" }}>
               <UserOutlined /> My Account
             </span>
           )}
         </div>
-        <Menu
-          theme="dark"
-          defaultSelectedKeys={["personal"]}
-          mode="inline"
-          items={items}
-        />
+        <Menu theme="dark" defaultSelectedKeys={["personal"]} mode="inline" items={items} />
       </Sider>
 
       {/* Main Layout */}

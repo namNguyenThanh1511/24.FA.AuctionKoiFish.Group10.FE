@@ -61,28 +61,22 @@ const IncomeOverview = () => {
   if (loading || !data) return <p>Loading...</p>;
 
   // Auction Session Revenue Data (Bar Chart)
-  const auctionRevenueData = (data["Auction Session Revenue"] || []).map(
-    (item) => ({
-      auctionId: item["Auction Session ID"],
-      revenue: item["Total revenue"],
-    })
-  );
+  const auctionRevenueData = (data["Auction Session Revenue"] || []).map((item) => ({
+    auctionId: item["Auction Session ID"],
+    revenue: item["Total revenue"],
+  }));
 
   // Daily System Revenue Data (Line Chart)
-  const dailySystemRevenueData = (data["Daily System Revenue"] || []).map(
-    (item) => ({
-      date: `${item["Day"]}/${item["Month"]}/${item["Year"]}`,
-      balance: item["Balance"],
-    })
-  );
+  const dailySystemRevenueData = (data["Daily System Revenue"] || []).map((item) => ({
+    date: `${item["Day"]}/${item["Month"]}/${item["Year"]}`,
+    balance: item["Balance"],
+  }));
 
   // Monthly System Revenue Data (Line Chart)
-  const monthlySystemRevenueData = (data["Monthly System Revenue"] || []).map(
-    (item) => ({
-      month: `${item["Month"]}/${item["Year"]}`,
-      balance: item["Balance"],
-    })
-  );
+  const monthlySystemRevenueData = (data["Monthly System Revenue"] || []).map((item) => ({
+    month: `${item["Month"]}/${item["Year"]}`,
+    balance: item["Balance"],
+  }));
 
   // Latest Balance
   const latestBalance =
@@ -100,8 +94,7 @@ const IncomeOverview = () => {
 
   // Auction Success Rate
   const auctionSuccessRate = (
-    (data["Successful rate of all auction session (except upcoming )"] || 0) *
-    100
+    (data["Successful rate of all auction session (except upcoming )"] || 0) * 100
   ).toFixed(2);
 
   let auctionRateColor = "";
@@ -141,7 +134,7 @@ const IncomeOverview = () => {
         <Col span={6}>
           <Card style={{ backgroundColor: "#fff0f6" }}>
             <Statistic
-              title="Average Bids per Session"
+              title="Average number of bids per Session"
               value={data["Average number of bids per auction session"]}
               precision={2}
               valueStyle={{ color: "#eb2f96" }}
@@ -188,15 +181,7 @@ const IncomeOverview = () => {
             />
           </Card>
         </Col>
-        <Col span={6}>
-          <Card style={{ backgroundColor: "#fff7e6" }}>
-            <Statistic
-              title="Latest Balance"
-              value={latestBalance}
-              valueStyle={{ color: "#ff7300" }}
-            />
-          </Card>
-        </Col>
+        <Col span={6}></Col>
       </Row>
 
       {/* Row for Daily and Monthly System Revenue */}
@@ -284,10 +269,7 @@ const IncomeOverview = () => {
                     label
                   >
                     {topVarietiesData.map((_, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index] || getRandomColor()}
-                      />
+                      <Cell key={`cell-${index}`} fill={COLORS[index] || getRandomColor()} />
                     ))}
                   </Pie>
                   <Tooltip />
