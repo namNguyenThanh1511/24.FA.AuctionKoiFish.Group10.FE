@@ -6,6 +6,7 @@ import { Table, message, Modal } from "antd";
 import BidForm from "../../components/bid-section/bid-ascending";
 import FixedPriceBid from "../../components/bid-section/bid-fixed-price";
 import formatToVND from "../../utils/currency";
+import useRealtime from "../../hooks/useRealTime";
 
 const Detail = () => {
   const { auctionSessionId } = useParams();
@@ -68,6 +69,12 @@ const Detail = () => {
     }
   };
 
+  useRealtime((message) => {
+    // Only process messages related to the current auction session
+    if (message.body === "CREATED NEW BID".trim()) {
+      fetchProductDetail();
+    }
+  }, auctionSessionId);
   useEffect(() => {
     fetchProductDetail();
     return () => {
@@ -78,10 +85,8 @@ const Detail = () => {
   }, [auctionSessionId]);
 
   const getCountdown = (fromDate, toDate) => {
-    const offset = 7 * 3600 * 1000;
-    const totalSeconds = Math.floor(
-      (toDate.getTime() - fromDate.getTime() - offset) / 1000
-    );
+    const offset = 7 * 3600 * 1000; // 7 tiếng tính bằng mili giây
+    const totalSeconds = Math.floor((toDate.getTime() - fromDate.getTime() - offset) / 1000);
 
     if (totalSeconds > 0) {
       const days = Math.floor(totalSeconds / (3600 * 24));
@@ -251,9 +256,7 @@ const Detail = () => {
             <div className="info-box">
               <p>
                 <strong>Auction Status:</strong>{" "}
-                <span style={{ color: getStatusColor(auctionStatus) }}>
-                  {auctionStatus}
-                </span>
+                <span style={{ color: getStatusColor(auctionStatus) }}>{auctionStatus}</span>
               </p>
             </div>
             <div className="info-box">
@@ -274,8 +277,7 @@ const Detail = () => {
             <div className="info-box">
               <p>
                 <strong>Age:</strong>{" "}
-                {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()}{" "}
-                years
+                {new Date().getFullYear() - new Date(koi.bornIn).getFullYear()} years
               </p>
             </div>
             <div className="info-box">
@@ -288,8 +290,7 @@ const Detail = () => {
             </div>
             <div className="info-box">
               <p>
-                <strong>Price:</strong>{" "}
-                {productDetail.currentPrice.toLocaleString("en-US")}₫
+                <strong>Price:</strong> {productDetail.currentPrice.toLocaleString("en-US")}₫
               </p>
             </div>
             <div className="info-box">
@@ -306,6 +307,7 @@ const Detail = () => {
           <FixedPriceBid currentPrice={currentBid} handleBid={handleBid} />
         ) : (
           <BidForm
+            key={currentBid}
             currentPrice={currentBid}
             bidIncrement={productDetail.bidIncrement}
             buyNowPrice={productDetail.buyNowPrice}
