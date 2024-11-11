@@ -163,7 +163,7 @@ const MyWonAuction = () => {
         textAlign: "center",
       }}
     >
-      <h2 style={{ fontSize: "28px", fontWeight: "bold", color: "#333" }}>My Auctions List</h2>
+      <h2 style={{ fontSize: "28px", fontWeight: "bold", color: "#333" }}>My won Auctions List</h2>
 
       <Table
         loading={loading}
