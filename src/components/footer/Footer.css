@@ -1,21 +1,21 @@
 .footer {
-  background-color: #000000; /* Màu nền giống với ảnh */
-  color: #ffffff; /* Màu chữ tối */
-  font-family: 'Fredoka', sans-serif; /* Đổi font chữ thành Fredoka */
-  margin: 0; /* Đảm bảo không có margin */
-  width: 100%; /* Đảm bảo chiều rộng đầy đủ cho footer */
-  position: relative; /* Đặt position để kiểm soát tốt hơn */
-  clear: both; /* Đảm bảo footer không bị ảnh hưởng bởi các phần tử khác */
+  background-color: #000000; 
+  color: #ffffff;
+  font-family: 'Fredoka', sans-serif; 
+  margin: 0; 
+  width: 100%; 
+  position: relative; 
+  clear: both;
 }
 
 .footer-content {
   display: flex;
-  justify-content: space-between; /* Phân chia khoảng cách giữa các phần tử */
-  align-items: flex-start; /* Căn chỉnh các phần tử ở phía trên */
-  flex-wrap: wrap; /* Cho phép các phần tử xuống dòng */
-  max-width: 1200px; /* Giới hạn chiều rộng tối đa để footer không quá rộng */
-  margin: 0 auto; /* Căn giữa footer-content */
-  padding: 0 20px; /* Thêm padding để tạo khoảng cách giữa các phần tử */
+  justify-content: space-between; 
+  align-items: flex-start; 
+  flex-wrap: wrap; 
+  max-width: 1200px; 
+  margin: 0 auto;
+  padding: 0 20px;
   padding-bottom: 120px;
 
 }
@@ -23,38 +23,38 @@
 .footer-logo {
   flex: 3; Logo chiếm 1 phần
   display: flex;
-  align-items: center; /* Căn giữa theo chiều dọc */
-  justify-content: flex-start; /* Căn logo về bên trái */
-  margin-right: 20px; /* Thêm khoảng cách bên phải logo */
+  align-items: center; 
+  justify-content: flex-start; 
+  margin-right: 20px; 
 }
 
 .footer-info {
-  flex: 6; /* Info chiếm 2 phần */
+  flex: 6; /
   display: flex;
-  flex-direction: column; /* Chia theo chiều dọc */
-  justify-content: space-between; /* Căn chỉnh khoảng cách đều */
+  flex-direction: column; 
+  justify-content: space-between; 
 }
 
 .footer-hours,
 .footer-links {
-  flex: 5; /* Các mục còn lại mỗi mục 1 phần */
-  text-align: center; /* Căn giữa nội dung */
-  margin: 15px; /* Thêm khoảng cách giữa các cột */
+  flex: 5;
+  text-align: center; 
+  margin: 15px; 
 
 }
 
 
 
 .footer-payment {
-  flex: 4; /* Các mục còn lại mỗi mục 1 phần */
-  text-align: center; /* Căn giữa nội dung */
-  margin: 15px; /* Thêm khoảng cách giữa các cột */
+  flex: 4; 
+  text-align: center;
+  margin: 15px; 
 }
 
 .footer-logo img {
-  width: auto; /* Để logo tự động điều chỉnh kích thước */
-  max-width: 100%; /* Đảm bảo logo không vượt quá chiều rộng của phần tử */
-  height: auto; /* Đảm bảo chiều cao tự động điều chỉnh */
+  width: auto; 
+  max-width: 100%;
+  height: auto; 
   
 }
 
@@ -70,7 +70,7 @@
 .footer-links a,
 .footer-link {
   text-decoration: none;
-  color: #b85b0e; /* Màu chữ giống với ảnh */
+  color: #b85b0e; 
 }
 
 .footer-links a:hover,
@@ -79,8 +79,8 @@
 }
 
 .footer-payment img {
-  height: 40px; /* Đặt chiều cao cố định cho tất cả các hình ảnh */
-  margin: 0 5px; /* Thêm khoảng cách giữa các hình ảnh */
+  height: 40px; 
+  margin: 0 5px; 
 }
 
 

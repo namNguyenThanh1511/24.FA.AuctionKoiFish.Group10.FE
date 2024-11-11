@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px; /* Khoảng cách giữa các phần tử */
+  gap: 10px; 
   padding: 20px;
   border-radius: 8px;
   max-width: 600px;
@@ -15,7 +15,7 @@
   font-size: 16px;
   font-weight: bold;
   color: #333;
-  margin-right: 10px; /* Khoảng cách giữa balance và ô bid */
+  margin-right: 10px; 
 }
 
 .bid-input {
@@ -43,10 +43,10 @@
 }
 
 .button-bid:disabled {
-  background-color: #d9d9d9; /* Màu xám khi nút bị vô hiệu hóa */
+  background-color: #d9d9d9;
   cursor: not-allowed;
 }
 
 .button-bid:hover:not(:disabled) {
-  background-color: #1890ff; /* Màu xanh đậm khi hover */
+  background-color: #1890ff; 
 }

@@ -1,12 +1,12 @@
-/* Introduction Page Styling */
+
 .introduction-container {
-  max-width: 100%; /* Điều chỉnh cho giống về độ rộng */
-  margin: 0 auto; /* Căn giữa nội dung */
+  max-width: 100%; 
+  margin: 0 auto; 
   padding: 50px 20px;
   background-color: #1a1a1a;
   color: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Bóng đổ nhẹ */
-  font-family: Arial, sans-serif; /* Thống nhất font chữ */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  font-family: Arial, sans-serif;
   margin-top: 80px;
 }
 
@@ -38,7 +38,7 @@
   margin-bottom: 10px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  border-bottom: 1px solid #333; /* Thêm đường viền dưới để giống trang 1 */
+  border-bottom: 1px solid #333; 
 }
 
 .step-item:hover {
@@ -75,7 +75,7 @@
   margin-top: 10px;
   background-color: #333333;
   border-radius: 8px;
-  color: #aaa; /* Cân chỉnh màu chữ giống trang 1 */
+  color: #aaa; 
 }
 
 .intro-btn {
@@ -92,7 +92,7 @@
   background-color: #0056b3;
 }
 
-/* CSS for button group with similar style to page 1 */
+
 .bid-buttons {
   margin-top: 15px;
   display: flex;

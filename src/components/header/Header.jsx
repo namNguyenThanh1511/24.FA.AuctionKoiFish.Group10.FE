@@ -1,6 +1,6 @@
 import React from "react";
-import "./header.css"; // Import file CSS cho Header
-import { Link, useNavigate } from "react-router-dom"; // Thêm useNavigate
+import "./header.css"; 
+import { Link, useNavigate } from "react-router-dom";
 import { Dropdown, Menu } from "antd";
 import {
   UserOutlined,
@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import avatar from "../../images/avata.jpg";
 const Header = () => {
-  const navigate = useNavigate(); // Khai báo useNavigate
+  const navigate = useNavigate();
   const isAuthenticated = () => {
     const token = localStorage.getItem("token");
     console.log(token);

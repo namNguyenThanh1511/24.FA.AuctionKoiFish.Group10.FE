@@ -22,8 +22,8 @@ const Auction = () => {
     varieties: null,
     minSizeCm: null,
     maxSizeCm: null,
-    minWeightKg: null, // Thêm thuộc tính cho trọng lượng tối thiểu
-    maxWeightKg: null, // Thêm thuộc tính cho trọng lượng tối đa
+    minWeightKg: null,
+    maxWeightKg: null,
     sex: null,
     auctionType: null,
     status: null,
@@ -60,11 +60,9 @@ const Auction = () => {
     }
   };
 
-  // Gọi hàm fetchVarieties khi component được mount
-
   useEffect(() => {
     fetchVarieties();
-    fetchBreeders(); // Gọi API lấy danh sách breeder
+    fetchBreeders();
   }, []);
 
   const fetchKoiFish = async (page, params = {}) => {
@@ -95,10 +93,7 @@ const Auction = () => {
       let data = response.data.auctionSessionResponses;
       const totalPages = response.data.totalPages;
 
-// Sắp xếp mảng `data` theo `startDate` từ xa nhất tới gần nhất
-data.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-
-
+      data.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
 
       const transformedData = data.map((item) => ({
         auctionSessionId: item.auctionSessionId,
@@ -147,7 +142,7 @@ data.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
   const handlePageChange = (page) => {
     if (page >= 0 && page < totalPages) {
       setCurrentPage(page);
-      fetchKoiFish(page, searchParams); // Gọi lại API để lấy dữ liệu của trang mới
+      fetchKoiFish(currentPage, searchParams);
     }
   };
 
@@ -194,7 +189,7 @@ data.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
 
   const handleFilterSubmit = (event) => {
     event.preventDefault();
-    fetchKoiFish(0, searchParams); // Gọi lại API với tham số mới
+    fetchKoiFish(0, searchParams);
     setCurrentPage(0);
   };
 

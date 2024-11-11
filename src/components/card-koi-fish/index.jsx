@@ -25,9 +25,9 @@ function CardKoiFish({ id }) {
   };
 
   const fetch = async () => {
-    if (!id) return; // Do not fetch if no id is passed
+    if (!id) return;
     setLoading(true);
-    setError(null); // Reset error state
+    setError(null); 
 
     try {
       const response = await api.get(`/koiFish/${id}`);
@@ -36,7 +36,7 @@ function CardKoiFish({ id }) {
       console.error(error);
       setError("Failed to fetch koi fish details.");
     } finally {
-      setLoading(false); // Stop loading after fetch
+      setLoading(false); 
     }
   };
 
@@ -106,7 +106,7 @@ function CardKoiFish({ id }) {
         </span>
         {/* Display Koi Varieties as Tags */}
         {data?.varieties?.map((variety, id) => {
-          // Define a color map or generate a color based on variety
+          
 
           const color = varietyColorMap[variety.name] || "gray";
 

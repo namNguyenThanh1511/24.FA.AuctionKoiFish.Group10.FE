@@ -1,11 +1,11 @@
 .about-page {
     width: 100vh;
-    height: 100vh; /* Chiều cao 100% của viewport */
-    margin: 0; /* Không có margin */
-    padding: 0; /* Không có padding */
-    display: flex; /* Sử dụng flexbox */
-    flex-direction: column; /* Đặt hướng là cột */
-    background-color: #f5f5f5; /* Màu nền */
+    height: 100vh; 
+    margin: 0;
+    padding: 0; 
+    display: flex; 
+    flex-direction: column; 
+    background-color: #f5f5f5;
 }
 
 .about-container {
@@ -13,22 +13,21 @@
     padding: 50px 20px;
     background-color: #1a1a1a;
     color: #fff;
-    max-width: 100%; /* Giới hạn chiều rộng */
-    margin: 0 auto; /* Căn giữa nội dung */
-   /* Thêm bo góc cho container */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Bóng đổ nhẹ */
+    max-width: 100%; 
+    margin: 0 auto; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
     font-family: Arial, sans-serif;
 }
 
 .blurred-background {
-    background: rgba(60, 54, 54, 0.2); /* Nền mờ hơn */
-    padding: 30px; /* Tăng padding cho phần nội dung */
+    background: rgba(60, 54, 54, 0.2); 
+    padding: 30px; 
     border-radius: 30px;
     margin-top: 80px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Bóng đổ nhẹ hơn */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-/* Các phần CSS còn lại giữ nguyên */
+
 
 .icon {
     color: #ff4d4f;
@@ -37,7 +36,7 @@
 p {
     margin: 20px 0;
     font-size: 1.1em;
-    line-height: 1.6; /* Tăng khoảng cách dòng cho dễ đọc */
+    line-height: 1.6; 
 }
 
 .faq-section {
@@ -51,20 +50,20 @@ p {
 
 .faq-question {
     display: flex;
-    align-items: center; /* Căn giữa theo chiều dọc */
+    align-items: center; 
     cursor: pointer;
     font-size: 1.2em;
 }
 
-/* Thêm khoảng cách cụ thể cho icon */
+
 .faq-question .anticon {
-    margin-right: 8px; /* Điều chỉnh khoảng cách bên phải của icon */
+    margin-right: 8px;
 }
 
-/* Điều chỉnh nếu cần cho phần arrow */
+
 .arrow {
     transition: transform 0.3s ease;
-    margin-left: auto; /* Đẩy arrow sang bên phải */
+    margin-left: auto; 
 }
 
 .arrow.open {
@@ -105,15 +104,15 @@ p {
     margin-top: 40px;
     padding: 20px;
     border-top: 1px solid #333;
-    text-align: center; /* Căn giữa nội dung */
+    text-align: center; 
 }
 
 .contact-us h3 {
-    font-size: 1.5em; /* Đổi kích thước tiêu đề */
-    margin-bottom: 10px; /* Khoảng cách dưới tiêu đề */
+    font-size: 1.5em; 
+    margin-bottom: 10px; 
 }
 
 .contact-us p {
-    font-size: 1.1em; /* Đổi kích thước cho nội dung */
-    color: #aaa; /* Màu sắc nhẹ cho thông tin liên hệ */
+    font-size: 1.1em; 
+    color: #aaa;
 }

@@ -4,7 +4,7 @@ body {
   padding: 0;
 }
 
-/* Style cho toàn bộ container của form */
+
 .auction-form-container {
   max-width: 1300px;
   margin: 0 auto;
@@ -14,7 +14,7 @@ body {
   text-align: center;
 }
 
-/* Căn chỉnh form và các thành phần bên trong */
+
 .search-form {
   display: flex;
   flex-direction: column;
@@ -28,7 +28,7 @@ body {
   margin: 0 auto;
 }
 
-/* Căn chỉnh hàng của các filter */
+
 .search-row {
   display: flex;
   gap: 20px;
@@ -38,12 +38,12 @@ body {
   width: 100%;
 }
 
-/* Style cho các thành phần trong form */
+
 .search-form .ant-select,
 .search-form .ant-input-number,
 .search-form .ant-btn,
 .custom-slider {
-  width: 240px; /* Đồng bộ chiều rộng */
+  width: 240px; 
 }
 
 .search-form .ant-btn-primary {
@@ -57,9 +57,9 @@ body {
   border-color: #40a9ff;
 }
 
-/* Style cho slider */
+
 .custom-slider {
-  width: 240px; /* Đảm bảo hai slider có cùng chiều rộng */
+  width: 240px; 
 }
 
 .ant-slider-track {
@@ -70,7 +70,7 @@ body {
   border-color: #1890ff;
 }
 
-/* Style cho các filter khác */
+
 .select-breeder,
 .select-varieties,
 .select-type,
@@ -79,7 +79,7 @@ body {
   width: 240px;
 }
 
-/* Style cho grid chứa các thẻ Card */
+
 .card-grid {
   display: flex;
   flex-wrap: wrap;

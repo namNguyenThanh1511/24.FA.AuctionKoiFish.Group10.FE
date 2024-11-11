@@ -19,13 +19,13 @@ const KoiFishForm = ({ onSubmit, props }) => {
     fetchVarieties();
   }, []);
   const handleFinish = (values) => {
-    // This will be called when form submission is successful
-    onSubmit(values); // Pass values to the parent component or API
+
+    onSubmit(values); 
   };
 
   return (
     <Form form={form} layout="vertical" onFinish={handleFinish}>
-      {/* Name and Sex in one row */}
+
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item
@@ -52,7 +52,7 @@ const KoiFishForm = ({ onSubmit, props }) => {
         </Col>
       </Row>
 
-      {/* Size, Weight, and Estimated Value in one row */}
+
       <Row
         gutter={20}
         style={{
@@ -91,7 +91,7 @@ const KoiFishForm = ({ onSubmit, props }) => {
         </Col>
       </Row>
 
-      {/* Variety and Date of Birth in one row */}
+    
       <Row
         gutter={10}
         style={{

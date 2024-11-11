@@ -1,4 +1,4 @@
-// src/components/DropdownMenu.jsx
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Menu } from "antd";
@@ -14,7 +14,7 @@ import {
 const DropdownMenuMember = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
-    window.location.href = "/"; // Điều hướng về trang chủ sau khi đăng xuất
+    window.location.href = "/"; 
   };
 
   return (

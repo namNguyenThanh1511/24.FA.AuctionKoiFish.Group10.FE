@@ -49,7 +49,6 @@ const KoibreederProfileLayout = ({ children, collapsed, setCollapsed }) => {
   ];
   return (
     <Layout style={{ minHeight: "100vh" }}>
-      {/* Sidebar */}
       <Sider
         collapsible
         collapsed={collapsed}
@@ -80,13 +79,12 @@ const KoibreederProfileLayout = ({ children, collapsed, setCollapsed }) => {
         />
       </Sider>
 
-      {/* Main Layout */}
       <Layout>
         <HeaderLogin />
         <Content style={{ margin: "30px 16px 0" }}>
           <Outlet />
         </Content>
-        {/* Sử dụng Footer từ components */}
+
         <Footer />
       </Layout>
     </Layout>
