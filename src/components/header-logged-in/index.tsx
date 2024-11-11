@@ -1,4 +1,4 @@
-// src/components/HeaderLogin.jsx
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Dropdown } from "antd";
@@ -13,7 +13,7 @@ import DropdownMenuKoiBreeder from "../header-avatar-dropdown/header-avatar-drop
 const HeaderLogin = () => {
   const roleEnum = useSelector((state) => state.user.roleEnum);
 
-  // Xác định component DropdownMenu dựa trên roleEnum
+
   let DropdownMenuComponent;
   if (roleEnum === "MEMBER") {
     DropdownMenuComponent = <DropdownMenuMember />;
@@ -24,7 +24,7 @@ const HeaderLogin = () => {
   } else if (roleEnum === "KOI_BREEDER") {
     DropdownMenuComponent = <DropdownMenuKoiBreeder />;
   } else {
-    DropdownMenuComponent = <DropdownMenuMember />; // Giá trị mặc định nếu roleEnum không khớp
+    DropdownMenuComponent = <DropdownMenuMember />; 
   }
 
   return (

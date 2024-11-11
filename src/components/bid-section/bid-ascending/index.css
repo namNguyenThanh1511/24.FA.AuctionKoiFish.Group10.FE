@@ -9,77 +9,81 @@
 }
 
 .bid-section {
-  width: 60%; /* Đặt chiều rộng của phần Bid lớn hơn */
+  width: 60%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
 }
 
 .bid-adjust-button {
-  width: 50px; /* Chiều rộng nút */
-  height: 50px; /* Chiều cao nút */
+  width: 50px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  background-color: #bfbfbf; /* Màu xám */
-  border: none; /* Không viền */
-  color: white; /* Màu chữ trắng */
+  background-color: #000000;
+  border: none;
+  color: white;
   transition: background-color 0.3s ease;
   border-radius: 5px;
-  margin: 0 5px; /* Thêm margin giữa nút và ô input */
+  margin: 0 5px;
+}
+
+.bid-adjust-button:hover {
+  background-color: #555555;
+  cursor: pointer;
 }
 
 .bid-input {
-  width: 100px; /* Thay đổi chiều rộng ô nhập giá nếu cần */
-  text-align: center; /* Căn giữa nội dung ô nhập */
+  width: 100px;
+  text-align: center;
 }
 
 .balance-section {
   font-size: 16px;
   font-weight: bold;
-  margin-left: 50px; /* Tăng khoảng cách giữa ô Bid và balance */
-  color: #333; /* Thay đổi màu sắc nếu cần */
+  margin-left: 50px;
+  color: #333;
 }
 
 .buy-now-section {
-  width: 35%; /* Đặt chiều rộng của phần Buy Now nhỏ hơn */
+  width: 35%;
   display: flex;
   align-items: center;
   justify-content: flex-end;
 }
 
 .button-bid {
-  margin-left: 5px; /* Đặt khoảng cách nhỏ giữa ô Bid và nút Bid */
-  background-color: #4d4d4d; /* Màu nền */
+  margin-left: 5px;
+  background-color: #4d4d4d;
   font-size: 13px;
-  color: white; /* Màu chữ */
+  color: white;
 }
 
 .button-buy-now {
-  width: 85px; /* Đặt chiều rộng của nút (có thể thay đổi theo ý thích) */
-  font-size: 16px; /* Tăng kích thước font chữ */
-  padding: 10px; /* Thay đổi padding để nút lớn hơn */
-  background-color: #f5222d; /* Màu nền */
-  margin-left: 10px; /* Khoảng cách với nút Buy Now */
-  border-radius: 5px; /* Góc bo tròn */
-  color: white; /* Màu chữ */
-  border: none; /* Không viền */
-  transition: background-color 0.3s ease; /* Hiệu ứng khi hover */
+  width: 85px;
+  font-size: 16px;
+  padding: 10px;
+  background-color: #f5222d;
+  margin-left: 10px;
+  border-radius: 5px;
+  color: white;
+  border: none;
+  transition: background-color 0.3s ease;
 }
 
 .button-buy-now:hover {
-  background-color: #cf1322; /* Màu hover */
+  background-color: #cf1322;
 }
 
 .buy-now-price-box {
-  background-color: white; /* Nền trắng */
-  border: 2px solid #1890ff; /* Viền xanh biển */
-  border-radius: 5px; /* Góc bo tròn */
-  padding: 10px; /* Khoảng cách bên trong ô */
-  display: flex; /* Để căn giữa nội dung */
-  align-items: center; /* Căn giữa theo chiều dọc */
-  justify-content: center; /* Căn giữa theo chiều ngang */
-  min-width: 120px; /* Chiều rộng tối thiểu để đảm bảo không bị quá nhỏ */
+  background-color: white;
+  border: 2px solid #1890ff;
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
 }
-

@@ -1,4 +1,4 @@
-// src/components/header-avatar-dropdown/header-avatar-dropdown-koibreeder.jsx
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Menu } from "antd";

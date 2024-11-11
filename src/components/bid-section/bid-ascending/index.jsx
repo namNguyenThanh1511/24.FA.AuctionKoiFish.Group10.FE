@@ -4,11 +4,19 @@ import { useSelector } from "react-redux";
 import "./index.css";
 import api from "../../../config/axios";
 
-const BidForm = ({ currentPrice, bidIncrement, buyNowPrice, handleBid, handleBuyNow }) => {
+const BidForm = ({
+  currentPrice,
+  bidIncrement,
+  buyNowPrice,
+  handleBid,
+  handleBuyNow,
+  auctionSessionId,
+}) => {
   const [bidValue, setBidValue] = useState(currentPrice);
   const [balance, setBalance] = useState(0);
-
+  const [totalLost, setTotalLost] = useState(0);
   const roleEnum = useSelector((state) => state.user.roleEnum);
+  const [incrementAmount1, setIncrementAmount1] = useState(0);
 
   useEffect(() => {
     const fetchBalance = async () => {
@@ -29,7 +37,9 @@ const BidForm = ({ currentPrice, bidIncrement, buyNowPrice, handleBid, handleBuy
 
   const decreaseBid = () => {
     setBidValue((prevValue) =>
-      prevValue - bidIncrement >= currentPrice ? prevValue - bidIncrement : currentPrice
+      prevValue - bidIncrement >= currentPrice
+        ? prevValue - bidIncrement
+        : currentPrice
     );
   };
 
@@ -38,10 +48,25 @@ const BidForm = ({ currentPrice, bidIncrement, buyNowPrice, handleBid, handleBuy
     handleBid(incrementAmount);
   };
 
+  useEffect(() => {
+    const calculateLost = async () => {
+      const lostResponse = await api.post(`bid/estimate-total-lost`, {
+        auctionSessionId: auctionSessionId,
+        bidAmount: bidValue - currentPrice, 
+      });
+      setTotalLost(lostResponse.data);
+    };
+    calculateLost();
+  }, [bidValue]);
+
   return (
     <div className="bid-form-container">
       <div className="bid-section">
-        <button className="bid-adjust-button" onClick={decreaseBid} disabled={roleEnum !== "MEMBER"}>
+        <button
+          className="bid-adjust-button"
+          onClick={decreaseBid}
+          disabled={roleEnum !== "MEMBER"}
+        >
           -
         </button>
         <input
@@ -50,19 +75,33 @@ const BidForm = ({ currentPrice, bidIncrement, buyNowPrice, handleBid, handleBuy
           value={bidValue.toLocaleString("en-US")}
           readOnly
         />
-        <button className="bid-adjust-button" onClick={increaseBid} disabled={roleEnum !== "MEMBER"}>
+        <button
+          className="bid-adjust-button"
+          onClick={increaseBid}
+          disabled={roleEnum !== "MEMBER"}
+        >
           +
         </button>
-        <button className="button-bid" onClick={placeBid} disabled={roleEnum !== "MEMBER"}>
+        <button
+          className="button-bid"
+          onClick={placeBid}
+          disabled={roleEnum !== "MEMBER"}
+        >
           Bid
         </button>
-        <span className="balance-section">Balance: {balance.toLocaleString("en-US")}₫</span>
+        <span className="balance-section">
+          Balance: {balance.toLocaleString("en-US")}₫
+        </span>
+        <span className="total-lost-section">
+          Total Lost: {totalLost.toLocaleString("en-US")}₫
+        </span>
       </div>
-
 
       <div className="buy-now-section">
         <div className="buy-now-price-box">
-          <span className="buy-now-price">{buyNowPrice.toLocaleString("en-US")}₫</span>
+          <span className="buy-now-price">
+            {buyNowPrice.toLocaleString("en-US")}₫
+          </span>
         </div>
         <button
           className="button-buy-now"

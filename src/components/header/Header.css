@@ -1,26 +1,26 @@
 .header {
-  position: fixed; /* Cố định Header */
+  position: fixed; 
   top: 0;
   left: 0;
   right: 0;
-  background-color: #000; /* Màu nền của Header */
-  color: #fff; /* Màu chữ trong Header */
-  padding: 10px 20px; /* Tăng padding cho Header */
-  z-index: 1000; /* Đảm bảo Header nằm trên các thành phần khác */
-  display: flex; /* Sử dụng Flexbox */
-  justify-content: space-between; /* Căn giữa nội dung */
-  align-items: center; /* Căn giữa theo chiều dọc */
-  font-family: 'Fredoka', sans-serif; /* Sử dụng font Fredoka */
+  background-color: #000; 
+  color: #fff;
+  padding: 10px 20px; 
+  z-index: 1000;
+  display: flex; 
+  justify-content: space-between; 
+  align-items: center; 
+  font-family: 'Fredoka', sans-serif; 
   border-bottom: #d4b8b8 solid 2px;
 }
 
 .logo {
-  flex: 1; /* Tạo không gian cho logo */
+  flex: 1;
 }
 
 .nav {
-  flex: 1; /* Tạo không gian cho navigation */
-  text-align: right; /* Căn các mục nav sang bên phải */
+  flex: 1; 
+  text-align: right; 
 }
 
 .nav ul {
@@ -31,49 +31,47 @@
 
 .nav ul li {
   display: inline;
-  margin-left: 20px; /* Khoảng cách giữa các mục menu */
+  margin-left: 20px; 
 }
 
 .nav ul li a {
   color: #fff;
   text-decoration: none;
-  padding: 10px; /* Thêm padding cho các nút để chúng có không gian */
+  padding: 10px; 
 }
 
 .nav ul li a:hover {
-  text-decoration: underline; /* Hiệu ứng khi hover */
+  text-decoration: underline; 
 }
-/* Bao quanh 2 nút trong một div để dễ quản lý */
 
 
-/* Kiểu cho nút Login */
-/* Kiểu cho nút Login */
+
 .btn-login {
   background-color: #000000;
   color: #fff;
   padding: 10px 15px;
   border-radius: 5px;
-  border: 1px solid #fff; /* Viền trắng */
+  border: 1px solid #fff; 
   transition: background-color 0.3s, border-color 0.3s;
 }
 
 .btn-login:hover {
   background-color: #b3b3b3;
-  border-color: #b3b3b3; /* Đổi màu viền khi hover */
+  border-color: #b3b3b3;
 }
 
-/* Kiểu cho nút Register */
+
 .btn-register {
   background-color: #ffffff;
   color: #000000;
   padding: 10px 15px;
   border-radius: 5px;
-  border: 1px solid #fff; /* Viền trắng */
+  border: 1px solid #fff; 
   transition: background-color 0.3s, border-color 0.3s;
 }
 
 .btn-register:hover {
   background-color: #b3b3b3;
-  border-color: #b3b3b3; /* Đổi màu viền khi hover */
+  border-color: #b3b3b3; 
   color: white;
 }

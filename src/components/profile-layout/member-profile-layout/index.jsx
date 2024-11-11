@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 
 import Footer from "../../footer/Footer";
-import { Link, Outlet, useNavigate } from "react-router-dom"; // Import useNavigate
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import HeaderLogin from "../../header-logged-in";
 const { Sider, Content } = Layout;
 

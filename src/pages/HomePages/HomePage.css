@@ -56,8 +56,8 @@
 
 .slider-text {
   position: absolute;
-  top: 70px; /* Tăng khoảng cách từ trên xuống */
-  left: 100px; /* Tăng khoảng cách từ trái vào */
+  top: 70px;
+  left: 100px; 
   z-index: 2;
   color: white;
 }
@@ -66,14 +66,14 @@
 .slider-text h1 {
   font-size: 48px;
   font-weight: bold;
-  margin-bottom: 30px; /* Tăng khoảng cách giữa title và nội dung */
+  margin-bottom: 30px; 
 }
 
 .slider-text p {
   font-size: 18px;
   line-height: 1.5;
   max-width: 500px;
-  margin-top: 20px; /* Thêm khoảng cách nếu cần */
+  margin-top: 20px; 
 }
 
 

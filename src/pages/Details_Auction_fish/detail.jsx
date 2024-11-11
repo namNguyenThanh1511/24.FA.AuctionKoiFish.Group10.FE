@@ -88,7 +88,6 @@ const Detail = () => {
     const offset = 7 * 3600 * 1000; // 7 tiếng tính bằng mili giây
     const totalSeconds = Math.floor((toDate.getTime() - fromDate.getTime() - offset) / 1000);
 
-    // Kiểm tra nếu thời gian hiện tại chưa tới thời gian bắt đầu
     if (totalSeconds > 0) {
       const days = Math.floor(totalSeconds / (3600 * 24));
       const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
@@ -97,7 +96,7 @@ const Detail = () => {
       return `${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
 
-    // Nếu đã đến thời gian bắt đầu, nhưng chưa đến thời gian kết thúc
+  
     return "Auction starting soon";
   };
 
@@ -165,15 +164,15 @@ const Detail = () => {
       );
 
       if (response.status === 200) {
-        message.success("Mua ngay thành công!");
+        message.success("Buy Now success");
         setWinnerName(response.data.winner.fullName);
         setIsWinnerModalVisible(true);
         fetchProductDetail();
       } else {
-        message.error("Mua ngay không thành công.");
+        message.error("Buy Now Erorr.");
       }
     } catch (error) {
-      console.error("Lỗi khi mua item: ", error);
+      console.error("Erorr to buy: ", error);
     }
   };
 
@@ -219,7 +218,7 @@ const Detail = () => {
           onCancel={handleVideoModalClose}
           footer={null}
           centered
-          width={800} // Tăng chiều rộng modal để khớp với video
+          width={800} 
         >
           {productDetail?.koi?.video_url && (
             <div className="video-container">
@@ -314,12 +313,13 @@ const Detail = () => {
             buyNowPrice={productDetail.buyNowPrice}
             handleBid={handleBid}
             handleBuyNow={handleBuyNow}
+            auctionSessionId={auctionSessionId}
           />
         )}
       </div>
 
       <div className="additional-info-container">
-        <h2>Lịch sử đấu giá</h2>
+        <h2>Bid History</h2>
         <Table
           dataSource={bidHistory}
           columns={[
@@ -329,6 +329,7 @@ const Detail = () => {
           ]}
           rowKey={(record) => record.date}
           pagination={{ pageSize: 5 }}
+
         />
       </div>
 
@@ -340,6 +341,8 @@ const Detail = () => {
       >
         <p>Congratulations to {winnerName} for winning the auction!</p>
       </Modal>
+
+      
     </div>
   );
 };
