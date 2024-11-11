@@ -1,9 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Space, Popconfirm, message, Form, Modal, Input, Tooltip } from "antd";
+import {
+  Table,
+  Button,
+  Space,
+  Popconfirm,
+  message,
+  Form,
+  Modal,
+  Input,
+  Tooltip,
+} from "antd";
 import api from "../../../config/axios";
 import { DeleteOutlined, UnlockOutlined } from "@ant-design/icons";
 import "./index.css";
 import dayjs from "dayjs";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const ManageKoiBreederAccount = () => {
   const [accounts, setAccounts] = useState([]);
@@ -14,10 +26,14 @@ const ManageKoiBreederAccount = () => {
     pageSize: 8,
     total: 0,
   });
-
+  const roleEnum = useSelector((state) => state.user.roleEnum);
+  const navigate = useNavigate();
   const [form] = Form.useForm();
 
-  const fetchAccounts = async (page = pagination.current, pageSize = pagination.pageSize) => {
+  const fetchAccounts = async (
+    page = pagination.current,
+    pageSize = pagination.pageSize
+  ) => {
     setLoading(true);
     try {
       const response = await api.get("/breeders-pagination", {
@@ -27,8 +43,13 @@ const ManageKoiBreederAccount = () => {
         },
       });
       console.log("API Response:", response.data);
-      const { accountResponseList, totalElements, totalPages, pageNumber, numberOfElements } =
-        response.data;
+      const {
+        accountResponseList,
+        totalElements,
+        totalPages,
+        pageNumber,
+        numberOfElements,
+      } = response.data;
       setAccounts(accountResponseList);
       setPagination({
         current: pageNumber + 1, // Adjust for zero-based index
@@ -44,8 +65,14 @@ const ManageKoiBreederAccount = () => {
   };
 
   useEffect(() => {
+    if (roleEnum !== "MANAGER") {
+      message.error("You do not have permission to access this page.");
+      navigate("/");
+      return;
+    }
+
     fetchAccounts();
-  }, []);
+  }, [roleEnum, navigate]);
 
   const handleBanKoibreederAccount = async (user_id) => {
     try {
@@ -161,7 +188,9 @@ const ManageKoiBreederAccount = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <span style={{ color: status === "ACTIVE" ? "green" : "red" }}>{status}</span>
+        <span style={{ color: status === "ACTIVE" ? "green" : "red" }}>
+          {status}
+        </span>
       ),
     },
     {
@@ -234,7 +263,11 @@ const ManageKoiBreederAccount = () => {
         onCancel={() => setIsModalVisible(false)}
         footer={null}
       >
-        <Form form={form} onFinish={handleCreateKoiBreederAccount} layout="vertical">
+        <Form
+          form={form}
+          onFinish={handleCreateKoiBreederAccount}
+          layout="vertical"
+        >
           <Form.Item
             label="Username"
             name="username"
@@ -285,7 +318,11 @@ const ManageKoiBreederAccount = () => {
           </Form.Item>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ marginRight: 10 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ marginRight: 10 }}
+            >
               Submit
             </Button>
             <Button onClick={() => setIsModalVisible(false)}>Cancel</Button>

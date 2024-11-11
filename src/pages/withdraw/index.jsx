@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Form, Input, Button, message, Table, Tag, Modal, Tooltip } from "antd";
 import api from "../../config/axios";
 import dayjs from "dayjs";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const WithDraw = () => {
   const [form] = Form.useForm();
@@ -16,7 +18,8 @@ const WithDraw = () => {
     useState(false);
   const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
-
+  const roleEnum = useSelector((state) => state.user.roleEnum);
+  const navigate = useNavigate();
   const fetchWithdrawData = async (
     page = pagination.current,
     pageSize = pagination.pageSize
@@ -49,10 +52,20 @@ const WithDraw = () => {
       setLoading(false);
     }
   };
-
+  useEffect(() => {
+    if (roleEnum !== "KOI_BREEDER" && roleEnum !== "MEMBER") {
+      message.error("You do not have permission to access this page.");
+      navigate("/");
+      return;
+    }
+  
+    fetchWithdrawData();
+  }, [roleEnum, navigate]);
+  
   useEffect(() => {
     fetchWithdrawData();
   }, []);
+  
 
   // Hàm xử lý gửi yêu cầu rút tiền
   const handleWithdraw = async (values) => {

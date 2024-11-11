@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Button, InputNumber } from "antd";
+import { Form, Input, Button, InputNumber, message } from "antd";
 import api from "../../config/axios";
 import { toast } from "react-toastify";
 import "./wallet.css";
 import formatToVND from "../../utils/currency";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const Wallet = () => {
   const [balance, setBalance] = useState(0);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const roleEnum = useSelector((state) => state.user.roleEnum);
+  const navigate = useNavigate();
   // Fetch số dư tài khoản từ API
   const fetchBalance = async () => {
     try {
@@ -18,6 +22,15 @@ const Wallet = () => {
       toast.error(error.response.data);
     }
   };
+  useEffect(() => {
+    if (roleEnum !== "KOI_BREEDER" && roleEnum !== "MEMBER") {
+      message.error("You do not have permission to access this page.");
+      navigate("/");
+      return;
+    }
+
+    fetchBalance();
+  }, [roleEnum, navigate]);
 
   useEffect(() => {
     fetchBalance();
