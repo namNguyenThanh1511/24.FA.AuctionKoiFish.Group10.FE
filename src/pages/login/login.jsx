@@ -77,9 +77,13 @@ const Login = () => {
       });
       if (fcmToken) {
         console.log(fcmToken);
+        await api.patch("account/fcm", { fcmToken: fcmToken });
         return fcmToken;
       }
     } catch (error) {
+      if (error.response.data) {
+        console.log(error.response.data);
+      }
       console.log(error);
     }
   };

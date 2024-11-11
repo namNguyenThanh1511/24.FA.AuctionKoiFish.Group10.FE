@@ -39,6 +39,7 @@ import AuctionProcessLog from "./pages/MANAGER/auction-processlog";
 import EditVariety from "./pages/STAFF/edit-variety";
 import AllTransaction from "./pages/All-Transaction";
 import Introduction from "./pages/Introduction";
+import requestPermissions from "./config/notification";
 function App() {
   useEffect(() => {
     requestPermissions();

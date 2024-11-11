@@ -17,6 +17,7 @@ import logo13 from "../../images/NND.jpg";
 import logo14 from "../../images/Shintaro.jpg";
 
 import "./HomePage.css";
+import useRealtime from "../../hooks/useRealTime";
 
 const HomePage = () => {
   const logos = [
@@ -46,8 +47,8 @@ const HomePage = () => {
         <div className="content">
           <h1>Welcome to Auction Koi</h1>
           <p>
-            AuctionKoi.com is proud to be your premier destination for Japanese
-            Koi auctions in the United States...
+            AuctionKoi.com is proud to be your premier destination for Japanese Koi auctions in the
+            United States...
           </p>
         </div>
       </section>
@@ -57,10 +58,9 @@ const HomePage = () => {
         <div className="slider-text">
           <h1>Why should you use our website?</h1>
           <p>
-            Welcome to our premier Koi auction website! Here, you'll find unique
-            Japanese Koi of the highest quality from renowned breeders. Join now
-            for a chance to own the finest Koi at the best prices, with an easy
-            bidding process and an exceptional shopping experience!
+            Welcome to our premier Koi auction website! Here, you'll find unique Japanese Koi of the
+            highest quality from renowned breeders. Join now for a chance to own the finest Koi at
+            the best prices, with an easy bidding process and an exceptional shopping experience!
           </p>
         </div>
 

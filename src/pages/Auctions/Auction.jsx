@@ -6,6 +6,7 @@ import Card from "../../components/Card/Card";
 import Koi from "../../images/Koi1.jpg";
 import api from "../../config/axios";
 import { useNavigate } from "react-router-dom";
+import useRealtime from "../../hooks/useRealTime";
 
 const { Option } = Select;
 
@@ -196,6 +197,12 @@ data.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
     fetchKoiFish(0, searchParams); // Gọi lại API với tham số mới
     setCurrentPage(0);
   };
+
+  useRealtime((body) => {
+    if (body.body.trim() === "CREATED NEW AUCTION SESSION".trim()) {
+      fetchKoiFish(currentPage, searchParams);
+    }
+  });
 
   return (
     <div className="auction-form-container">

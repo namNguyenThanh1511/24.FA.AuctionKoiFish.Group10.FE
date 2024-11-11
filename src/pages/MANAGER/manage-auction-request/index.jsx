@@ -513,6 +513,8 @@ function ManagerManageAuctionRequest() {
         formItemsCreateAuctionSession={formItemsCreateAuctionSession}
         paginationTarget={"auctionRequestResponseList"}
         filterParams={filters}
+        setSelectedStaff={setSelectedStaff}
+        setBidIncrementDisabled={setBidIncrementDisabled}
       />
     </div>
   );
