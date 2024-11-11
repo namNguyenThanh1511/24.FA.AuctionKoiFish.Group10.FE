@@ -40,6 +40,7 @@ import EditVariety from "./pages/STAFF/edit-variety";
 import AllTransaction from "./pages/All-Transaction";
 import Introduction from "./pages/Introduction";
 import requestPermissions from "./config/notification";
+import MyWonAuction from "./pages/Member-MyAuction/Member-My-Won-Auction";
 function App() {
   useEffect(() => {
     requestPermissions();
@@ -99,6 +100,10 @@ function App() {
         {
           path: "my-auction",
           element: <MyAuction />,
+        },
+        {
+          path: "my-won-auction",
+          element: <MyWonAuction />,
         },
         {
           path: "transaction",

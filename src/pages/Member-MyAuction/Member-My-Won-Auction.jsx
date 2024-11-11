@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../config/axios";
 import dayjs from "dayjs";
 import { useSelector } from "react-redux";
-const MyAuction = () => {
+const MyWonAuction = () => {
   const [auctions, setAuctions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [pagination, setPagination] = useState({
@@ -28,7 +28,7 @@ const MyAuction = () => {
   const fetchAuctions = async (page = pagination.current, pageSize = pagination.pageSize) => {
     setLoading(true);
     try {
-      const response = await api.get("/auctionSession/my-auctions", {
+      const response = await api.get("/auctionSession/my-won-auctions", {
         params: { page: page - 1, size: pageSize },
       });
       const { auctionSessionResponses, totalElements, pageNumber } = response.data;
@@ -133,6 +133,12 @@ const MyAuction = () => {
       render: (status) => <span style={getStatusColor(status)}>{status}</span>,
     },
     {
+      title: "Delivery Status",
+      dataIndex: "deliveryStatus",
+      key: "deliveryStatus",
+      render: (status) => <span style={getDeliveryStatusColor(status)}>{status}</span>,
+    },
+    {
       title: "Auction",
       dataIndex: "auctionSessionId",
       key: "auctionSessionId",
@@ -157,7 +163,7 @@ const MyAuction = () => {
         textAlign: "center",
       }}
     >
-      <h2 style={{ fontSize: "28px", fontWeight: "bold", color: "#333" }}>My Auctions List</h2>
+      <h2 style={{ fontSize: "28px", fontWeight: "bold", color: "#333" }}>My won Auctions List</h2>
 
       <Table
         loading={loading}
@@ -180,4 +186,4 @@ const MyAuction = () => {
   );
 };
 
-export default MyAuction;
+export default MyWonAuction;
