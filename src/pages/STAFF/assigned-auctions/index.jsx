@@ -17,7 +17,6 @@ const AssignedAuctions = () => {
   const [selectedAuctionId, setSelectedAuctionId] = useState(null);
   const [note, setNote] = useState("");
 
-  // Fetch danh sách các phiên đấu giá được giao
   useEffect(() => {
     fetchAssignedAuctions(pagination.current, pagination.pageSize);
   }, []);
@@ -43,7 +42,6 @@ const AssignedAuctions = () => {
     }
   };
 
-  // Mở modal để cập nhật trạng thái
   const openModal = (id, type) => {
     setSelectedAuctionId(id);
     setModalType(type);
@@ -66,25 +64,30 @@ const AssignedAuctions = () => {
       apiEndpoint = `/auctionSession/markDelivered/${selectedAuctionId}`;
     } else if (modalType === "cancel") {
       apiEndpoint = `/auctionSession/markDeliveryCancelled/${selectedAuctionId}`;
+    } else if (modalType === "returned") {
+      apiEndpoint = `/auctionSession/markKoiFishAsReturned/${selectedAuctionId}`;
     }
 
     try {
       await api.put(apiEndpoint, { note });
-      message.success("Cập nhật trạng thái thành công");
+
       fetchAssignedAuctions(pagination.current, pagination.pageSize);
       closeModal();
     } catch (error) {
-      message.error("Cập nhật trạng thái thất bại");
+      message.error("Failed to update status");
     }
   };
 
-  // Kiểm tra trạng thái đấu giá đã hoàn tất
   const isCompletedStatus = (status) => {
     return status === "COMPLETED" || status === "COMPLETED_WITH_BUYNOW";
   };
 
-  // Cấu hình các cột cho bảng
   const columns = [
+    {
+      title: "Auction ID",
+      dataIndex: "auctionSessionId",
+      key: "auctionSessionId",
+    },
     {
       title: "Auction Title",
       dataIndex: "title",
@@ -134,50 +137,89 @@ const AssignedAuctions = () => {
       title: "Delivery Status",
       dataIndex: "deliveryStatus",
       key: "deliveryStatus",
-      render: (status) =>
-        status ? (
-          <Tag color={status === "DELIVERING" ? "orange" : "green"}>
-            {status}
-          </Tag>
+      render: (status) => {
+        let color = "default";
+        if (status === "DELIVERING") {
+          color = "orange";
+        } else if (status === "DELIVERED") {
+          color = "green";
+        } else if (status === "DELIVERED_CANCELLED") {
+          color = "red";
+        }
+
+        return status ? (
+          <Tag color={color}>{status}</Tag>
         ) : (
           <Tag color="red">Pending</Tag>
-        ),
+        );
+      },
     },
     {
       title: "Edit Delivery Status",
       key: "editDeliveryStatus",
       render: (_, record) => {
-        // Hiển thị nút Mark Delivering nếu đấu giá đã hoàn tất và chưa giao hàng
         if (isCompletedStatus(record.auctionStatus)) {
+          const buttonStyle = { width: "100%" }; // Đảm bảo các nút có chiều rộng bằng nhau
+
           if (record.deliveryStatus === null) {
             return (
               <Button
                 type="primary"
                 onClick={() => openModal(record.auctionSessionId, "delivering")}
+                style={buttonStyle}
               >
                 Mark Delivering
               </Button>
             );
           }
 
-          // Hiển thị Mark Delivered và Cancel Delivery nếu trạng thái đang giao hàng
           if (record.deliveryStatus === "DELIVERING") {
             return (
               <>
                 <Button
                   type="primary"
-                  onClick={() => openModal(record.auctionSessionId, "delivered")}
-                  style={{ marginRight: "10px" }}
+                  onClick={() =>
+                    openModal(record.auctionSessionId, "delivered")
+                  }
+                  style={{ ...buttonStyle, marginBottom: "10px" }} // Margin giữa các nút
                 >
                   Mark Delivered
                 </Button>
                 <Button
                   danger
                   onClick={() => openModal(record.auctionSessionId, "cancel")}
+                  style={buttonStyle}
                 >
                   Cancel Delivery
                 </Button>
               </>
+            );
+          }
+
+          if (
+            record.deliveryStatus === "DELIVERED_CANCELLED" &&
+            record.koi.koiStatus !== "AVAILABLE"
+          ) {
+            return (
+              <Button
+                danger
+                onClick={() => openModal(record.auctionSessionId, "returned")}
+                style={buttonStyle}
+              >
+                Returned to Koi_Breeder
+              </Button>
+            );
+          }
+
+          // Disable button when deliveryStatus is DELIVERED_CANCELLED and koi.koiStatus is AVAILABLE
+          if (
+            record.deliveryStatus === "DELIVERED_CANCELLED" &&
+            record.koi.koiStatus === "AVAILABLE"
+          ) {
+            return (
+              <Button type="primary" disabled style={buttonStyle}>
+                Returned to Koi_Breeder
+              </Button>
             );
           }
         }
@@ -210,7 +252,9 @@ const AssignedAuctions = () => {
             ? "Mark as Delivering"
             : modalType === "delivered"
             ? "Mark as Delivered"
-            : "Cancel Delivery"
+            : modalType === "cancel"
+            ? "Cancel Delivery"
+            : "Mark as Returned"
         }
         open={isModalOpen}
         onOk={handleUpdateStatus}

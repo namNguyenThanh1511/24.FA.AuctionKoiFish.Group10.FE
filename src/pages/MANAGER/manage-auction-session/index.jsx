@@ -1,10 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Modal, Form, Input, message, Row, Col, Typography, Tag } from "antd";
+import {
+  Card,
+  Button,
+  Modal,
+  Form,
+  Input,
+  message,
+  Row,
+  Col,
+  Typography,
+  Tag,
+} from "antd";
 import api from "../../../config/axios";
 import "./index.css"; // Ensure you have corresponding styles
 import formatToVND from "../../../utils/currency";
 import dayjs from "dayjs";
-
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const { Title, Text } = Typography;
 
 const ManageAuctionSessionManager = () => {
@@ -13,6 +25,8 @@ const ManageAuctionSessionManager = () => {
   const [currentSession, setCurrentSession] = useState(null);
   const [form] = Form.useForm();
   const [isDetailsVisible, setIsDetailsVisible] = useState(false);
+  const roleEnum = useSelector((state) => state.user.roleEnum);
+  const navigate = useNavigate();
 
   const statusColors = {
     UPCOMING: "blue",
@@ -25,16 +39,23 @@ const ManageAuctionSessionManager = () => {
   };
 
   useEffect(() => {
-    fetchAuctionSessions();
-  }, []);
+    if (roleEnum !== "MANAGER") {
+      message.error("You do not have permission to access this page.");
+      navigate("/");
+      return;
+    }
 
+    fetchAuctionSessions();
+  }, [roleEnum, navigate]);
   useEffect(() => {
     const interval = setInterval(() => {
       setAuctionSessions((prevSessions) =>
         prevSessions.map((session) => ({
           ...session,
           timeLeft: calculateTimeLeft(
-            session.auctionStatus === "UPCOMING" ? session.startDate : session.endDate
+            session.auctionStatus === "UPCOMING"
+              ? session.startDate
+              : session.endDate
           ),
         }))
       );
@@ -49,7 +70,9 @@ const ManageAuctionSessionManager = () => {
       const sessionsWithTimeLeft = response.data.map((session) => ({
         ...session,
         timeLeft: calculateTimeLeft(
-          session.auctionStatus === "UPCOMING" ? session.startDate : session.endDate
+          session.auctionStatus === "UPCOMING"
+            ? session.startDate
+            : session.endDate
         ),
       }));
       setAuctionSessions(sessionsWithTimeLeft);
@@ -97,7 +120,10 @@ const ManageAuctionSessionManager = () => {
 
   const handleUpdateSession = async (values) => {
     try {
-      await api.put(`/auctionSessions/${currentSession.auctionSessionId}`, values);
+      await api.put(
+        `/auctionSessions/${currentSession.auctionSessionId}`,
+        values
+      );
       message.success("Auction session updated successfully");
       setIsModalVisible(false);
       fetchAuctionSessions();
@@ -116,7 +142,13 @@ const ManageAuctionSessionManager = () => {
   };
 
   return (
-    <div style={{ padding: "20px", backgroundColor: "#f9f9f9", margin: "100px auto" }}>
+    <div
+      style={{
+        padding: "20px",
+        backgroundColor: "#f9f9f9",
+        margin: "100px auto",
+      }}
+    >
       <Title level={2} style={{ textAlign: "center", marginBottom: "30px" }}>
         Manage Auction Sessions
       </Title>
@@ -155,22 +187,23 @@ const ManageAuctionSessionManager = () => {
               }
             >
               <p>
-                <Text strong>Current Price:</Text> {formatToVND(session.currentPrice)}
+                <Text strong>Current Price:</Text>{" "}
+                {formatToVND(session.currentPrice)}
               </p>
               {session.auctionStatus === "UPCOMING" ? (
                 <p>
                   <Text strong>Time left until start:</Text>
                   <span style={{ color: "blue" }}>
-                    {session.timeLeft.hours}h {session.timeLeft.minutes}m {session.timeLeft.seconds}
-                    s
+                    {session.timeLeft.hours}h {session.timeLeft.minutes}m{" "}
+                    {session.timeLeft.seconds}s
                   </span>
                 </p>
               ) : (
                 <p>
                   <Text strong>Time left until end:</Text>
                   <span style={{ color: "red" }}>
-                    {session.timeLeft.hours}h {session.timeLeft.minutes}m {session.timeLeft.seconds}
-                    s
+                    {session.timeLeft.hours}h {session.timeLeft.minutes}m{" "}
+                    {session.timeLeft.seconds}s
                   </span>
                 </p>
               )}
@@ -221,13 +254,25 @@ const ManageAuctionSessionManager = () => {
           <Form.Item name="title" label="Title" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="startingPrice" label="Starting Price" rules={[{ required: true }]}>
+          <Form.Item
+            name="startingPrice"
+            label="Starting Price"
+            rules={[{ required: true }]}
+          >
             <Input type="number" />
           </Form.Item>
-          <Form.Item name="buyNowPrice" label="Buy Now Price" rules={[{ required: true }]}>
+          <Form.Item
+            name="buyNowPrice"
+            label="Buy Now Price"
+            rules={[{ required: true }]}
+          >
             <Input type="number" />
           </Form.Item>
-          <Form.Item name="bidIncrement" label="Bid Increment" rules={[{ required: true }]}>
+          <Form.Item
+            name="bidIncrement"
+            label="Bid Increment"
+            rules={[{ required: true }]}
+          >
             <Input type="number" />
           </Form.Item>
           <Form.Item
@@ -288,10 +333,12 @@ const ManageAuctionSessionManager = () => {
               <Text strong>Auction Status:</Text> {currentSession.auctionStatus}
             </p>
             <p>
-              <Text strong>Start Date:</Text> {new Date(currentSession.startDate).toLocaleString()}
+              <Text strong>Start Date:</Text>{" "}
+              {new Date(currentSession.startDate).toLocaleString()}
             </p>
             <p>
-              <Text strong>End Date:</Text> {new Date(currentSession.endDate).toLocaleString()}
+              <Text strong>End Date:</Text>{" "}
+              {new Date(currentSession.endDate).toLocaleString()}
             </p>
           </div>
         )}

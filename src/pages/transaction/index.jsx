@@ -16,6 +16,7 @@ const Transaction = () => {
     pageSize: 8,
     total: 0,
   });
+  
   const [filters, setFilters] = useState({
     transactionType: "",
     startDate: null,

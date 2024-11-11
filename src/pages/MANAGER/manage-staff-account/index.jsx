@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Space, Popconfirm, message, Form, Modal, Input, Tooltip } from "antd";
+import {
+  Table,
+  Button,
+  Space,
+  Popconfirm,
+  message,
+  Form,
+  Modal,
+  Input,
+  Tooltip,
+} from "antd";
 import api from "../../../config/axios";
 import { DeleteOutlined, UnlockOutlined } from "@ant-design/icons";
 import "./index.css";
 import dayjs from "dayjs";
-
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const ManageStaffAccount = () => {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -15,8 +26,12 @@ const ManageStaffAccount = () => {
     total: 0,
   });
   const [form] = Form.useForm();
-
-  const fetchAccounts = async (page = pagination.current, pageSize = pagination.pageSize) => {
+  const roleEnum = useSelector((state) => state.user.roleEnum);
+  const navigate = useNavigate();
+  const fetchAccounts = async (
+    page = pagination.current,
+    pageSize = pagination.pageSize
+  ) => {
     setLoading(true);
     try {
       const response = await api.get("/staffs-pagination", {
@@ -41,8 +56,14 @@ const ManageStaffAccount = () => {
   };
 
   useEffect(() => {
+    if (roleEnum !== "MANAGER") {
+      message.error("You do not have permission to access this page.");
+      navigate("/");
+      return;
+    }
+
     fetchAccounts();
-  }, []);
+  }, [roleEnum, navigate]);
 
   const validatePhoneNumber = (_, value) => {
     const phonePattern = /^0\d{9}$/;
@@ -153,7 +174,9 @@ const ManageStaffAccount = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <span style={{ color: status === "ACTIVE" ? "green" : "red" }}>{status}</span>
+        <span style={{ color: status === "ACTIVE" ? "green" : "red" }}>
+          {status}
+        </span>
       ),
     },
     {
@@ -275,7 +298,11 @@ const ManageStaffAccount = () => {
             <Input />
           </Form.Item>
           <Form.Item>
-            <Button type="primary" htmlType="submit" style={{ marginRight: 10 }}>
+            <Button
+              type="primary"
+              htmlType="submit"
+              style={{ marginRight: 10 }}
+            >
               Submit
             </Button>
             <Button onClick={() => setIsModalVisible(false)}>Cancel</Button>

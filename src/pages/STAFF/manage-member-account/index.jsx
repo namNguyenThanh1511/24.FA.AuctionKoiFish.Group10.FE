@@ -3,7 +3,8 @@ import { Table, Button, Space, Popconfirm, message, Form, Tooltip } from "antd";
 import api from "../../../config/axios";
 import { DeleteOutlined, UnlockOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
-
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 const ManageMemberAccount = () => {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -12,7 +13,8 @@ const ManageMemberAccount = () => {
     pageSize: 5,
     total: 0,
   });
-
+  const roleEnum = useSelector((state) => state.user.roleEnum);
+  const navigate = useNavigate();
   const [form] = Form.useForm();
 
   const fetchAccounts = async (
@@ -28,8 +30,13 @@ const ManageMemberAccount = () => {
         },
       });
       console.log("API Response:", response.data);
-      const { accountResponseList, totalElements, totalPages, pageNumber, numberOfElements } =
-        response.data;
+      const {
+        accountResponseList,
+        totalElements,
+        totalPages,
+        pageNumber,
+        numberOfElements,
+      } = response.data;
       setAccounts(accountResponseList);
       setPagination({
         current: pageNumber + 1,
@@ -44,6 +51,16 @@ const ManageMemberAccount = () => {
     }
   };
 
+  useEffect(() => {
+    if (roleEnum !== "STAFF") {
+      message.error("You do not have permission to access this page.");
+      navigate("/");
+      return;
+    }
+
+    fetchAccounts();
+  }, [roleEnum, navigate]);
+  
   useEffect(() => {
     fetchAccounts();
   }, []);
@@ -119,7 +136,9 @@ const ManageMemberAccount = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <span style={{ color: status === "ACTIVE" ? "green" : "red" }}>{status}</span>
+        <span style={{ color: status === "ACTIVE" ? "green" : "red" }}>
+          {status}
+        </span>
       ),
     },
     {
