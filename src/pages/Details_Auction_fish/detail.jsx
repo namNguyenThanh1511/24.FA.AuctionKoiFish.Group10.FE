@@ -328,6 +328,7 @@ const Detail = () => {
           ]}
           rowKey={(record) => record.date}
           pagination={{ pageSize: 5 }}
+
         />
       </div>
 
@@ -339,6 +340,8 @@ const Detail = () => {
       >
         <p>Congratulations to {winnerName} for winning the auction!</p>
       </Modal>
+
+      
     </div>
   );
 };

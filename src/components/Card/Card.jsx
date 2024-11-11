@@ -27,13 +27,15 @@ const Card = ({
   auctionStatus,
   auctionType,
   onViewClick,
+  auctionSessionId,
 }) => {
   return (
     <div className="card-container">
       <div className="card-header">
         <img src={image} alt="koi fish" className="card-image" />
         <div className="card-info">
-          <h3 className="card-title">{title}</h3>
+          <h3 className="card-title">{title} </h3>
+          <h5>{"#"} {auctionSessionId}</h5>
           <h4 className="card-name">{name}</h4>
           <div className="card-details">
             <p>
