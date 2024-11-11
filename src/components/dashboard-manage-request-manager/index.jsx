@@ -46,6 +46,8 @@ function DashboardManageRequestTemplateForManager({
   formItemsCreateAuctionSession,
   paginationTarget,
   filterParams,
+  setSelectedStaff,
+  setBidIncrementDisabled,
 }) {
   const [dataSource, setDataSource] = useState([]);
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -310,6 +312,8 @@ function DashboardManageRequestTemplateForManager({
       await api.post(`auctionSession`, payload);
       toast.success("Successfully created auction session");
       formCreateAuctionSession.resetFields();
+      setSelectedStaff(null);
+      setBidIncrementDisabled(false);
       handleCloseAuctionModal();
       fetchData(pagination.current, pagination.pageSize);
     } catch (error) {
