@@ -45,7 +45,8 @@ const Detail = () => {
       if (
         response.data.auctionStatus === "COMPLETED" ||
         response.data.auctionStatus === "DRAWN" ||
-        response.data.auctionStatus === "NO_WINNER"
+        response.data.auctionStatus === "NO_WINNER"||
+        response.data.auctionStatus === "COMPLETED_WITH_BUYNOW"
       ) {
         setCountdown("Auction ended");
         if (response.data.winner) {

@@ -7,7 +7,7 @@ const statusMapping = {
   ONGOING: "On Going",
   COMPLETED: "Completed",
   DRAWN: "Drawn",
-  COMPLETED_WITH_BUYNOW: "Buy Now",
+  COMPLETED_WITH_BUYNOW: "Completed with Buy Now",
   NO_WINNER: "No Winner",
   UPCOMING: "Up Coming",
 };
