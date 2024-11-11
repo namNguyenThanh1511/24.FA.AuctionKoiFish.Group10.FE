@@ -93,7 +93,7 @@ const Auction = () => {
       let data = response.data.auctionSessionResponses;
       const totalPages = response.data.totalPages;
 
-      data.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+      // data.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
 
       const transformedData = data.map((item) => ({
         auctionSessionId: item.auctionSessionId,
@@ -142,13 +142,16 @@ const Auction = () => {
   const handlePageChange = (page) => {
     if (page >= 0 && page < totalPages) {
       setCurrentPage(page);
-      fetchKoiFish(currentPage, searchParams);
+      fetchKoiFish(page, searchParams); // Sử dụng page trực tiếp thay vì currentPage
     }
   };
 
   useEffect(() => {
     fetchKoiFish(currentPage, searchParams);
   }, [currentPage, searchParams]);
+  useEffect(() => {
+    fetchKoiFish(0, searchParams);
+  }, [searchParams]);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -193,11 +196,11 @@ const Auction = () => {
     setCurrentPage(0);
   };
 
-  useRealtime((body) => {
-    if (body.body.trim() === "CREATED NEW AUCTION SESSION".trim()) {
-      fetchKoiFish(currentPage, searchParams);
-    }
-  });
+  // useRealtime((body) => {
+  //   if (body.body.trim() === "CREATED NEW AUCTION SESSION".trim()) {
+  //     fetchKoiFish(currentPage, searchParams);
+  //   }
+  // });
 
   return (
     <div className="auction-form-container">
